@@ -28,7 +28,7 @@ import {
   Globe,
   Mail
 } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { PageTransition } from "../components/PageTransition";
 import { therapists, timeSlots, Therapist } from "../data/therapists";
 import { useAuth } from "../contexts/AuthContext";

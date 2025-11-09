@@ -7,7 +7,7 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { CompassDecoration } from "./CompassDecoration";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 // Mapping of disorder topics to relevant categories/keywords
 const topicToCategoriesMap: Record<string, string[]> = {
@@ -159,7 +159,7 @@ export function BlogSection() {
       </div>
 
       {/* Blog Post Dialog */}
-      <Dialog open={!!selectedPost} onOpenChange={(open) => !open && setSelectedPost(null)}>
+      <Dialog open={!!selectedPost} onOpenChange={(open: boolean) => !open && setSelectedPost(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedPost && (
             <>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { CalendarIcon, Clock, Compass, Navigation, User, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { CompassDecoration } from "./CompassDecoration";
 import { therapists, timeSlots, Therapist } from "../data/therapists";
 import { useAuth } from "../contexts/AuthContext";

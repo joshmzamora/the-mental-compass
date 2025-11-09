@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 // Mapping of disorder IDs to abstract images
 const disorderImages: Record<string, string> = {
