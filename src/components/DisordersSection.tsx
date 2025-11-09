@@ -148,7 +148,7 @@ export function DisordersSection() {
     
     const disorder = mentalHealthDisorders.find(d => 
       d.id === profile.compassBearing?.primaryStruggle.toLowerCase() ||
-      d.name.toLowerCase().includes(profile.compassBearing?.primaryStruggle.toLowerCase())
+      d.name.toLowerCase().includes(profile.compassBearing?.primaryStruggle.toLowerCase() ?? '')
     );
     
     if (disorder) {
@@ -294,7 +294,7 @@ export function DisordersSection() {
       </div>
 
       {/* Disorder Detail Dialog - Full Screen */}
-      <Dialog open={!!selectedDisorder} onOpenChange={(open) => !open && setSelectedDisorder(null)}>
+      <Dialog open={!!selectedDisorder} onOpenChange={(open: boolean) => !open && setSelectedDisorder(null)}>
         <DialogContent className="max-w-none w-screen h-screen overflow-y-auto p-0 flex flex-col">
           {selectedDisorder && (
             <>
