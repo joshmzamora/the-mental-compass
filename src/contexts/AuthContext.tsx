@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { projectId, publicAnonKey } from "../utils/supabase/info";
+import { supabase } from "../utils/supabase/client";
+import { projectId } from "../utils/supabase/info";
 
 /**
  * Authentication Context with Silent Edge Function Fallback
@@ -13,9 +13,6 @@ import { projectId, publicAnonKey } from "../utils/supabase/info";
  * is not available, the system silently falls back to Supabase metadata
  * without showing any errors or warnings to the user.
  */
-
-const supabaseUrl = `https://${projectId}.supabase.co`;
-const supabase = createClient(supabaseUrl, publicAnonKey);
 
 interface User {
   id: string;
@@ -111,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${publicAnonKey}`,
+              Authorization: `Bearer ${supabase.key}`,
             },
             body: JSON.stringify({ email, password, name }),
           }

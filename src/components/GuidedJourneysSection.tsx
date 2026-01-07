@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { guidedJourneys, getJourneyById, getRecommendedJourneys } from "../data/guided-journeys";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 export function GuidedJourneysSection() {
   const { user } = useAuth();

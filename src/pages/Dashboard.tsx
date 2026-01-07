@@ -70,7 +70,7 @@ import { useUserProfile } from "../contexts/UserProfileContext";
 import { blogPosts } from "../data/blog-posts";
 import { therapists } from "../data/therapists";
 import { guidedJourneys, getJourneyById } from "../data/guided-journeys";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 interface DashboardPreferences {
   compassBearingExpanded: boolean;

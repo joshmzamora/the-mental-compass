@@ -21,7 +21,10 @@ import {
   Bell,
   Calendar,
   ChevronLeft,
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  Minus,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -37,10 +40,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./ui/pagination";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
 import { projectId } from "../utils/supabase/info";
+import { supabase } from "../utils/supabase/client";
 
 // Standardized tags that match the site's content tagging system
 export const COMMUNITY_TAGS = [
@@ -101,28 +105,29 @@ type DateRangeFilter = "all" | "today" | "week" | "month" | "3months" | "6months
 
 interface ChatMessage {
   id: string;
-  userId: string;
+  user_id: string;
   author: string;
   content: string;
-  timestamp: Date;
+  created_at: string;
   avatar: string;
 }
 
+// Generic starter messages to display before real user messages
 const initialChatMessages: ChatMessage[] = [
   {
-    id: "1",
-    userId: "user1",
+    id: "starter-1",
+    user_id: "system",
     author: "Michael",
     content: "Has anyone tried the new meditation app recommended in the blog?",
-    timestamp: new Date(Date.now() - 3600000),
+    created_at: new Date(Date.now() - 3600000).toISOString(),
     avatar: "M"
   },
   {
-    id: "2",
-    userId: "user2",
+    id: "starter-2",
+    user_id: "system",
     author: "Jessica",
     content: "Yes! I've been using it for a week now and it's really helpful for my anxiety.",
-    timestamp: new Date(Date.now() - 3480000),
+    created_at: new Date(Date.now() - 3480000).toISOString(),
     avatar: "J"
   },
 ];
@@ -133,7 +138,10 @@ export function CommunitySection() {
   const navigate = useNavigate();
   
   const [message, setMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(initialChatMessages);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [realTimeChatMessages, setRealTimeChatMessages] = useState<ChatMessage[]>([]);
+  const [chatLoading, setChatLoading] = useState(true);
+  const [chatDatabaseConfigured, setChatDatabaseConfigured] = useState(true);
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>([]);
   const [showNewPostDialog, setShowNewPostDialog] = useState(false);
@@ -157,6 +165,9 @@ export function CommunitySection() {
   // Notifications state
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  
+  // Featured discussions minimize state
+  const [isFeaturedMinimized, setIsFeaturedMinimized] = useState(false);
   
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -192,6 +203,47 @@ export function CommunitySection() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Load chat messages from Supabase and set up real-time subscription
+  useEffect(() => {
+    loadChatMessages();
+
+    // Set up real-time subscription for new messages
+    const channel = supabase
+      .channel('live_chat_messages')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'live_chat_messages'
+        },
+        (payload) => {
+          const newMessage = payload.new as ChatMessage;
+          setRealTimeChatMessages(prev => [...prev, newMessage]);
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('✓ Real-time chat connected');
+        } else if (status === 'CHANNEL_ERROR') {
+          console.log('Real-time chat unavailable - using local messages');
+        } else if (status === 'TIMED_OUT') {
+          console.log('Real-time chat connection timed out - using local messages');
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Combine starter messages with real-time messages
+  useEffect(() => {
+    // Show starter messages first, then real user messages
+    const combinedMessages = [...initialChatMessages, ...realTimeChatMessages];
+    setChatMessages(combinedMessages);
+  }, [realTimeChatMessages]);
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -354,6 +406,41 @@ export function CommunitySection() {
 
     if (newNotifications.length > 0) {
       setNotifications(prev => [...newNotifications, ...prev]);
+    }
+  };
+
+  const loadChatMessages = async () => {
+    try {
+      setChatLoading(true);
+      
+      // Check if we have a valid session first (silently)
+      try {
+        await supabase.auth.getSession();
+      } catch (sessionError) {
+        // Ignore session errors
+      }
+      
+      const { data, error } = await supabase
+        .from('live_chat_messages')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        // Silently handle all database errors - chat is optional
+        setChatDatabaseConfigured(false);
+        setChatLoading(false);
+        return;
+      }
+
+      if (data) {
+        setRealTimeChatMessages(data);
+        setChatDatabaseConfigured(true);
+      }
+      setChatLoading(false);
+    } catch (error: any) {
+      // Silently handle all errors - chat is optional and should not break the app
+      setChatDatabaseConfigured(false);
+      setChatLoading(false);
     }
   };
 
@@ -784,24 +871,47 @@ export function CommunitySection() {
     checkForNewNotifications(mockPosts);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!user) {
       setShowLoginDialog(true);
       return;
     }
 
     if (message.trim()) {
-      const newMessage: ChatMessage = {
-        id: Date.now().toString(),
-        userId: user.id,
+      const newMessage = {
+        user_id: user.id,
         author: user.email?.split('@')[0] || "You",
-        content: message,
-        timestamp: new Date(),
+        content: message.trim(),
         avatar: (user.email?.charAt(0) || "Y").toUpperCase()
       };
-      setChatMessages([...chatMessages, newMessage]);
-      setMessage("");
-      toast.success("Message sent!");
+
+      try {
+        const { error } = await supabase
+          .from('live_chat_messages')
+          .insert([newMessage]);
+
+        if (error) {
+          // Handle specific error cases
+          if (error.code === 'PGRST116' || error.message.includes('relation') || error.message.includes('does not exist')) {
+            toast.error("Chat is not yet configured. Please check the database setup instructions.");
+          } else {
+            console.error('Error sending message:', error);
+            toast.error("Failed to send message. Please try again.");
+          }
+          return;
+        }
+
+        setMessage("");
+        toast.success("Message sent!");
+      } catch (error: any) {
+        // Handle network errors
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+          toast.error("Network unavailable. Please check your connection.");
+        } else {
+          console.error('Error sending message:', error);
+          toast.error("Failed to send message. Please try again.");
+        }
+      }
     }
   };
 
@@ -1388,31 +1498,49 @@ export function CommunitySection() {
                 return featuredPosts.length > 0 && (
                   <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
                     <CardHeader className="pb-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
-                          <TrendingUp className="h-4 w-4" />
-                          <span className="text-sm font-medium">Featured Discussions</span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
+                              <TrendingUp className="h-4 w-4" />
+                              <span className="text-sm font-medium">Featured Discussions</span>
+                            </div>
+                            <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
+                              Most Active
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-sm text-gray-700 mt-2">
+                            Join the most engaging conversations in our community
+                          </CardDescription>
                         </div>
-                        <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
-                          Most Active
-                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsFeaturedMinimized(!isFeaturedMinimized)}
+                          className="flex-shrink-0 h-8 w-8 p-0 hover:bg-orange-100"
+                        >
+                          {isFeaturedMinimized ? (
+                            <ChevronDown className="h-4 w-4 text-orange-700" />
+                          ) : (
+                            <ChevronUp className="h-4 w-4 text-orange-700" />
+                          )}
+                        </Button>
                       </div>
-                      <CardDescription className="text-sm text-gray-700 mt-2">
-                        Join the most engaging conversations in our community
-                      </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 sm:space-y-4">
-                      {featuredPosts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          post={post}
-                          onSelect={setSelectedPost}
-                          onLike={handleLikePost}
-                          navigate={navigate}
-                          formatPostTimestamp={formatPostTimestamp}
-                        />
-                      ))}
-                    </CardContent>
+                    {!isFeaturedMinimized && (
+                      <CardContent className="space-y-3 sm:space-y-4">
+                        {featuredPosts.map((post) => (
+                          <PostCard
+                            key={post.id}
+                            post={post}
+                            onSelect={setSelectedPost}
+                            onLike={handleLikePost}
+                            navigate={navigate}
+                            formatPostTimestamp={formatPostTimestamp}
+                          />
+                        ))}
+                      </CardContent>
+                    )}
                   </Card>
                 );
               })()}
@@ -1569,7 +1697,34 @@ export function CommunitySection() {
             </TabsContent>
 
             {/* Chat Tab */}
-            <TabsContent value="chat">
+            <TabsContent value="chat" className="space-y-4">
+              {/* Real-time Info Banner */}
+              <Card className={chatDatabaseConfigured 
+                ? "bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200"
+                : "bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200"
+              }>
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    {chatDatabaseConfigured ? (
+                      <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <p className="text-sm text-gray-900 mb-1">
+                        <strong>{chatDatabaseConfigured ? "Real-Time Chat Enabled" : "Demo Mode"}</strong>
+                      </p>
+                      <p className="text-xs text-gray-700">
+                        {chatDatabaseConfigured 
+                          ? "Messages appear instantly across all connected devices. Your conversations are synchronized in real-time using Supabase."
+                          : "Showing starter messages only. To enable real-time chat, set up the database table using the instructions in /supabase/migrations/."
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="h-[600px] flex flex-col shadow-lg">
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
@@ -1589,40 +1744,59 @@ export function CommunitySection() {
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col p-0">
                   <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
-                    {chatMessages.map((msg) => (
-                      <div key={msg.id} className="flex gap-3">
-                        <Avatar className="h-8 w-8 flex-shrink-0">
-                          <AvatarFallback className={`${
-                            msg.userId === user?.id
-                              ? "bg-teal-100 text-teal-700" 
-                              : "bg-purple-100 text-purple-700"
-                          }`}>
-                            {msg.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <button
-                              onClick={() => navigate(`/user/${msg.userId}`)}
-                              className={`text-sm hover:underline ${
-                                msg.userId === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
-                              }`}
-                            >
-                              {msg.author}
-                            </button>
-                            <span className="text-xs text-gray-500">
-                              {formatTimestamp(msg.timestamp)}
-                            </span>
-                          </div>
-                          <p className={`text-sm text-gray-700 rounded-lg p-3 ${
-                            msg.userId === user?.id ? "bg-teal-100" : "bg-white"
-                          }`}>
-                            {msg.content}
-                          </p>
+                    {chatLoading ? (
+                      <div className="flex items-center justify-center h-full">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-2"></div>
+                          <p className="text-sm text-gray-600">Loading messages...</p>
                         </div>
                       </div>
-                    ))}
-                    <div ref={chatEndRef} />
+                    ) : chatMessages.length === 0 ? (
+                      <div className="flex items-center justify-center h-full">
+                        <div className="text-center">
+                          <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                          <p className="text-sm text-gray-600">No messages yet</p>
+                          <p className="text-xs text-gray-500 mt-1">Be the first to start the conversation!</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {chatMessages.map((msg) => (
+                          <div key={msg.id} className="flex gap-3 animate-in fade-in duration-300">
+                            <Avatar className="h-8 w-8 flex-shrink-0">
+                              <AvatarFallback className={`${
+                                msg.user_id === user?.id
+                                  ? "bg-teal-100 text-teal-700" 
+                                  : "bg-purple-100 text-purple-700"
+                              }`}>
+                                {msg.avatar}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <button
+                                  onClick={() => msg.user_id !== 'system' && navigate(`/user/${msg.user_id}`)}
+                                  className={`text-sm ${msg.user_id !== 'system' ? 'hover:underline' : ''} ${
+                                    msg.user_id === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
+                                  }`}
+                                >
+                                  {msg.author}
+                                </button>
+                                <span className="text-xs text-gray-500">
+                                  {formatTimestamp(new Date(msg.created_at))}
+                                </span>
+                              </div>
+                              <p className={`text-sm text-gray-700 rounded-lg p-3 ${
+                                msg.user_id === user?.id ? "bg-teal-100" : "bg-white"
+                              }`}>
+                                {msg.content}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                      </>
+                    )}
                   </div>
 
                   <div className="p-4 border-t bg-white">

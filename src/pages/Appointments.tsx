@@ -28,7 +28,7 @@ import {
   Globe,
   Mail
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 import { PageTransition } from "../components/PageTransition";
 import { therapists, timeSlots, Therapist } from "../data/therapists";
 import { useAuth } from "../contexts/AuthContext";
@@ -400,42 +400,60 @@ export function Appointments() {
             </div>
 
             {/* Progress Indicator */}
-            <div className="mb-8 max-w-4xl mx-auto">
-              <div className="flex items-center justify-between">
-                {[
-                  { num: 1, label: "Date" },
-                  { num: 2, label: "Navigator" },
-                  { num: 3, label: "Time" },
-                  { num: 4, label: "Payment" },
-                ].map((step, index) => (
-                  <div key={step.num} className="flex items-center flex-1">
-                    <div className="flex flex-col items-center flex-1">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                          currentStep >= step.num
-                            ? "bg-teal-600 text-white"
-                            : "bg-gray-200 text-gray-500"
-                        }`}
-                      >
-                        {currentStep > step.num ? (
-                          <CheckCircle2 className="h-6 w-6" />
-                        ) : (
-                          step.num
-                        )}
-                      </div>
-                      <span className="text-xs mt-2 text-gray-600">{step.label}</span>
-                    </div>
-                    {index < 3 && (
-                      <div
-                        className={`h-1 flex-1 transition-all ${
-                          currentStep > step.num ? "bg-teal-600" : "bg-gray-200"
-                        }`}
-                      ></div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+<div className="mb-12 max-w-4xl mx-auto">
+  <div className="flex items-center justify-between">
+    {[
+      { num: 1, label: "Date" },
+      { num: 2, label: "Navigator" },
+      { num: 3, label: "Time" },
+      { num: 4, label: "Payment" },
+    ].map((step, index) => (
+      <div
+        key={step.num}
+        className="relative flex items-center flex-1 last:flex-none"
+      >
+        {/* Step Circle and Label */}
+        <div className="flex flex-col items-center z-10">
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-medium transition-all duration-300 shadow-md ${
+              currentStep >= step.num
+                ? "bg-teal-600 text-white"
+                : "bg-gray-300 text-gray-600"
+            }`}
+          >
+            {currentStep > step.num ? (
+              <CheckCircle2 className="h-7 w-7" />
+            ) : (
+              step.num
+            )}
+          </div>
+          <span className="mt-3 text-sm font-medium text-gray-700">
+            {step.label}
+          </span>
+        </div>
+
+        {/* Connecting Line */}
+        {index < 3 && (
+          <div className="absolute top-6 left-12 right-0 h-1 -z-10">
+            <div
+              className="h-full transition-all duration-500"
+              style={{
+                backgroundColor:
+                  currentStep > step.num ? "#0d9488" : "#d1d5db",
+                width:
+                  currentStep > step.num
+                    ? "100%" // previous steps fully filled
+                    : currentStep === step.num
+                    ? "50%" // optional partial fill for active step
+                    : "0%", // future steps empty
+              }}
+            />
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
 
             {/* Step Content */}
             <div className="max-w-4xl mx-auto mb-12">

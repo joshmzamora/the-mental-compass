@@ -35,26 +35,27 @@ export function Header() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
+        <div className="flex h-16 items-center justify-between gap-2">
+          <Link to="/" className="flex items-center gap-2 group min-w-0 flex-shrink">
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="flex-shrink-0"
             >
-              <Compass className="h-8 w-8 text-teal-600 group-hover:text-teal-700 transition-colors" />
+              <Compass className="h-7 w-7 sm:h-8 sm:w-8 text-teal-600 group-hover:text-teal-700 transition-colors" />
             </motion.div>
-            <div className="flex flex-col">
-              <span className="text-xl text-teal-900 group-hover:text-teal-700 transition-colors">
+            <div className="flex flex-col min-w-0">
+              <span className="text-base sm:text-xl text-teal-900 group-hover:text-teal-700 transition-colors truncate">
                 The Mental Compass
               </span>
-              <span className="text-xs text-gray-500 hidden sm:block">
+              <span className="text-xs text-gray-500 hidden lg:block">
                 Navigate Your Mental Wellness
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 flex-shrink-0">
             <Link to="/" className={navLinkClass("/")}>
               Home
               {isActive("/") && (

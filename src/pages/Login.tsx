@@ -8,7 +8,7 @@ import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { PageTransition } from "../components/PageTransition";
 import { useAuth } from "../contexts/AuthContext";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 export function Login() {
   const navigate = useNavigate();

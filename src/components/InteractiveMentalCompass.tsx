@@ -18,6 +18,20 @@ interface CompassPointExtended extends CompassPoint {
   features: string[];
 }
 
+// Linear interpolation helper
+const lerp = (start: number, end: number, factor: number) => {
+  return start + (end - start) * factor;
+};
+
+// Normalize angle difference to shortest path
+const normalizeAngleDiff = (current: number, target: number) => {
+  let diff = target - current;
+  // Normalize to -180 to 180 range
+  while (diff > 180) diff -= 360;
+  while (diff < -180) diff += 360;
+  return diff;
+};
+
 const compassPoints: CompassPointExtended[] = [
   {
     id: "clarity",
@@ -72,11 +86,46 @@ export function InteractiveMentalCompass() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const compassRef = useRef<HTMLDivElement>(null);
+  const targetAngleRef = useRef(0);
+  const currentAngleRef = useRef(0);
+  const animationFrameRef = useRef<number>();
+
+  // Smooth needle animation using requestAnimationFrame
+  useEffect(() => {
+    const animate = () => {
+      const diff = normalizeAngleDiff(currentAngleRef.current, targetAngleRef.current);
+      
+      if (Math.abs(diff) > 0.1) {
+        // Smooth interpolation - add the normalized difference
+        currentAngleRef.current = currentAngleRef.current + diff * 0.12;
+        
+        // Normalize to 0-360 range without snapping
+        if (currentAngleRef.current >= 360) currentAngleRef.current -= 360;
+        if (currentAngleRef.current < 0) currentAngleRef.current += 360;
+        
+        setNeedleAngle(currentAngleRef.current);
+      } else {
+        currentAngleRef.current = targetAngleRef.current;
+        setNeedleAngle(targetAngleRef.current);
+      }
+      
+      // Always continue the animation loop
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   // Track mouse movement for needle (disabled when hovering over a point)
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!compassRef.current || isAnimating || hoveredPoint) return;
+      if (!compassRef.current || hoveredPoint) return;
       
       const rect = compassRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -90,7 +139,7 @@ export function InteractiveMentalCompass() {
       // Normalize angle to 0-360 range
       angle = ((angle % 360) + 360) % 360;
       
-      setNeedleAngle(angle);
+      targetAngleRef.current = angle;
       setIsDragging(true);
     };
 
@@ -104,12 +153,12 @@ export function InteractiveMentalCompass() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseStop);
     };
-  }, [isAnimating, hoveredPoint]);
+  }, [hoveredPoint]);
 
   const handlePointClick = (point: CompassPoint) => {
     setIsAnimating(true);
     // Animate needle to point
-    setNeedleAngle(point.angle);
+    targetAngleRef.current = point.angle;
     // Navigate after a brief animation
     setTimeout(() => {
       navigate(point.route);
@@ -120,7 +169,7 @@ export function InteractiveMentalCompass() {
     setHoveredPoint(point?.id || null);
     // Rotate compass needle to point at hovered direction
     if (point) {
-      setNeedleAngle(point.angle);
+      targetAngleRef.current = point.angle;
       setIsAnimating(true);
       // Reset animation flag after transition
       setTimeout(() => setIsAnimating(false), 300);
@@ -128,7 +177,7 @@ export function InteractiveMentalCompass() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
+    <section className="py-12 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500 rounded-full blur-3xl"></div>
@@ -136,10 +185,10 @@ export function InteractiveMentalCompass() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <Compass className="h-8 w-8 text-teal-600 mr-3" />
-            <h2 className="text-3xl md:text-4xl text-gray-900">
+        <div className="text-center mb-6 md:mb-8">
+          <div className="flex items-center justify-center mb-3 gap-2">
+            <Compass className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-teal-600 flex-shrink-0" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900">
               Navigate Your Mental Health Journey
             </h2>
           </div>
@@ -149,14 +198,14 @@ export function InteractiveMentalCompass() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4">
-          <div className="relative py-12 md:py-16">
+          <div className="relative py-6 md:py-8">
             {/* Main Container for Compass and Info Card */}
-            <div className="hidden md:flex items-center justify-center gap-12">
+            <div className="hidden md:flex items-center justify-center gap-8">
               {/* Main Compass Container - Hidden on Mobile */}
               <div 
                 ref={compassRef}
                 className="relative flex-shrink-0" 
-                style={{ width: "700px", height: "700px" }}
+                style={{ width: "500px", height: "500px" }}
               >
               {/* Outer Circle with Glow */}
               <div className="absolute inset-0 rounded-full border-8 border-teal-600/20 bg-white shadow-2xl">
@@ -164,7 +213,7 @@ export function InteractiveMentalCompass() {
               </div>
 
               {/* Inner Circle Background */}
-              <div className="absolute inset-10 rounded-full border-4 border-teal-600/10 bg-gradient-to-br from-teal-50 to-blue-50"></div>
+              <div className="absolute inset-8 rounded-full border-3 border-teal-600/10 bg-gradient-to-br from-teal-50 to-blue-50"></div>
 
               {/* Compass Rose Background */}
               <div className="absolute inset-0 flex items-center justify-center">
@@ -179,27 +228,27 @@ export function InteractiveMentalCompass() {
 
               {/* Compass Needle (Follows Cursor or Points to Hovered Direction) */}
               <div 
-                className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300 ease-out`}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 style={{ transform: `rotate(${needleAngle}deg)` }}
               >
                 <div className="relative">
                   {/* Needle pointing up - Red with enhanced shadow */}
-                  <div className="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-b-[180px] border-b-red-600 drop-shadow-lg" 
-                    style={{ filter: "drop-shadow(0 6px 8px rgba(220, 38, 38, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))" }}
+                  <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[130px] border-b-red-600 drop-shadow-lg" 
+                    style={{ filter: "drop-shadow(0 4px 6px rgba(220, 38, 38, 0.4)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3))" }}
                   ></div>
                   {/* Needle pointing down - Gray */}
-                  <div className="absolute top-[180px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[90px] border-t-gray-400 opacity-80"></div>
+                  <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[65px] border-t-gray-400 opacity-80"></div>
                 </div>
               </div>
 
               {/* Center Hub with Pulsing Effect - Now Interactive */}
               <button
                 onClick={() => navigate("/onboarding")}
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-gradient-to-br from-teal-600 to-blue-700 shadow-2xl flex items-center justify-center border-4 border-white z-10 hover:scale-110 transition-transform duration-300 group cursor-pointer"
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-br from-teal-600 to-blue-700 shadow-2xl flex items-center justify-center border-4 border-white z-10 hover:scale-110 transition-transform duration-300 group cursor-pointer"
                 title="Find Your Bearing"
               >
                 <div className="absolute inset-0 rounded-full bg-teal-400 animate-ping opacity-20 group-hover:opacity-40"></div>
-                <Compass className="h-14 w-14 text-white relative z-10 group-hover:rotate-180 transition-transform duration-500" />
+                <Compass className="h-10 w-10 text-white relative z-10 group-hover:rotate-180 transition-transform duration-500" />
               </button>
 
               {/* Compass Points (N, E, S, W) */}
@@ -211,13 +260,13 @@ export function InteractiveMentalCompass() {
                 let iconPositionClasses = "";
                 
                 if (point.angle === 0) { // North
-                  iconPositionClasses = "top-[-40px] left-1/2 -translate-x-1/2";
+                  iconPositionClasses = "top-[-30px] left-1/2 -translate-x-1/2";
                 } else if (point.angle === 90) { // East
-                  iconPositionClasses = "top-1/2 right-[-40px] -translate-y-1/2";
+                  iconPositionClasses = "top-1/2 right-[-30px] -translate-y-1/2";
                 } else if (point.angle === 180) { // South
-                  iconPositionClasses = "bottom-[-40px] left-1/2 -translate-x-1/2";
+                  iconPositionClasses = "bottom-[-30px] left-1/2 -translate-x-1/2";
                 } else { // West
-                  iconPositionClasses = "top-1/2 left-[-40px] -translate-y-1/2";
+                  iconPositionClasses = "top-1/2 left-[-30px] -translate-y-1/2";
                 }
 
                 return (
@@ -233,14 +282,14 @@ export function InteractiveMentalCompass() {
                         }`}
                       >
                         <div
-                          className={`w-28 h-28 rounded-full bg-gradient-to-br ${point.color} shadow-lg flex items-center justify-center transform transition-all duration-300 relative ${
+                          className={`w-20 h-20 rounded-full bg-gradient-to-br ${point.color} shadow-lg flex items-center justify-center transform transition-all duration-300 relative ${
                             isHovered ? "shadow-2xl scale-110 ring-4 ring-white" : ""
                           }`}
                         >
                           {isHovered && (
                             <div className="absolute inset-0 rounded-full bg-white animate-ping opacity-30 z-0"></div>
                           )}
-                          <Icon className="h-14 w-14 text-white relative z-10" />
+                          <Icon className="h-10 w-10 text-white relative z-10" />
                         </div>
                       </button>
                     </div>
@@ -249,7 +298,7 @@ export function InteractiveMentalCompass() {
               })}
 
               {/* Degree Markers */}
-              <div className="absolute inset-12 rounded-full">
+              <div className="absolute inset-9 rounded-full">
                 {[...Array(36)].map((_, i) => {
                   const angle = i * 10;
                   const isCardinal = angle % 90 === 0;
@@ -275,7 +324,7 @@ export function InteractiveMentalCompass() {
               </div>
 
               {/* Clean White Information Card - Right Side of Compass */}
-              <div className="flex-shrink-0" style={{ width: "400px", height: "700px" }}>
+              <div className="flex-shrink-0" style={{ width: "400px", height: "500px" }}>
                 <div className="h-full flex items-center relative">
                   {/* Placeholder when no direction is hovered */}
                   <div 
@@ -416,8 +465,8 @@ export function InteractiveMentalCompass() {
           </div>
         </div>
 
-        {/* Bottom CTA - Increased spacing */}
-        <div className="text-center mt-16 md:mt-20 px-4">
+        {/* Bottom CTA - Reduced spacing */}
+        <div className="text-center mt-8 md:mt-12 px-4">
           <p className="text-gray-600 mb-4 text-sm md:text-base">
             Not sure where to start? Take our personalized assessment.
           </p>

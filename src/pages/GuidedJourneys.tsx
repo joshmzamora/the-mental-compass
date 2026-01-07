@@ -33,7 +33,7 @@ import { StepEngagementGate } from "../components/StepEngagementGate";
 import { guidedJourneys, getJourneyById, getRecommendedJourneys, type JourneyStep, type GuidedJourney } from "../data/guided-journeys";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 export function GuidedJourneys() {
   const { user } = useAuth();

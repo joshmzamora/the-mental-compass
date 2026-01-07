@@ -23,6 +23,8 @@ import { CommunityGuidelines } from "./pages/CommunityGuidelines";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { TermsOfService } from "./pages/TermsOfService";
 import { Contact } from "./pages/Contact";
+import { Accessibility } from "./pages/Accessibility";
+import { Team } from "./pages/Team";
 
 export default function App() {
   return (
@@ -43,6 +45,8 @@ export default function App() {
                 <Route path="/user/:userId" element={<UserProfile />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
+                <Route path="/accessibility" element={<Accessibility />} />
+                <Route path="/team" element={<Team />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/journeys" element={<GuidedJourneys />} />

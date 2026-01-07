@@ -168,6 +168,12 @@ export function Footer() {
               <Link to="/terms-of-service" className="hover:text-teal-400 transition-colors">
                 Terms of Service
               </Link>
+              <Link to="/accessibility" className="hover:text-teal-400 transition-colors">
+                Accessibility
+              </Link>
+              <Link to="/team" className="hover:text-teal-400 transition-colors">
+                Team
+              </Link>
               <Link to="/contact" className="hover:text-teal-400 transition-colors">
                 Contact Us
               </Link>

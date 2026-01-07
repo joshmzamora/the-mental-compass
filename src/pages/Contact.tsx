@@ -7,7 +7,7 @@ import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
