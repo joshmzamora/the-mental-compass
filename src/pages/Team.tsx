@@ -9,8 +9,10 @@ import {
   Database,
   Linkedin,
   Mail,
-  Heart
+  Heart,
+  Award
 } from "lucide-react";
+import bpaLogo from "./bpalogocolor.png";
 
 export function Team() {
   const teamMembers = [
@@ -72,16 +74,42 @@ export function Team() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-20">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-12 sm:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
+            {/* BPA Competition Banner */}
+            <Card className="shadow-xl bg-white border-2 border-blue-200 mb-12">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src={bpaLogo} 
+                      alt="Business Professionals of America" 
+                      className="h-16 sm:h-20 w-auto"
+                    />
+                  </div>
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                      <Award className="h-5 w-5 text-blue-600" />
+                      <h3 className="text-lg sm:text-xl text-gray-900">
+                        BPA Web Design Competition
+                      </h3>
+                    </div>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                      We are part of the <strong>02-1105 Barbers Hill High School Chapter 1</strong> in Mont Belvieu, Texas during the <strong>2025-2026 school year</strong>.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
             {/* Header */}
-            <div className="text-center mb-16">
-              <Users className="h-16 w-16 text-teal-600 mx-auto mb-4" />
-              <h1 className="text-4xl md:text-5xl text-gray-900 mb-4">
+            <div className="text-center mb-12 sm:mb-16">
+              <Users className="h-12 w-12 sm:h-16 sm:w-16 text-teal-600 mx-auto mb-4" />
+              <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 mb-4">
                 Meet Our Team
               </h1>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
                 We're a passionate team dedicated to making mental health resources accessible, 
                 supportive, and stigma-free for everyone who needs them.
               </p>
