@@ -307,7 +307,7 @@ export function DisordersSection() {
                       </h3>
                     </div>
                   </div>
-                  <CardContent className="p-4 md:p-5 pt-2 md:pt-3">
+                  <CardContent className="-mt-4 p-2 md:p-3 pt-2 md:pt-3">
                     <p className="text-gray-700 text-sm line-clamp-3 mb-3 md:mb-4">
                       {disorder.description}
                     </p>

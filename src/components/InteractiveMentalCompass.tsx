@@ -177,7 +177,7 @@ export function InteractiveMentalCompass() {
   };
 
   return (
-    <section className="py-12 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
+    <section className="py-16 lg:py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden min-h-screen flex items-center">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500 rounded-full blur-3xl"></div>
@@ -185,7 +185,7 @@ export function InteractiveMentalCompass() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-6 md:mb-8">
+        <div className="text-center mb-8 lg:mb-12">
           <div className="flex items-center justify-center mb-3 gap-2">
             <Compass className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-teal-600 flex-shrink-0" />
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900">

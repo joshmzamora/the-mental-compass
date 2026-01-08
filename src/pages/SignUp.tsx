@@ -36,6 +36,7 @@ export function SignUp() {
 
     try {
       await signup(email, password, name);
+      localStorage.setItem("force_onboarding", "true");
       toast.success("Account created successfully! Let's set your compass bearing.");
       navigate("/onboarding");
     } catch (err: any) {

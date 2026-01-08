@@ -5,18 +5,18 @@ import { motion } from "motion/react";
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-12 sm:py-20 md:py-32 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-16 lg:py-24 overflow-hidden min-h-screen flex items-center">
       {/* Animated compass background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-10 right-10 text-teal-200 opacity-20"
+          className="absolute top-10 right-10 text-teal-200 opacity-20 hidden lg:block"
           animate={{ rotate: 360 }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         >
           <Compass className="h-64 w-64" />
         </motion.div>
         <motion.div
-          className="absolute bottom-10 left-10 text-blue-200 opacity-20"
+          className="absolute bottom-10 left-10 text-blue-200 opacity-20 hidden lg:block"
           animate={{ rotate: -360 }}
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         >
