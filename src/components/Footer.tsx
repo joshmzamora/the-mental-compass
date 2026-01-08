@@ -1,7 +1,6 @@
 import { Compass, Facebook, Twitter, Instagram, Mail, Navigation, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import bpaLogo from "figma:asset/522f2b00fafd8f50990eb357a9cd4f0971f294ec.png";
 
 export function Footer() {
   return (
@@ -9,14 +8,14 @@ export function Footer() {
       {/* Compass background elements */}
       <div className="absolute inset-0 overflow-hidden opacity-5">
         <motion.div
-          className="absolute top-10 right-20 text-teal-400 hidden sm:block"
+          className="absolute top-10 right-20 text-teal-400"
           animate={{ rotate: 360 }}
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         >
           <Compass className="h-32 w-32" />
         </motion.div>
         <motion.div
-          className="absolute bottom-10 left-20 text-blue-400 hidden sm:block"
+          className="absolute bottom-10 left-20 text-blue-400"
           animate={{ rotate: -360 }}
           transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
         >
@@ -181,27 +180,11 @@ export function Footer() {
             </div>
           </div>
           <div className="mt-6 p-4 bg-red-900/20 border border-red-800/30 rounded-lg">
-            <p className="text-sm text-center text-red-200 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
-              <span className="flex items-center gap-2 mb-1 sm:mb-0">
-                <span className="text-red-400">⚠</span>
-                If you are in crisis or need immediate help, please call
-              </span>
-              <span className="flex items-center gap-2">
-                <strong className="text-red-300">988</strong>(Suicide & Crisis Lifeline) or
-                <strong className="text-red-300">911</strong>.
-              </span>
-            </p>
-          </div>
-          
-          {/* BPA Logo Section */}
-          <div className="mt-6 flex flex-col items-center gap-3">
-            <img 
-              src={bpaLogo} 
-              alt="Business Professionals of America" 
-              className="h-12 sm:h-16 w-auto opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <p className="text-xs text-gray-400 text-center">
-              Proudly created for the BPA Web Design Competition
+            <p className="text-sm text-center text-red-200 flex items-center justify-center gap-2">
+              <span className="text-red-400">⚠</span>
+              If you are in crisis or need immediate help, please call{" "}
+              <strong className="text-red-300">988</strong> (Suicide & Crisis Lifeline) or{" "}
+              <strong className="text-red-300">911</strong>.
             </p>
           </div>
         </div>
