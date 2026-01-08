@@ -238,27 +238,6 @@ export function CommunitySection() {
     };
   }, []);
 
-  // Load local messages from localStorage on mount
-  useEffect(() => {
-    const savedLocalMessages = localStorage.getItem('local_chat_messages');
-    if (savedLocalMessages) {
-      try {
-        const parsed = JSON.parse(savedLocalMessages);
-        setRealTimeChatMessages(prev => [...prev, ...parsed]);
-      } catch (error) {
-        console.error('Error loading local messages:', error);
-      }
-    }
-  }, []);
-
-  // Save local messages to localStorage whenever they change
-  useEffect(() => {
-    const localMessages = realTimeChatMessages.filter(msg => msg.id.startsWith('local-'));
-    if (localMessages.length > 0) {
-      localStorage.setItem('local_chat_messages', JSON.stringify(localMessages));
-    }
-  }, [realTimeChatMessages]);
-
   // Combine starter messages with real-time messages
   useEffect(() => {
     // Show starter messages first, then real user messages
@@ -266,12 +245,10 @@ export function CommunitySection() {
     setChatMessages(combinedMessages);
   }, [realTimeChatMessages]);
 
-  // Auto-scroll chat to bottom only on initial load
+  // Auto-scroll chat to bottom
   useEffect(() => {
-    if (chatMessages.length > 0 && chatMessages.length <= initialChatMessages.length + 1) {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chatMessages.length]);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
   // Filter and prioritize posts
   useEffect(() => {
@@ -450,7 +427,6 @@ export function CommunitySection() {
 
       if (error) {
         // Silently handle all database errors - chat is optional
-        console.log('Live chat database not configured yet - using local mode');
         setChatDatabaseConfigured(false);
         setChatLoading(false);
         return;
@@ -459,7 +435,6 @@ export function CommunitySection() {
       if (data) {
         setRealTimeChatMessages(data);
         setChatDatabaseConfigured(true);
-        console.log('✓ Live chat database connected - real-time mode enabled');
       }
       setChatLoading(false);
     } catch (error: any) {
@@ -910,41 +885,15 @@ export function CommunitySection() {
         avatar: (user.email?.charAt(0) || "Y").toUpperCase()
       };
 
-      // If database is not configured, use local mode immediately
-      if (!chatDatabaseConfigured) {
-        const localMessage: ChatMessage = {
-          id: `local-${Date.now()}`,
-          ...newMessage,
-          created_at: new Date().toISOString()
-        };
-        setRealTimeChatMessages(prev => [...prev, localMessage]);
-        setMessage("");
-        toast.success("Message sent!");
-        return;
-      }
-
       try {
         const { error } = await supabase
           .from('live_chat_messages')
           .insert([newMessage]);
 
         if (error) {
-          // Handle specific error cases - switch to local mode
-          if (error.code === 'PGRST205' || error.code === 'PGRST116' || 
-              error.message.includes('relation') || 
-              error.message.includes('does not exist') ||
-              error.message.includes('schema cache')) {
-            console.log('Switching to local mode - database table not found');
-            setChatDatabaseConfigured(false);
-            // Add message locally
-            const localMessage: ChatMessage = {
-              id: `local-${Date.now()}`,
-              ...newMessage,
-              created_at: new Date().toISOString()
-            };
-            setRealTimeChatMessages(prev => [...prev, localMessage]);
-            setMessage("");
-            toast.success("Message sent!");
+          // Handle specific error cases
+          if (error.code === 'PGRST116' || error.message.includes('relation') || error.message.includes('does not exist')) {
+            toast.error("Chat is not yet configured. Please check the database setup instructions.");
           } else {
             console.error('Error sending message:', error);
             toast.error("Failed to send message. Please try again.");
@@ -955,16 +904,13 @@ export function CommunitySection() {
         setMessage("");
         toast.success("Message sent!");
       } catch (error: any) {
-        // Handle network errors - add message locally as fallback
-        console.log('Network error, using local mode:', error);
-        const localMessage: ChatMessage = {
-          id: `local-${Date.now()}`,
-          ...newMessage,
-          created_at: new Date().toISOString()
-        };
-        setRealTimeChatMessages(prev => [...prev, localMessage]);
-        setMessage("");
-        toast.success("Message sent!");
+        // Handle network errors
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+          toast.error("Network unavailable. Please check your connection.");
+        } else {
+          console.error('Error sending message:', error);
+          toast.error("Failed to send message. Please try again.");
+        }
       }
     }
   };
@@ -1753,16 +1699,26 @@ export function CommunitySection() {
             {/* Chat Tab */}
             <TabsContent value="chat" className="space-y-4">
               {/* Real-time Info Banner */}
-              <Card className="bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200">
+              <Card className={chatDatabaseConfigured 
+                ? "bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200"
+                : "bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200"
+              }>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    {chatDatabaseConfigured ? (
+                      <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    )}
                     <div>
                       <p className="text-sm text-gray-900 mb-1">
-                        <strong>Real-Time Chat Enabled</strong>
+                        <strong>{chatDatabaseConfigured ? "Real-Time Chat Enabled" : "Demo Mode"}</strong>
                       </p>
                       <p className="text-xs text-gray-700">
-                        Messages appear instantly across all connected devices. Your conversations are synchronized in real-time.
+                        {chatDatabaseConfigured 
+                          ? "Messages appear instantly across all connected devices. Your conversations are synchronized in real-time using Supabase."
+                          : "Showing starter messages only. To enable real-time chat, set up the database table using the instructions in /supabase/migrations/."
+                        }
                       </p>
                     </div>
                   </div>

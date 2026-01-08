@@ -198,14 +198,11 @@ export function Dashboard() {
   }, [user, profile, loading]);
 
   useEffect(() => {
-    // Only redirect to onboarding if explicitly needed (not on every login)
-    // User can manually choose to take/retake assessment from dashboard
+    // Check if profile is loaded but has no compass bearing
     const hasCompletedOnboarding = localStorage.getItem("onboarding_completed") === "true";
-    const shouldForceOnboarding = localStorage.getItem("force_onboarding") === "true";
 
-    if (!loading && profile && !profile.compassBearing && !hasCompletedOnboarding && shouldForceOnboarding) {
+    if (!loading && profile && !profile.compassBearing && !hasCompletedOnboarding) {
       navigate("/onboarding");
-      localStorage.removeItem("force_onboarding");
     }
   }, [loading, profile, navigate]);
 

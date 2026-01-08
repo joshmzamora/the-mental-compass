@@ -9,13 +9,13 @@ export function FeaturedNavigators() {
   const featuredTherapists = therapists.slice(0, 4);
 
   return (
-    <section className="py-16 lg:py-20 bg-white relative overflow-hidden min-h-screen flex items-center">
+    <section className="py-20 bg-white relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 text-teal-600 hidden lg:block">
+        <div className="absolute top-10 left-10 text-teal-600">
           <Compass className="h-32 w-32" />
         </div>
-        <div className="absolute bottom-10 right-10 text-purple-600 hidden lg:block">
+        <div className="absolute bottom-10 right-10 text-purple-600">
           <Compass className="h-32 w-32" />
         </div>
       </div>
@@ -26,15 +26,15 @@ export function FeaturedNavigators() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16"
+          className="text-center mb-12"
         >
           <div className="flex items-center justify-center mb-4">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-teal-400 mr-3"></div>
             <Compass className="h-8 w-8 text-teal-600" />
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-teal-400 ml-3"></div>
           </div>
-          <h2 className="text-gray-900 mb-4 text-3xl lg:text-4xl">Featured Navigators</h2>
-          <p className="text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-gray-900 mb-4">Featured Navigators</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Meet our experienced mental health professionals ready to guide you on your journey
           </p>
         </motion.div>

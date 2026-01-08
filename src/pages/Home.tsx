@@ -3,6 +3,7 @@ import { PageTransition } from "../components/PageTransition";
 import { InteractiveMentalCompass } from "../components/InteractiveMentalCompass";
 import { FeaturedNavigators } from "../components/FeaturedNavigators";
 import { CompassInAction } from "../components/CompassInAction";
+import { FinalCTA } from "../components/FinalCTA";
 
 export function Home() {
   return (
@@ -11,6 +12,7 @@ export function Home() {
       <InteractiveMentalCompass />
       <FeaturedNavigators />
       <CompassInAction />
+      <FinalCTA />
     </PageTransition>
   );
 }

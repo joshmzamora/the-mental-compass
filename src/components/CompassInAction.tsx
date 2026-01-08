@@ -35,34 +35,17 @@ export function CompassInAction() {
   ];
 
   return (
-    <section className="py-16 lg:py-20 bg-gradient-to-br from-teal-600 via-blue-600 to-purple-600 relative overflow-hidden min-h-screen flex items-center">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-10 right-20 text-white/10 hidden lg:block"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        >
-          <Compass className="h-64 w-64" />
-        </motion.div>
-        <motion.div
-          className="absolute bottom-10 left-20 text-white/10 hidden lg:block"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-        >
-          <Compass className="h-48 w-48" />
-        </motion.div>
-        
-        {/* Grid pattern overlay */}
-        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="compassGrid" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 40 80 M 0 40 L 80 40" stroke="white" strokeWidth="0.5" opacity="0.1" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#compassGrid)" />
-        </svg>
-      </div>
+    <section className="py-20 bg-white relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 via-transparent to-purple-50/50"></div>
+      
+      <motion.div
+        className="absolute top-20 right-20 text-teal-200 opacity-20"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      >
+        <Compass className="h-48 w-48" />
+      </motion.div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -70,23 +53,20 @@ export function CompassInAction() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16"
+          className="text-center mb-16"
         >
           <div className="flex items-center justify-center mb-4">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Sparkles className="h-10 w-10 lg:h-12 lg:w-12 text-yellow-300" />
-            </motion.div>
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-teal-400 mr-3"></div>
+            <Sparkles className="h-8 w-8 text-teal-600" />
+            <div className="h-px w-12 bg-gradient-to-l from-transparent to-teal-400 ml-3"></div>
           </div>
-          <h2 className="text-white mb-4 text-3xl lg:text-4xl">The Compass in Action</h2>
-          <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
+          <h2 className="text-gray-900 mb-4">The Compass in Action</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Your personalized path to mental wellness in three simple steps
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -98,15 +78,18 @@ export function CompassInAction() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="relative group"
               >
-                <div className="bg-white rounded-xl p-6 lg:p-8 shadow-xl hover:shadow-2xl transition-all h-full flex flex-col">
+                <div className="bg-white rounded-lg p-8 shadow-sm hover:shadow-xl transition-all border border-gray-200 hover:border-transparent h-full flex flex-col">
+                  {/* Gradient border on hover */}
+                  <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity -z-10 blur-sm`}></div>
+                  
                   {/* Icon */}
-                  <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 lg:mb-6`}>
-                    <Icon className="h-7 w-7 lg:h-8 lg:w-8 text-white" />
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6`}>
+                    <Icon className="h-8 w-8 text-white" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-gray-900 mb-3 text-xl lg:text-2xl">{feature.title}</h3>
-                  <p className="text-gray-600 mb-6 flex-grow text-sm lg:text-base">
+                  <h3 className="text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">
                     {feature.description}
                   </p>
 
@@ -126,8 +109,8 @@ export function CompassInAction() {
                 </div>
 
                 {/* Step number */}
-                <div className="absolute -top-3 -right-3 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white border-2 border-yellow-300 flex items-center justify-center shadow-lg">
-                  <span className="text-gray-700 font-semibold">{index + 1}</span>
+                <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-gradient-to-br from-white to-gray-100 border-2 border-gray-200 flex items-center justify-center shadow-lg">
+                  <span className="text-gray-700">{index + 1}</span>
                 </div>
               </motion.div>
             );
