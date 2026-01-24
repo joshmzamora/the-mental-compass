@@ -135,7 +135,7 @@ export function AppointmentSection() {
   return (
     <section id="appointment" className="py-20 bg-white relative overflow-hidden">
       <CompassDecoration variant="light" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           {!user && (
@@ -161,7 +161,7 @@ export function AppointmentSection() {
               </div>
             </div>
           )}
-          
+
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-4">
               <CalendarIcon className="h-8 w-8 text-teal-600 mr-3" />
@@ -190,10 +190,10 @@ export function AppointmentSection() {
                 </div>
                 <p className="text-xs sm:text-sm mt-2 text-center text-gray-600">Date</p>
               </div>
-              
+
               {/* Line 1-2 */}
               <div className={`h-1 flex-1 mx-2 sm:mx-4 ${date ? 'bg-teal-600' : 'bg-gray-300'} transition-colors`}></div>
-              
+
               {/* Step 2 */}
               <div className="flex flex-col items-center z-10 flex-1">
                 <div className={`flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full ${selectedTherapist ? 'bg-teal-600' : 'bg-gray-300'} text-white transition-colors`}>
@@ -201,10 +201,10 @@ export function AppointmentSection() {
                 </div>
                 <p className="text-xs sm:text-sm mt-2 text-center text-gray-600">Navigator</p>
               </div>
-              
+
               {/* Line 2-3 */}
               <div className={`h-1 flex-1 mx-2 sm:mx-4 ${selectedTherapist ? 'bg-teal-600' : 'bg-gray-300'} transition-colors`}></div>
-              
+
               {/* Step 3 */}
               <div className="flex flex-col items-center z-10 flex-1">
                 <div className={`flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full ${selectedTime ? 'bg-teal-600' : 'bg-gray-300'} text-white transition-colors`}>
@@ -272,11 +272,10 @@ export function AppointmentSection() {
                       <div
                         key={therapist.id}
                         onClick={() => setSelectedTherapist(therapist)}
-                        className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${
-                          selectedTherapist?.id === therapist.id
+                        className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${selectedTherapist?.id === therapist.id
                             ? "border-teal-600 bg-teal-50"
                             : "border-gray-200 hover:border-teal-300"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-start gap-3">
                           <Avatar className="h-12 w-12">
@@ -330,13 +329,12 @@ export function AppointmentSection() {
                           key={time}
                           onClick={() => !isBooked && setSelectedTime(time)}
                           disabled={isBooked}
-                          className={`w-full p-3 rounded-lg text-left transition-all ${
-                            selectedTime === time
+                          className={`w-full p-3 rounded-lg text-left transition-all ${selectedTime === time
                               ? "bg-teal-600 text-white"
                               : isBooked
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                              : "bg-gray-50 hover:bg-teal-50 text-gray-900"
-                          }`}
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-50 hover:bg-teal-50 text-gray-900"
+                            }`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
