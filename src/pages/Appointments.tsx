@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -481,6 +481,24 @@ export function Appointments() {
               </CardContent>
             </Card>
 
+            {/* Appointment Scheduler Branded Header */}
+            <div className="text-center mb-12">
+              <div className="flex items-center justify-center mb-4">
+                <CalendarIcon className="h-6 w-6 md:h-8 md:w-8 text-teal-600 mr-2 md:mr-3" />
+                <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900">
+                  Appointment Scheduler
+                </h2>
+              </div>
+              <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-4 md:mb-6 px-4">
+                Follow these steps to find and book your mental health navigator.
+              </p>
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-px w-20 bg-gradient-to-r from-transparent to-teal-400"></div>
+                <Compass className="h-5 w-5 text-teal-600" />
+                <div className="h-px w-20 bg-gradient-to-l from-transparent to-teal-400"></div>
+              </div>
+            </div>
+
             {/* Progress Indicator */}
             <div className="mb-12 max-w-4xl mx-auto">
               <div className="flex items-center justify-between">
@@ -562,7 +580,7 @@ export function Appointments() {
                           selected={date}
                           onSelect={(date: any) => setDate(date)}
                           className="rounded-md border"
-                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                          disabled={(date: any) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                         />
                         {date && (
                           <div className="mt-6 p-4 bg-teal-50 rounded-lg w-full">
@@ -572,11 +590,11 @@ export function Appointments() {
                             </p>
                           </div>
                         )}
-                        <div className="flex gap-3 mt-6 w-full">
+                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 w-full">
                           <Button
                             onClick={nextStep}
                             disabled={!canProceedToStep2}
-                            className="flex-1 bg-teal-600 hover:bg-teal-700"
+                            className="w-full bg-teal-600 hover:bg-teal-700"
                           >
                             Continue
                             <ChevronRight className="h-4 w-4 ml-2" />
@@ -694,7 +712,7 @@ export function Appointments() {
                           </div>
                         )}
 
-                        <div className="flex gap-3 mt-6">
+                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -781,7 +799,7 @@ export function Appointments() {
                           </div>
                         )}
 
-                        <div className="flex gap-3">
+                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -929,7 +947,7 @@ export function Appointments() {
                                 id="cardName"
                                 placeholder="John Doe"
                                 value={cardDetails.name}
-                                onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
+                                onChange={(e: any) => setCardDetails({ ...cardDetails, name: e.target.value })}
                                 className="mt-1"
                               />
                             </div>
@@ -939,7 +957,7 @@ export function Appointments() {
                                 id="cardNumber"
                                 placeholder="1234 5678 9012 3456"
                                 value={cardDetails.number}
-                                onChange={(e) => {
+                                onChange={(e: any) => {
                                   const value = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
                                   setCardDetails({ ...cardDetails, number: value });
                                 }}
@@ -954,7 +972,7 @@ export function Appointments() {
                                   id="expiry"
                                   placeholder="MM/YY"
                                   value={cardDetails.expiry}
-                                  onChange={(e) => {
+                                  onChange={(e: any) => {
                                     let value = e.target.value.replace(/\D/g, '');
                                     if (value.length >= 2) {
                                       value = value.slice(0, 2) + '/' + value.slice(2, 4);
@@ -971,7 +989,7 @@ export function Appointments() {
                                   id="cvc"
                                   placeholder="123"
                                   value={cardDetails.cvc}
-                                  onChange={(e) => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })}
+                                  onChange={(e: any) => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })}
                                   maxLength={4}
                                   type="password"
                                   className="mt-1"
@@ -1025,7 +1043,7 @@ export function Appointments() {
                           </div>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
