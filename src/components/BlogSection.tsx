@@ -3,6 +3,7 @@ import { Calendar, User, Clock, BookOpen, Compass, X, Filter, CheckCircle2 } fro
 import { blogPosts, BlogPost } from "../data/blog-posts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { CompassDecoration } from "./CompassDecoration";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -55,7 +56,7 @@ export function BlogSection() {
   return (
     <section id="blog" className="py-20 bg-white relative overflow-hidden">
       <CompassDecoration variant="light" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -160,77 +161,153 @@ export function BlogSection() {
 
       {/* Blog Post Dialog */}
       <Dialog open={!!selectedPost} onOpenChange={(open) => !open && setSelectedPost(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="!max-w-none !w-screen !h-screen !top-0 !left-0 !translate-x-0 !translate-y-0 !rounded-none overflow-y-auto p-0 flex flex-col [&>button]:!top-4 [&>button]:!right-4 [&>button]:!z-50 [&>button]:!bg-white/90 [&>button]:!w-10 [&>button]:!h-10 [&>button]:!rounded-full [&>button]:hover:!bg-white [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-md">
           {selectedPost && (
             <>
-              <DialogHeader>
-                <div className="aspect-[16/9] overflow-hidden bg-gray-200 rounded-lg mb-4 -mt-6 -mx-6">
+              {/* Sticky Header with Hero Image */}
+              <DialogHeader className="sticky top-0 z-10 bg-white border-b flex-shrink-0 p-0 space-y-0">
+                <div className="relative h-40 md:h-52 lg:h-64 overflow-hidden w-full">
                   <ImageWithFallback
                     src={selectedPost.imageUrl}
                     alt={selectedPost.title}
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                  <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8 lg:left-12 right-4 sm:right-6 md:right-8 lg:right-12">
+                    <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-3">
+                      {selectedPost.category}
+                    </Badge>
+                    <DialogTitle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold leading-tight shadow-sm">
+                      {selectedPost.title}
+                    </DialogTitle>
+                    <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl mt-2 max-w-4xl font-medium">
+                      {selectedPost.excerpt}
+                    </DialogDescription>
+                  </div>
                 </div>
-                <Badge variant="secondary" className="bg-teal-100 text-teal-800 w-fit mb-2">
-                  {selectedPost.category}
-                </Badge>
-                <DialogTitle className="text-3xl">{selectedPost.title}</DialogTitle>
-                <DialogDescription className="sr-only">
-                  Blog post article with full content
-                </DialogDescription>
               </DialogHeader>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mt-2">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>{selectedPost.author}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{new Date(selectedPost.date).toLocaleDateString()}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{selectedPost.readTime}</span>
-                </div>
-              </div>
-              <div className="mt-6">
-                <p className="text-lg text-gray-700 mb-4 italic">{selectedPost.excerpt}</p>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {selectedPost.content}
-                  </p>
-                  
+
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto bg-white">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+
+                  {/* Metadata Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-10 w-10 border border-gray-200">
+                        <AvatarFallback className="bg-teal-100 text-teal-800 font-bold">
+                          {selectedPost.author.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-gray-900">{selectedPost.author}</p>
+                        <p className="text-xs">Author</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-6">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-teal-600" />
+                        <span>{new Date(selectedPost.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-teal-600" />
+                        <span>{selectedPost.readTime}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Main Article Content */}
+                  <article className="prose prose-lg prose-teal max-w-none leading-relaxed font-serif">
+                    {/* Render paragraphs cleanly */}
+                    {selectedPost.content.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="mb-6 text-gray-800 text-lg md:text-xl leading-8">
+                        {paragraph}
+                      </p>
+                    ))}
+
+                    {/* Pull Quote */}
+                    {selectedPost.quote && (
+                      <figure className="my-10 pl-6 border-l-4 border-teal-500 bg-teal-50/50 p-6 rounded-r-xl italic relative">
+                        <span className="absolute top-2 left-2 text-6xl text-teal-200 opacity-50 font-serif leading-none">"</span>
+                        <blockquote className="text-xl md:text-2xl text-teal-900 font-medium relative z-10">
+                          {selectedPost.quote}
+                        </blockquote>
+                        {selectedPost.quoteAuthor && (
+                          <figcaption className="mt-4 text-sm font-bold text-teal-700 not-italic">
+                            — {selectedPost.quoteAuthor}
+                          </figcaption>
+                        )}
+                      </figure>
+                    )}
+
+                    {/* Secondary Image */}
+                    {selectedPost.secondaryImageUrl && (
+                      <div className="my-10 rounded-2xl overflow-hidden shadow-xl">
+                        <ImageWithFallback
+                          src={selectedPost.secondaryImageUrl}
+                          alt="Illustration"
+                          className="w-full h-auto object-cover max-h-[500px]"
+                        />
+                      </div>
+                    )}
+                  </article>
+
                   {/* Additional content sections */}
-                  <div className="mt-8 p-6 bg-teal-50 rounded-lg border border-teal-200">
-                    <h3 className="text-xl mb-3 text-teal-900">Key Takeaways</h3>
-                    <ul className="space-y-2 text-gray-700">
-                      <li className="flex items-start gap-2">
-                        <span className="text-teal-600 mt-1">•</span>
-                        <span>Mental health is just as important as physical health</span>
+                  <div className="mt-12 p-8 bg-gradient-to-br from-teal-50 to-blue-50 rounded-2xl border border-teal-100 shadow-sm">
+                    <h3 className="text-2xl font-bold mb-6 text-teal-900 flex items-center gap-2">
+                      <CheckCircle2 className="h-6 w-6 text-teal-600" />
+                      Key Takeaways
+                    </h3>
+                    <ul className="space-y-4 text-gray-700">
+                      <li className="flex items-start gap-3">
+                        <div className="h-6 w-6 rounded-full bg-teal-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-teal-800 text-xs font-bold">1</div>
+                        <span className="text-lg">Mental health is just as important as physical health and deserves the same care.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-teal-600 mt-1">•</span>
-                        <span>Seeking help is a sign of strength, not weakness</span>
+                      <li className="flex items-start gap-3">
+                        <div className="h-6 w-6 rounded-full bg-teal-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-teal-800 text-xs font-bold">2</div>
+                        <span className="text-lg">Seeking help is a brave and vital step towards recovery and balance.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-teal-600 mt-1">•</span>
-                        <span>Small daily habits can make a significant difference</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-teal-600 mt-1">•</span>
-                        <span>You're not alone in your journey</span>
+                      <li className="flex items-start gap-3">
+                        <div className="h-6 w-6 rounded-full bg-teal-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-teal-800 text-xs font-bold">3</div>
+                        <span className="text-lg">Small, consistent daily habits can create powerful positive changes over time.</span>
                       </li>
                     </ul>
                   </div>
 
-                  <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-900">
-                      <strong>Need Support?</strong> If you're struggling with your mental health, 
-                      please reach out to a healthcare professional or contact one of our 
-                      <Button variant="link" className="text-blue-700 hover:text-blue-800 p-0 h-auto ml-1" onClick={() => setSelectedPost(null)}>
-                        crisis helplines
-                      </Button>.
-                    </p>
+                  {/* About the Author Section */}
+                  {selectedPost.authorBio && (
+                    <div className="mt-12 bg-gray-50 p-6 rounded-xl border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+                      <Avatar className="h-16 w-16 border-2 border-white shadow-sm flex-shrink-0">
+                        <AvatarFallback className="bg-teal-600 text-white text-xl font-bold">
+                          {selectedPost.author.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-bold text-gray-900 mb-1">About the Author</h4>
+                        <p className="text-sm font-medium text-teal-700 mb-2">{selectedPost.author}</p>
+                        <p className="text-gray-600 text-sm leading-relaxed">{selectedPost.authorBio}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-8 p-6 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-4">
+                    <div className="p-3 bg-blue-100 rounded-full text-blue-600 hidden sm:block">
+                      <User className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-blue-900 mb-1">Need Professional Support?</h4>
+                      <p className="text-blue-800 text-sm leading-6">
+                        If this article resonates with you, know that help is available.{" "}
+                        <button
+                          onClick={() => setSelectedPost(null)}
+                          className="text-blue-700 hover:text-blue-900 font-bold decoration-blue-400 underline inline cursor-pointer"
+                        >
+                          Find a Navigator
+                        </button>{" "}
+                        today.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
