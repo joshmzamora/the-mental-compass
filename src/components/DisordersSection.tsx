@@ -40,6 +40,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
 import { toast } from "sonner@2.0.3";
+import { AIChatSection } from "./AIChatSection";
 
 // Mapping of disorder IDs to abstract images
 const disorderImages: Record<string, string> = {
@@ -189,7 +190,7 @@ export function DisordersSection() {
     const disorder = mentalHealthDisorders.find(
       (d) =>
         d.id ===
-          profile.compassBearing?.primaryStruggle.toLowerCase() ||
+        profile.compassBearing?.primaryStruggle.toLowerCase() ||
         d.name
           .toLowerCase()
           .includes(
@@ -325,42 +326,6 @@ export function DisordersSection() {
             })}
           </div>
 
-          {/* Bottom CTA for Non-Logged-In Users */}
-          {!user && (
-            <Card className="mt-8 md:mt-12 bg-gradient-to-r from-teal-500 to-blue-600 border-none shadow-xl">
-              <CardContent className="p-6 md:p-8 text-center">
-                <Compass className="h-12 w-12 md:h-16 md:w-16 text-white mx-auto mb-4" />
-                <h3 className="text-xl md:text-2xl text-white mb-3">
-                  Ready to Find Your Path?
-                </h3>
-                <p className="text-teal-100 text-sm md:text-base mb-6 max-w-2xl mx-auto px-4">
-                  Create a free account to get personalized
-                  recommendations, track your progress, and
-                  connect with mental health professionals who
-                  can help.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    onClick={() => navigate("/signup")}
-                  >
-                    Set Your Compass
-                    <Sparkles className="h-5 w-5 ml-2" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => navigate("/login")}
-                    className="bg-white/10 border-white text-white hover:bg-white/20"
-                  >
-                    <LogIn className="h-5 w-5 mr-2" />
-                    Log In
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
 
@@ -791,6 +756,8 @@ export function DisordersSection() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AIChatSection />
     </section>
   );
 }
