@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  MessageCircle, 
-  Users, 
-  Send, 
-  Compass, 
-  Plus, 
-  ThumbsUp, 
-  ChevronRight, 
+import {
+  MessageCircle,
+  Users,
+  Send,
+  Compass,
+  Plus,
+  ThumbsUp,
+  ChevronRight,
   Search,
   Filter,
   X,
@@ -49,7 +49,7 @@ import { supabase } from "../utils/supabase/client";
 // Standardized tags that match the site's content tagging system
 export const COMMUNITY_TAGS = [
   "Anxiety",
-  "Depression", 
+  "Depression",
   "Bipolar",
   "PTSD",
   "OCD",
@@ -136,7 +136,7 @@ export function CommunitySection() {
   const { user } = useAuth();
   const { updateProfile, profile } = useUserProfile();
   const navigate = useNavigate();
-  
+
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [realTimeChatMessages, setRealTimeChatMessages] = useState<ChatMessage[]>([]);
@@ -152,24 +152,26 @@ export function CommunitySection() {
   const [selectedTags, setSelectedTags] = useState<CommunityTag[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
-  
+
   // Date range filtering state
   const [dateRangeFilter, setDateRangeFilter] = useState<DateRangeFilter>("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
-  
+
   // Notifications state
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  
+
   // Featured discussions minimize state
   const [isFeaturedMinimized, setIsFeaturedMinimized] = useState(false);
-  
+
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const isSearching = !!(searchQuery.trim() || selectedTags.length > 0 || dateRangeFilter !== "all");
 
   // Load notifications from localStorage on mount
   useEffect(() => {
@@ -195,7 +197,7 @@ export function CommunitySection() {
   // Real-time forum updates using polling (simulating Firestore onSnapshot)
   useEffect(() => {
     loadForumPosts();
-    
+
     // Set up real-time polling every 10 seconds
     const interval = setInterval(() => {
       loadForumPosts();
@@ -335,19 +337,19 @@ export function CommunitySection() {
     // Personalized prioritization based on Compass Bearing
     if (user && profile?.compassBearing && !searchQuery && selectedTags.length === 0 && dateRangeFilter === "all") {
       const primaryStruggle = profile.compassBearing.primaryStruggle;
-      
+
       // Sort posts - matching tags first, then by timestamp
       filtered.sort((a, b) => {
-        const aMatches = a.tags.some(tag => 
+        const aMatches = a.tags.some(tag =>
           tag.toLowerCase().includes(primaryStruggle.toLowerCase())
         );
-        const bMatches = b.tags.some(tag => 
+        const bMatches = b.tags.some(tag =>
           tag.toLowerCase().includes(primaryStruggle.toLowerCase())
         );
-        
+
         if (aMatches && !bMatches) return -1;
         if (!aMatches && bMatches) return 1;
-        
+
         return b.timestamp.getTime() - a.timestamp.getTime();
       });
     } else {
@@ -363,7 +365,7 @@ export function CommunitySection() {
   const loadForumPosts = async () => {
     try {
       const accessToken = localStorage.getItem("access_token");
-      
+
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/community-posts`,
         {
@@ -435,14 +437,14 @@ export function CommunitySection() {
   const loadChatMessages = async () => {
     try {
       setChatLoading(true);
-      
+
       // Check if we have a valid session first (silently)
       try {
         await supabase.auth.getSession();
       } catch (sessionError) {
         // Ignore session errors
       }
-      
+
       const { data, error } = await supabase
         .from('live_chat_messages')
         .select('*')
@@ -930,10 +932,10 @@ export function CommunitySection() {
 
         if (error) {
           // Handle specific error cases - switch to local mode
-          if (error.code === 'PGRST205' || error.code === 'PGRST116' || 
-              error.message.includes('relation') || 
-              error.message.includes('does not exist') ||
-              error.message.includes('schema cache')) {
+          if (error.code === 'PGRST205' || error.code === 'PGRST116' ||
+            error.message.includes('relation') ||
+            error.message.includes('does not exist') ||
+            error.message.includes('schema cache')) {
             console.log('Switching to local mode - database table not found');
             setChatDatabaseConfigured(false);
             // Add message locally
@@ -971,7 +973,7 @@ export function CommunitySection() {
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user) {
       setShowLoginDialog(true);
       return;
@@ -979,7 +981,7 @@ export function CommunitySection() {
 
     const formData = new FormData(e.target as HTMLFormElement);
     const selectedTagsArray: CommunityTag[] = [];
-    
+
     // Get selected tags from checkboxes
     COMMUNITY_TAGS.forEach(tag => {
       if (formData.get(`tag-${tag}`) === 'on') {
@@ -1028,16 +1030,16 @@ export function CommunitySection() {
     // Add to local state immediately (optimistic update)
     setForumPosts([newPost, ...forumPosts]);
     setShowNewPostDialog(false);
-    
+
     // Update profile - real-time dashboard update!
     if (profile) {
       await updateProfile({
         forumPosts: (profile.forumPosts || 0) + 1
       });
     }
-    
+
     toast.success("Your post has been published!");
-    
+
     // Reload to get server data
     setTimeout(() => loadForumPosts(), 1000);
   };
@@ -1059,7 +1061,7 @@ export function CommunitySection() {
         likes: 0,
         likedBy: []
       };
-      
+
       try {
         // Save to backend
         const accessToken = localStorage.getItem("access_token");
@@ -1079,25 +1081,25 @@ export function CommunitySection() {
       }
 
       // Update local state
-      const updatedPosts = forumPosts.map(post => 
-        post.id === selectedPost.id 
+      const updatedPosts = forumPosts.map(post =>
+        post.id === selectedPost.id
           ? { ...post, responses: [...post.responses, response], replies: post.replies + 1 }
           : post
       );
-      
+
       setForumPosts(updatedPosts);
       setSelectedPost({ ...selectedPost, responses: [...selectedPost.responses, response], replies: selectedPost.replies + 1 });
       setNewResponse("");
-      
+
       // Update profile
       if (profile) {
         await updateProfile({
           forumPosts: (profile.forumPosts || 0) + 1
         });
       }
-      
+
       toast.success("Response added!");
-      
+
       // Reload to sync
       setTimeout(() => loadForumPosts(), 1000);
     }
@@ -1119,16 +1121,16 @@ export function CommunitySection() {
     }
 
     const updatedPosts = forumPosts.map(p =>
-      p.id === postId 
-        ? { ...p, likes: p.likes + 1, likedBy: [...p.likedBy, user.id] } 
+      p.id === postId
+        ? { ...p, likes: p.likes + 1, likedBy: [...p.likedBy, user.id] }
         : p
     );
     setForumPosts(updatedPosts);
-    
+
     if (selectedPost?.id === postId) {
       setSelectedPost({ ...selectedPost, likes: selectedPost.likes + 1, likedBy: [...selectedPost.likedBy, user.id] });
     }
-    
+
     toast.success("Post liked!");
 
     // Save to backend
@@ -1167,7 +1169,7 @@ export function CommunitySection() {
   };
 
   const markNotificationAsRead = (notificationId: string) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
     );
   };
@@ -1184,15 +1186,15 @@ export function CommunitySection() {
 
   const getRecommendedPosts = () => {
     if (!user || !profile?.compassBearing) return [];
-    
+
     const primaryStruggle = profile.compassBearing.primaryStruggle;
-    return filteredPosts.filter(post => 
+    return filteredPosts.filter(post =>
       post.tags.some(tag => tag.toLowerCase().includes(primaryStruggle.toLowerCase()))
     ).slice(0, 2);
   };
 
   const recommendedPosts = getRecommendedPosts();
-  const regularPosts = user && profile?.compassBearing 
+  const regularPosts = (user && profile?.compassBearing && !isSearching)
     ? filteredPosts.filter(post => !recommendedPosts.includes(post))
     : filteredPosts;
 
@@ -1238,7 +1240,7 @@ export function CommunitySection() {
   return (
     <section id="community" className="py-12 sm:py-20 lg:py-32 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
       <CompassDecoration variant="light" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -1298,11 +1300,10 @@ export function CommunitySection() {
                           {notifications.map((notification) => (
                             <div
                               key={notification.id}
-                              className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                                notification.read
-                                  ? "bg-white border-gray-200"
-                                  : "bg-teal-50 border-teal-200"
-                              }`}
+                              className={`p-3 rounded-lg border cursor-pointer transition-colors ${notification.read
+                                ? "bg-white border-gray-200"
+                                : "bg-teal-50 border-teal-200"
+                                }`}
                               onClick={() => {
                                 markNotificationAsRead(notification.id);
                                 const post = forumPosts.find(p => p.id === notification.postId);
@@ -1357,7 +1358,7 @@ export function CommunitySection() {
                     This is a safe, supportive space. Please be respectful, kind, and mindful of others' experiences.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                    <Button 
+                    <Button
                       onClick={() => navigate("/community-guidelines")}
                       variant="outline"
                       size="sm"
@@ -1366,7 +1367,7 @@ export function CommunitySection() {
                       <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Read Full Guidelines
                     </Button>
-                    <Button 
+                    <Button
                       onClick={() => navigate("/helplines")}
                       variant="outline"
                       size="sm"
@@ -1447,7 +1448,7 @@ export function CommunitySection() {
                             </Badge>
                           )}
                         </div>
-                        
+
                         {dateRangeFilter === "custom" && (
                           <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full">
                             <Input
@@ -1487,11 +1488,10 @@ export function CommunitySection() {
                           <button
                             key={tag}
                             onClick={() => toggleTag(tag)}
-                            className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                              selectedTags.includes(tag)
-                                ? "bg-teal-600 text-white"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                            }`}
+                            className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors ${selectedTags.includes(tag)
+                              ? "bg-teal-600 text-white"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                              }`}
                           >
                             {selectedTags.includes(tag) && <X className="h-3 w-3 flex-shrink-0" />}
                             <span className="truncate">{tag}</span>
@@ -1519,71 +1519,212 @@ export function CommunitySection() {
                 </CardContent>
               </Card>
 
-              {/* Start a New Discussion Button */}
-              <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
-                <CardContent className="p-4 sm:p-6">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="text-center sm:text-left">
-                      <h3 className="text-base sm:text-lg text-gray-900 mb-1">
-                        Share Your Story or Ask for Support
-                      </h3>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        Start a conversation with the community. Your voice matters.
-                      </p>
+              {/* Feed Content */}
+              {isSearching ? (
+                <div className="space-y-4 sm:space-y-6">
+                  {/* Search Results Header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-white/50 p-4 rounded-xl border border-teal-100/50 backdrop-blur-sm shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+                        <Search className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 leading-tight">Search Results</h3>
+                        <p className="text-xs text-gray-600">Found {filteredPosts.length} matches for your criteria</p>
+                      </div>
                     </div>
-                    <Button 
-                      onClick={() => user ? setShowNewPostDialog(true) : setShowLoginDialog(true)}
-                      className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto whitespace-nowrap"
-                      size="lg"
-                    >
-                      <Plus className="h-5 w-5 mr-2" />
-                      Start a Discussion
-                    </Button>
+                    {filteredPosts.length > 0 && (
+                      <Badge variant="outline" className="bg-teal-50 border-teal-200 text-teal-700">
+                        {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredPosts.length)} of {filteredPosts.length}
+                      </Badge>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* Featured/Most Interacted Posts */}
-              {forumPosts.length > 0 && (() => {
-                const featuredPosts = [...forumPosts]
-                  .sort((a, b) => (b.likes + b.replies * 2) - (a.likes + a.replies * 2))
-                  .slice(0, 3);
-                
-                return featuredPosts.length > 0 && (
-                  <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
-                              <TrendingUp className="h-4 w-4" />
-                              <span className="text-sm font-medium">Featured Discussions</span>
+                  {loading ? (
+                    <Card className="p-12 text-center overflow-hidden relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-blue-50/50 opacity-50" />
+                      <div className="relative z-10">
+                        <div className="flex flex-col items-center justify-center gap-3">
+                          <div className="relative">
+                            <Compass className="h-10 w-10 text-teal-600 animate-spin" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="h-1.5 w-1.5 bg-teal-600 rounded-full" />
                             </div>
-                            <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
-                              Most Active
-                            </Badge>
                           </div>
-                          <CardDescription className="text-sm text-gray-700 mt-2">
-                            Join the most engaging conversations in our community
-                          </CardDescription>
+                          <p className="text-gray-600 font-medium">Scanning discussions...</p>
+                        </div>
+                      </div>
+                    </Card>
+                  ) : filteredPosts.length === 0 ? (
+                    <Card className="p-12 text-center bg-white border-dashed border-2 border-gray-200 shadow-sm">
+                      <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
+                        <Search className="h-8 w-8 text-gray-300" />
+                      </div>
+                      <h4 className="text-lg font-bold text-gray-900 mb-2">No matches found</h4>
+                      <p className="text-gray-600 max-w-sm mx-auto mb-6 italic">
+                        "Your search didn't return any results. Try adjusting your filters or using different keywords."
+                      </p>
+                      <Button variant="outline" onClick={clearFilters} className="border-teal-200 text-teal-700 hover:bg-teal-50">
+                        Clear all filters
+                      </Button>
+                    </Card>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {currentPosts.map((post) => (
+                        <PostCard
+                          key={post.id}
+                          post={post}
+                          onSelect={setSelectedPost}
+                          onLike={handleLikePost}
+                          navigate={navigate}
+                          formatPostTimestamp={formatPostTimestamp}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {/* Start a New Discussion Button */}
+                  <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="text-center sm:text-left">
+                          <h3 className="text-base sm:text-lg text-gray-900 mb-1">
+                            Share Your Story or Ask for Support
+                          </h3>
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            Start a conversation with the community. Your voice matters.
+                          </p>
                         </div>
                         <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setIsFeaturedMinimized(!isFeaturedMinimized)}
-                          className="flex-shrink-0 h-8 w-8 p-0 hover:bg-orange-100"
+                          onClick={() => user ? setShowNewPostDialog(true) : setShowLoginDialog(true)}
+                          className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto whitespace-nowrap"
+                          size="lg"
                         >
-                          {isFeaturedMinimized ? (
-                            <ChevronDown className="h-4 w-4 text-orange-700" />
-                          ) : (
-                            <ChevronUp className="h-4 w-4 text-orange-700" />
-                          )}
+                          <Plus className="h-5 w-5 mr-2" />
+                          Start a Discussion
                         </Button>
                       </div>
-                    </CardHeader>
-                    {!isFeaturedMinimized && (
-                      <CardContent className="space-y-3 sm:space-y-4">
-                        {featuredPosts.map((post) => (
+                    </CardContent>
+                  </Card>
+
+                  {/* Featured/Most Interacted Posts */}
+                  {forumPosts.length > 0 && (() => {
+                    const featuredPosts = [...forumPosts]
+                      .sort((a, b) => (b.likes + b.replies * 2) - (a.likes + a.replies * 2))
+                      .slice(0, 3);
+
+                    return featuredPosts.length > 0 && (
+                      <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
+                                  <TrendingUp className="h-4 w-4" />
+                                  <span className="text-sm font-medium">Featured Discussions</span>
+                                </div>
+                                <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
+                                  Most Active
+                                </Badge>
+                              </div>
+                              <CardDescription className="text-sm text-gray-700 mt-2">
+                                Join the most engaging conversations in our community
+                              </CardDescription>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setIsFeaturedMinimized(!isFeaturedMinimized)}
+                              className="flex-shrink-0 h-8 w-8 p-0 hover:bg-orange-100"
+                            >
+                              {isFeaturedMinimized ? (
+                                <ChevronDown className="h-4 w-4 text-orange-700" />
+                              ) : (
+                                <ChevronUp className="h-4 w-4 text-orange-700" />
+                              )}
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        {!isFeaturedMinimized && (
+                          <CardContent className="space-y-3 sm:space-y-4">
+                            {featuredPosts.map((post) => (
+                              <PostCard
+                                key={post.id}
+                                post={post}
+                                onSelect={setSelectedPost}
+                                onLike={handleLikePost}
+                                navigate={navigate}
+                                formatPostTimestamp={formatPostTimestamp}
+                              />
+                            ))}
+                          </CardContent>
+                        )}
+                      </Card>
+                    );
+                  })()}
+
+                  {/* Personalized Recommendations */}
+                  {recommendedPosts.length > 0 && (
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                        <h3 className="text-base sm:text-lg text-gray-900">
+                          Recommended For You
+                        </h3>
+                        <Badge className="bg-teal-600 text-xs sm:text-sm">
+                          <span className="hidden sm:inline">Based on your Compass Bearing</span>
+                          <span className="sm:hidden">For You</span>
+                        </Badge>
+                      </div>
+                      {recommendedPosts.map((post) => (
+                        <PostCard
+                          key={post.id}
+                          post={post}
+                          onSelect={setSelectedPost}
+                          onLike={handleLikePost}
+                          navigate={navigate}
+                          formatPostTimestamp={formatPostTimestamp}
+                          isPrioritized={true}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Regular Posts */}
+                  <div className="space-y-3 sm:space-y-4">
+                    {recommendedPosts.length > 0 && (
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 mt-6 sm:mt-8">
+                        <h3 className="text-base sm:text-lg text-gray-900">All Discussions</h3>
+                        {totalPosts > 0 && (
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, totalPosts)} of {totalPosts}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {loading ? (
+                      <Card className="p-8 text-center">
+                        <div className="flex items-center justify-center gap-3">
+                          <Compass className="h-6 w-6 text-teal-600 animate-spin" />
+                          <p className="text-gray-600">Loading discussions...</p>
+                        </div>
+                      </Card>
+                    ) : regularPosts.length === 0 ? (
+                      <Card className="p-8 text-center bg-yellow-50 border-yellow-200">
+                        <AlertCircle className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
+                        <p className="text-gray-700 mb-2">No discussions found</p>
+                        <p className="text-sm text-gray-600">
+                          {searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all"
+                            ? "Try adjusting your filters or search terms"
+                            : "Be the first to start a conversation!"}
+                        </p>
+                      </Card>
+                    ) : (
+                      <>
+                        {currentPosts.map((post) => (
                           <PostCard
                             key={post.id}
                             post={post}
@@ -1593,84 +1734,11 @@ export function CommunitySection() {
                             formatPostTimestamp={formatPostTimestamp}
                           />
                         ))}
-                      </CardContent>
+                      </>
                     )}
-                  </Card>
-                );
-              })()}
-
-              {/* Personalized Recommendations */}
-              {recommendedPosts.length > 0 && (
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                    <h3 className="text-base sm:text-lg text-gray-900">
-                      Recommended For You
-                    </h3>
-                    <Badge className="bg-teal-600 text-xs sm:text-sm">
-                      <span className="hidden sm:inline">Based on your Compass Bearing</span>
-                      <span className="sm:hidden">For You</span>
-                    </Badge>
                   </div>
-                  {recommendedPosts.map((post) => (
-                    <PostCard
-                      key={post.id}
-                      post={post}
-                      onSelect={setSelectedPost}
-                      onLike={handleLikePost}
-                      navigate={navigate}
-                      formatPostTimestamp={formatPostTimestamp}
-                      isPrioritized={true}
-                    />
-                  ))}
-                </div>
+                </>
               )}
-
-              {/* Regular Posts */}
-              <div className="space-y-3 sm:space-y-4">
-                {recommendedPosts.length > 0 && (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 mt-6 sm:mt-8">
-                    <h3 className="text-base sm:text-lg text-gray-900">All Discussions</h3>
-                    {totalPosts > 0 && (
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, totalPosts)} of {totalPosts}
-                      </p>
-                    )}
-                  </div>
-                )}
-                
-                {loading ? (
-                  <Card className="p-8 text-center">
-                    <div className="flex items-center justify-center gap-3">
-                      <Compass className="h-6 w-6 text-teal-600 animate-spin" />
-                      <p className="text-gray-600">Loading discussions...</p>
-                    </div>
-                  </Card>
-                ) : regularPosts.length === 0 ? (
-                  <Card className="p-8 text-center bg-yellow-50 border-yellow-200">
-                    <AlertCircle className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
-                    <p className="text-gray-700 mb-2">No discussions found</p>
-                    <p className="text-sm text-gray-600">
-                      {searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all"
-                        ? "Try adjusting your filters or search terms"
-                        : "Be the first to start a conversation!"}
-                    </p>
-                  </Card>
-                ) : (
-                  <>
-                    {currentPosts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        post={post}
-                        onSelect={setSelectedPost}
-                        onLike={handleLikePost}
-                        navigate={navigate}
-                        formatPostTimestamp={formatPostTimestamp}
-                      />
-                    ))}
-                  </>
-                )}
-              </div>
 
               {/* Pagination */}
               {!loading && totalPages > 1 && (
@@ -1695,7 +1763,7 @@ export function CommunitySection() {
                               <span className="sm:hidden">Prev</span>
                             </Button>
                           </PaginationItem>
-                          
+
                           {/* Page numbers - fewer on mobile */}
                           <div className="hidden sm:flex gap-1">
                             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1709,7 +1777,7 @@ export function CommunitySection() {
                               } else {
                                 pageNum = currentPage - 2 + i;
                               }
-                              
+
                               return (
                                 <PaginationItem key={pageNum}>
                                   <PaginationLink
@@ -1723,7 +1791,7 @@ export function CommunitySection() {
                               );
                             })}
                           </div>
-                          
+
                           {/* Mobile: just show current page */}
                           <div className="sm:hidden flex items-center px-2 text-sm text-gray-700">
                             {currentPage}/{totalPages}
@@ -1808,11 +1876,10 @@ export function CommunitySection() {
                         {chatMessages.map((msg) => (
                           <div key={msg.id} className="flex gap-3 animate-in fade-in duration-300">
                             <Avatar className="h-8 w-8 flex-shrink-0">
-                              <AvatarFallback className={`${
-                                msg.user_id === user?.id
-                                  ? "bg-teal-100 text-teal-700" 
-                                  : "bg-purple-100 text-purple-700"
-                              }`}>
+                              <AvatarFallback className={`${msg.user_id === user?.id
+                                ? "bg-teal-100 text-teal-700"
+                                : "bg-purple-100 text-purple-700"
+                                }`}>
                                 {msg.avatar}
                               </AvatarFallback>
                             </Avatar>
@@ -1820,9 +1887,8 @@ export function CommunitySection() {
                               <div className="flex items-center gap-2 mb-1">
                                 <button
                                   onClick={() => msg.user_id !== 'system' && navigate(`/user/${msg.user_id}`)}
-                                  className={`text-sm ${msg.user_id !== 'system' ? 'hover:underline' : ''} ${
-                                    msg.user_id === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
-                                  }`}
+                                  className={`text-sm ${msg.user_id !== 'system' ? 'hover:underline' : ''} ${msg.user_id === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
+                                    }`}
                                 >
                                   {msg.author}
                                 </button>
@@ -1830,9 +1896,8 @@ export function CommunitySection() {
                                   {formatTimestamp(new Date(msg.created_at))}
                                 </span>
                               </div>
-                              <p className={`text-sm text-gray-700 rounded-lg p-3 ${
-                                msg.user_id === user?.id ? "bg-teal-100" : "bg-white"
-                              }`}>
+                              <p className={`text-sm text-gray-700 rounded-lg p-3 ${msg.user_id === user?.id ? "bg-teal-100" : "bg-white"
+                                }`}>
                                 {msg.content}
                               </p>
                             </div>
@@ -1910,25 +1975,24 @@ export function CommunitySection() {
 }
 
 // Post Card Component
-function PostCard({ 
-  post, 
-  onSelect, 
-  onLike, 
+function PostCard({
+  post,
+  onSelect,
+  onLike,
   navigate,
   formatPostTimestamp,
-  isPrioritized = false 
-}: { 
-  post: ForumPost; 
-  onSelect: (post: ForumPost) => void; 
+  isPrioritized = false
+}: {
+  post: ForumPost;
+  onSelect: (post: ForumPost) => void;
   onLike: (id: string) => void;
   navigate: any;
   formatPostTimestamp: (timestamp: Date) => string;
   isPrioritized?: boolean;
 }) {
   return (
-    <Card className={`hover:shadow-lg transition-shadow cursor-pointer group ${
-      isPrioritized ? "border-2 border-teal-300 bg-teal-50/30" : ""
-    }`}>
+    <Card className={`hover:shadow-lg transition-shadow cursor-pointer group ${isPrioritized ? "border-2 border-teal-300 bg-teal-50/30" : ""
+      }`}>
       <CardHeader onClick={() => onSelect(post)} className="p-4 sm:p-6">
         <div className="flex flex-col gap-3">
           <div className="flex items-start justify-between gap-3">
@@ -1993,7 +2057,7 @@ function PostCard({
             <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>{post.replies} {post.replies === 1 ? 'reply' : 'replies'}</span>
           </div>
-          <button 
+          <button
             onClick={(e) => {
               e.stopPropagation();
               onLike(post.id);
@@ -2003,8 +2067,8 @@ function PostCard({
             <ThumbsUp className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>{post.likes} {post.likes === 1 ? 'like' : 'likes'}</span>
           </button>
-          <Button 
-            variant="link" 
+          <Button
+            variant="link"
             className="text-teal-600 p-0 h-auto group-hover:gap-2 transition-all text-xs sm:text-sm"
             onClick={() => onSelect(post)}
           >
@@ -2019,12 +2083,12 @@ function PostCard({
 }
 
 // New Post Dialog Component
-function NewPostDialog({ 
-  open, 
-  onOpenChange, 
-  onSubmit 
-}: { 
-  open: boolean; 
+function NewPostDialog({
+  open,
+  onOpenChange,
+  onSubmit
+}: {
+  open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (e: React.FormEvent) => void;
 }) {
@@ -2060,7 +2124,7 @@ function NewPostDialog({
               required
             />
           </div>
-          
+
           <div>
             <Label htmlFor="content">Your Message *</Label>
             <Textarea
@@ -2077,7 +2141,7 @@ function NewPostDialog({
             <div className="grid grid-cols-2 gap-3">
               {COMMUNITY_TAGS.map((tag) => (
                 <div key={tag} className="flex items-center space-x-2">
-                  <Checkbox 
+                  <Checkbox
                     id={`tag-${tag}`}
                     name={`tag-${tag}`}
                   />
@@ -2096,7 +2160,7 @@ function NewPostDialog({
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <Checkbox 
+                <Checkbox
                   id="guidelines-acceptance"
                   checked={guidelinesAccepted}
                   onCheckedChange={(checked) => setGuidelinesAccepted(checked as boolean)}
@@ -2126,8 +2190,8 @@ function NewPostDialog({
           </Card>
 
           <div className="flex gap-4">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="flex-1 bg-teal-600 hover:bg-teal-700"
               disabled={!guidelinesAccepted}
             >
@@ -2145,17 +2209,17 @@ function NewPostDialog({
 }
 
 // View Post Dialog Component
-function ViewPostDialog({ 
-  post, 
-  onClose, 
-  onLike, 
+function ViewPostDialog({
+  post,
+  onClose,
+  onLike,
   onAddResponse,
   newResponse,
   setNewResponse,
   navigate,
   user,
   showLoginDialog
-}: { 
+}: {
   post: ForumPost | null;
   onClose: () => void;
   onLike: (id: string) => void;
@@ -2201,19 +2265,19 @@ function ViewPostDialog({
                 {post.author}
               </button>
               <p className="text-xs text-gray-500">
-                {post.timestamp instanceof Date 
+                {post.timestamp instanceof Date
                   ? post.timestamp.toLocaleString()
                   : new Date().toLocaleString()}
               </p>
             </div>
           </div>
         </DialogHeader>
-        
+
         <div className="mt-6">
           <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{post.content}</p>
-          
+
           <div className="flex items-center gap-6 text-sm text-gray-600 pb-6 border-b">
-            <button 
+            <button
               onClick={() => onLike(post.id)}
               className="flex items-center gap-1 hover:text-teal-600 transition-colors"
             >
@@ -2247,7 +2311,7 @@ function ViewPostDialog({
                         {response.author}
                       </button>
                       <p className="text-xs text-gray-500">
-                        {response.timestamp instanceof Date 
+                        {response.timestamp instanceof Date
                           ? response.timestamp.toLocaleString()
                           : new Date().toLocaleString()}
                       </p>
@@ -2267,7 +2331,7 @@ function ViewPostDialog({
                 rows={4}
                 disabled={!user}
               />
-              <Button 
+              <Button
                 onClick={() => user ? onAddResponse() : showLoginDialog()}
                 className="bg-teal-600 hover:bg-teal-700"
                 disabled={!newResponse.trim() && user}
@@ -2284,12 +2348,12 @@ function ViewPostDialog({
 }
 
 // Login Prompt Dialog
-function LoginPromptDialog({ 
-  open, 
-  onOpenChange, 
-  navigate 
-}: { 
-  open: boolean; 
+function LoginPromptDialog({
+  open,
+  onOpenChange,
+  navigate
+}: {
+  open: boolean;
   onOpenChange: (open: boolean) => void;
   navigate: any;
 }) {
