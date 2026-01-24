@@ -26,7 +26,7 @@ export const therapists: Therapist[] = [
     education: ["PhD in Clinical Psychology - Stanford University", "MA in Counseling Psychology - UCLA", "BA in Psychology - UC Berkeley"],
     approach: "Evidence-based, client-centered therapy combining CBT, ACT, and mindfulness techniques",
     languages: ["English", "Spanish"],
-    imageUrl: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-1.png",
     availableDays: ["Monday", "Wednesday", "Friday"],
     rate: 180
   },
@@ -41,7 +41,7 @@ export const therapists: Therapist[] = [
     education: ["PsyD in Clinical Psychology - Pepperdine University", "MA in Trauma Psychology - John F. Kennedy University", "BS in Psychology - Howard University"],
     approach: "Trauma-informed care using EMDR, Somatic Experiencing, and Internal Family Systems (IFS)",
     languages: ["English"],
-    imageUrl: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/male-1.png",
     availableDays: ["Tuesday", "Thursday", "Saturday"],
     rate: 195
   },
@@ -56,7 +56,7 @@ export const therapists: Therapist[] = [
     education: ["LCSW - Columbia University School of Social Work", "MSW in Clinical Social Work - NYU", "BA in Sociology - Cornell University"],
     approach: "Systemic and attachment-based therapy using EFT, Gottman Method, and Solution-Focused techniques",
     languages: ["English", "Mandarin", "Cantonese"],
-    imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-2.png",
     availableDays: ["Monday", "Tuesday", "Thursday"],
     rate: 175
   },
@@ -71,7 +71,7 @@ export const therapists: Therapist[] = [
     education: ["MD - Harvard Medical School", "Residency in Psychiatry - Johns Hopkins Hospital", "BS in Neuroscience - MIT"],
     approach: "Integrative psychiatry combining psychopharmacology, psychotherapy, and lifestyle medicine",
     languages: ["English", "French"],
-    imageUrl: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/male-2.png",
     availableDays: ["Wednesday", "Friday"],
     rate: 250
   },
@@ -86,7 +86,7 @@ export const therapists: Therapist[] = [
     education: ["PhD in Counseling Psychology - University of Pennsylvania", "Certificate in Mindfulness-Based Stress Reduction - UMass Medical School", "BA in Psychology and Health Sciences - Northwestern University"],
     approach: "Integrative approach combining mindfulness, positive psychology, and wellness coaching",
     languages: ["English"],
-    imageUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-3.png",
     availableDays: ["Monday", "Wednesday", "Friday", "Saturday"],
     rate: 165
   },
@@ -101,7 +101,7 @@ export const therapists: Therapist[] = [
     education: ["PsyD in Clinical Psychology - Alliant International University", "MA in Addiction Counseling - Hazelden Betty Ford Graduate School", "BS in Psychology - University of Texas at Austin"],
     approach: "Integrated treatment using Motivational Interviewing, CBT, and trauma-informed addiction therapy",
     languages: ["English", "Spanish"],
-    imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/male-3.png",
     availableDays: ["Monday", "Tuesday", "Wednesday", "Saturday"],
     rate: 185
   },
@@ -116,7 +116,7 @@ export const therapists: Therapist[] = [
     education: ["PhD in Child Clinical Psychology - University of Michigan", "MA in Developmental Psychology - Yale University", "BA in Psychology - Duke University"],
     approach: "Developmentally-informed therapy using play therapy, CBT for youth, and family systems work",
     languages: ["English", "Hindi", "Gujarati"],
-    imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-1.png",
     availableDays: ["Tuesday", "Thursday", "Friday"],
     rate: 170
   },
@@ -131,7 +131,7 @@ export const therapists: Therapist[] = [
     education: ["LMFT - California State University, Northridge", "MA in Marriage and Family Therapy - Fuller Theological Seminary", "BA in Psychology - UCLA"],
     approach: "Evidence-based couples therapy using Gottman Method and EFT",
     languages: ["English", "Korean"],
-    imageUrl: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/male-2.png",
     availableDays: ["Monday", "Wednesday", "Thursday", "Friday"],
     rate: 190
   },
@@ -146,7 +146,7 @@ export const therapists: Therapist[] = [
     education: ["PhD in Clinical Psychology - University of Minnesota", "Postdoctoral Fellowship in Eating Disorders - Stanford University", "BA in Psychology - Boston University"],
     approach: "Comprehensive eating disorder treatment using CBT-E, DBT, and family-based therapy",
     languages: ["English"],
-    imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-1.png",
     availableDays: ["Monday", "Tuesday", "Thursday", "Friday"],
     rate: 200
   },
@@ -161,7 +161,7 @@ export const therapists: Therapist[] = [
     education: ["PsyD in Clinical Psychology - Yeshiva University", "Advanced Training in ERP - International OCD Foundation", "BA in Neuroscience - Johns Hopkins University"],
     approach: "Specialized OCD treatment using ERP, ACT, and mindfulness-based interventions",
     languages: ["English", "Mandarin"],
-    imageUrl: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/male-1.png",
     availableDays: ["Tuesday", "Wednesday", "Friday", "Saturday"],
     rate: 185
   },
@@ -176,7 +176,7 @@ export const therapists: Therapist[] = [
     education: ["LCSW - University of Southern California", "MSW in Mental Health - Washington University in St. Louis", "BA in Social Work - University of Texas at El Paso"],
     approach: "Integrated treatment combining psychoeducation, CBT, interpersonal therapy, and wellness planning",
     languages: ["English", "Spanish"],
-    imageUrl: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=400&fit=crop",
+    imageUrl: "/images/therapists/female-3.png",
     availableDays: ["Monday", "Wednesday", "Thursday"],
     rate: 175
   }

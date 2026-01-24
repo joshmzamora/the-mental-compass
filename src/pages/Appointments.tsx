@@ -48,9 +48,20 @@ export function Appointments() {
   const { addAppointment } = useUserProfile();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [expandedBio, setExpandedBio] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("");
+
+  // Reset expanded bio when selected therapist changes
+  useEffect(() => {
+    setExpandedBio(false);
+  }, [selectedTherapist]);
+
+  // Reset expanded bio when step changes
+  useEffect(() => {
+    setExpandedBio(false);
+  }, [currentStep]);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [cardDetails, setCardDetails] = useState({
     number: "",
@@ -566,31 +577,34 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg">
-                      <CardHeader>
+                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className="flex-none h-[110px] overflow-hidden">
                         <CardTitle className="flex items-center gap-2">
                           <CalendarIcon className="h-6 w-6 text-teal-600" />
-                          Choose a Date
+                          Step 1: Choose a Date
                         </CardTitle>
                         <CardDescription>Select a date for your counseling session</CardDescription>
                       </CardHeader>
-                      <CardContent className="flex flex-col items-center">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={(date: any) => setDate(date)}
-                          className="rounded-md border"
-                          disabled={(date: any) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                        />
-                        {date && (
-                          <div className="mt-6 p-4 bg-teal-50 rounded-lg w-full">
-                            <p className="text-sm text-teal-900 text-center">
-                              <strong>{availableTherapists.length}</strong> navigators available on{" "}
-                              <strong>{date.toLocaleDateString()}</strong>
-                            </p>
-                          </div>
-                        )}
-                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 w-full">
+                      <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(date: any) => setDate(date)}
+                            className="rounded-md border"
+                            disabled={(date: any) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                          />
+                          {date && (
+                            <div className="mt-6 p-4 bg-teal-50 rounded-lg w-full">
+                              <p className="text-sm text-teal-900 text-center">
+                                <strong>{availableTherapists.length}</strong> navigators available on{" "}
+                                <strong>{date.toLocaleDateString()}</strong>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="p-6 border-t bg-white flex-none">
                           <Button
                             onClick={nextStep}
                             disabled={!canProceedToStep2}
@@ -614,105 +628,138 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg">
-                      <CardHeader>
+                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className="flex-none h-[110px] overflow-hidden">
                         <CardTitle className="flex items-center gap-2">
                           <User className="h-6 w-6 text-teal-600" />
-                          Choose Your Mental Health Navigator
+                          Step 2: Choose Your Navigator
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="line-clamp-2">
                           Select from our team of experienced professionals
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="max-h-[600px] overflow-y-auto">
-                        {availableTherapists.length === 0 ? (
-                          <div className="text-center py-8 text-gray-500">
-                            <User className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                            <p>No navigators available on this day</p>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {availableTherapists.map((therapist) => (
-                              <div
-                                key={therapist.id}
-                                onClick={() => setSelectedTherapist(therapist)}
-                                className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${selectedTherapist?.id === therapist.id
-                                  ? "border-teal-600 bg-teal-50"
-                                  : "border-gray-200 hover:border-teal-300"
-                                  }`}
-                              >
-                                <div className="flex items-start gap-4">
-                                  <Avatar className="h-16 w-16">
-                                    <AvatarFallback className="bg-teal-600 text-white">
-                                      {therapist.name.split(" ").map(n => n[0]).join("")}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="flex-1">
-                                    <div className="flex items-start justify-between mb-2">
-                                      <div>
-                                        <h4 className="font-medium text-gray-900">{therapist.name}</h4>
-                                        <p className="text-sm text-gray-600">{therapist.credential}</p>
-                                      </div>
-                                      <Badge className="bg-teal-600 text-white">
-                                        ${therapist.rate}/session
-                                      </Badge>
-                                    </div>
-
-                                    <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-                                      {therapist.bio}
-                                    </p>
-
-                                    <div className="flex flex-wrap gap-1 mb-3">
-                                      {therapist.specialty.map((spec) => (
-                                        <Badge key={spec} variant="secondary" className="bg-teal-100 text-teal-800 text-xs">
-                                          {spec}
-                                        </Badge>
-                                      ))}
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                      <div className="flex items-center gap-1">
-                                        <Award className="h-3 w-3" />
-                                        {therapist.experience} experience
-                                      </div>
-                                      <div className="flex items-center gap-1">
-                                        <Globe className="h-3 w-3" />
-                                        {therapist.languages.join(", ")}
-                                      </div>
-                                    </div>
-
-                                    {selectedTherapist?.id === therapist.id && (
-                                      <div className="mt-4 pt-4 border-t border-teal-200">
-                                        <h5 className="font-medium text-teal-900 mb-2">About {therapist.name}</h5>
-                                        <p className="text-sm text-gray-700 leading-relaxed mb-3">
-                                          {therapist.detailedBio}
-                                        </p>
-
-                                        <div className="space-y-2">
-                                          <div>
-                                            <h6 className="text-xs font-medium text-gray-900 mb-1">Education</h6>
-                                            <ul className="text-xs text-gray-600 space-y-1">
-                                              {therapist.education.map((edu, idx) => (
-                                                <li key={idx}>• {edu}</li>
-                                              ))}
-                                            </ul>
-                                          </div>
-
-                                          <div>
-                                            <h6 className="text-xs font-medium text-gray-900 mb-1">Therapeutic Approach</h6>
-                                            <p className="text-xs text-gray-600">{therapist.approach}</p>
-                                          </div>
+                      <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto p-6">
+                          {availableTherapists.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500">
+                              <User className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                              <p>No navigators available on this day</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-4">
+                              {availableTherapists.map((therapist) => (
+                                <div
+                                  key={therapist.id}
+                                  onClick={() => setSelectedTherapist(therapist)}
+                                  className={`cursor-pointer border-2 rounded-xl p-4 transition-all duration-200 ${selectedTherapist?.id === therapist.id
+                                    ? "border-teal-600 bg-teal-50/50 shadow-md"
+                                    : "border-gray-100 hover:border-teal-200 hover:bg-slate-50"
+                                    }`}
+                                >
+                                  <div className="flex flex-col sm:flex-row items-start gap-4">
+                                    <Avatar className="h-14 w-14 sm:h-16 sm:w-16 border-2 border-white shadow-sm overflow-hidden bg-slate-100">
+                                      <img src={therapist.imageUrl} alt={therapist.name} className="h-full w-full object-cover" />
+                                      <AvatarFallback className="bg-gradient-to-br from-teal-500 to-teal-700 text-white text-lg font-bold">
+                                        {therapist.name.split(" ").map(n => n[0]).join("")}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 w-full">
+                                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                                        <div>
+                                          <h4 className="font-bold text-gray-900 text-lg leading-tight">{therapist.name}</h4>
+                                          <p className="text-sm text-teal-600 font-medium">{therapist.credential}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <Badge variant="secondary" className="bg-teal-100 text-teal-700 font-semibold px-3">
+                                            ${therapist.rate}/session
+                                          </Badge>
                                         </div>
                                       </div>
-                                    )}
+
+                                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-white p-2 rounded-lg border border-gray-100">
+                                          <Award className="h-3.5 w-3.5 text-teal-500" />
+                                          <span>{therapist.experience} exp</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-white p-2 rounded-lg border border-gray-100">
+                                          <Globe className="h-3.5 w-3.5 text-teal-500" />
+                                          <span className="truncate">{therapist.languages[0]}...</span>
+                                        </div>
+                                        <div className="hidden md:flex items-center gap-2 text-xs text-gray-600 bg-white p-2 rounded-lg border border-gray-100">
+                                          <Shield className="h-3.5 w-3.5 text-teal-500" />
+                                          <span>Licensed</span>
+                                        </div>
+                                      </div>
+
+                                      {selectedTherapist?.id === therapist.id && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: "auto", opacity: 1 }}
+                                          className="mt-4 pt-4 border-t border-teal-200 overflow-hidden"
+                                        >
+                                          <div className="bg-white/60 p-4 rounded-xl space-y-4 border border-teal-100/50">
+                                            <div>
+                                              <h5 className="text-sm font-bold text-teal-900 mb-2 flex items-center gap-2">
+                                                <User className="h-4 w-4" />
+                                                Personal Approach
+                                              </h5>
+                                              <div className="relative">
+                                                <p className={`text-sm text-gray-700 leading-relaxed italic ${!expandedBio ? "line-clamp-2" : ""}`}>
+                                                  "{therapist.approach}"
+                                                </p>
+                                                {!expandedBio && (
+                                                  <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
+                                                )}
+                                              </div>
+                                              <button
+                                                onClick={(e) => { e.stopPropagation(); setExpandedBio(!expandedBio); }}
+                                                className="text-xs font-bold text-teal-600 mt-1 hover:underline flex items-center gap-1"
+                                              >
+                                                {expandedBio ? "Read Less" : "Read More"}
+                                              </button>
+                                            </div>
+
+                                            {expandedBio && (
+                                              <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                              >
+                                                <div>
+                                                  <h6 className="text-xs font-bold text-gray-900 mb-2 uppercase tracking-wide">Specialties</h6>
+                                                  <div className="flex flex-wrap gap-1.5">
+                                                    {therapist.specialty.map((spec) => (
+                                                      <Badge key={spec} className="bg-slate-100 text-slate-700 text-[10px] font-medium border-none">
+                                                        {spec}
+                                                      </Badge>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                                <div>
+                                                  <h6 className="text-xs font-bold text-gray-900 mb-2 uppercase tracking-wide">Education</h6>
+                                                  <ul className="text-[11px] text-gray-600 space-y-1">
+                                                    {therapist.education.map((edu, idx) => (
+                                                      <li key={idx} className="flex items-start gap-1.5">
+                                                        <div className="h-1 w-1 bg-teal-400 rounded-full mt-1.5 flex-shrink-0" />
+                                                        <span>{edu}</span>
+                                                      </li>
+                                                    ))}
+                                                  </ul>
+                                                </div>
+                                              </motion.div>
+                                            )}
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                              ))}
+                            </div>
+                          )}
+                        </div>
 
-                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
+                        <div className="p-6 border-t bg-white flex-none flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -724,7 +771,7 @@ export function Appointments() {
                           <Button
                             onClick={nextStep}
                             disabled={!canProceedToStep3}
-                            className="flex-1 bg-teal-600 hover:bg-teal-700"
+                            className="flex-1 bg-teal-600 hover:bg-teal-700 shadow-md transition-all active:scale-95"
                           >
                             Continue
                             <ChevronRight className="h-4 w-4 ml-2" />
@@ -744,62 +791,64 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg">
-                      <CardHeader>
+                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className="flex-none h-[110px] overflow-hidden">
                         <CardTitle className="flex items-center gap-2">
                           <Clock className="h-6 w-6 text-teal-600" />
-                          Select Your Time
+                          Step 3: Select Your Time
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="line-clamp-2">
                           Choose an available time slot with {selectedTherapist?.name}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                          {timeSlots.map((time) => {
-                            const isBooked = date && selectedTherapist && isTimeSlotBooked(selectedTherapist.id, date, time);
-                            return (
-                              <button
-                                key={time}
-                                onClick={() => !isBooked && setSelectedTime(time)}
-                                disabled={isBooked}
-                                className={`p-4 rounded-lg text-left transition-all ${selectedTime === time
-                                  ? "bg-teal-600 text-white ring-2 ring-teal-600 ring-offset-2"
-                                  : isBooked
-                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                    : "bg-gray-50 hover:bg-teal-50 text-gray-900 border-2 border-gray-200 hover:border-teal-300"
-                                  }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4" />
-                                    <span className="font-medium">{time}</span>
+                      <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto p-6">
+                          <div className="grid grid-cols-2 gap-3 mb-6">
+                            {timeSlots.map((time) => {
+                              const isBooked = date && selectedTherapist && isTimeSlotBooked(selectedTherapist.id, date, time);
+                              return (
+                                <button
+                                  key={time}
+                                  onClick={() => !isBooked && setSelectedTime(time)}
+                                  disabled={isBooked}
+                                  className={`p-4 rounded-lg text-left transition-all ${selectedTime === time
+                                    ? "bg-teal-600 text-white ring-2 ring-teal-600 ring-offset-2"
+                                    : isBooked
+                                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                      : "bg-gray-50 hover:bg-teal-50 text-gray-900 border-2 border-gray-200 hover:border-teal-300"
+                                    }`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Clock className="h-4 w-4" />
+                                      <span className="font-medium">{time}</span>
+                                    </div>
+                                    {isBooked && (
+                                      <Badge variant="secondary" className="bg-red-100 text-red-800 text-xs">
+                                        Booked
+                                      </Badge>
+                                    )}
                                   </div>
-                                  {isBooked && (
-                                    <Badge variant="secondary" className="bg-red-100 text-red-800 text-xs">
-                                      Booked
-                                    </Badge>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {selectedTime && (
+                            <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6 font-Inter">
+                              <h4 className="font-medium text-teal-900 mb-2">Session Details</h4>
+                              <div className="space-y-1 text-sm text-teal-800">
+                                <p><strong>Navigator:</strong> {selectedTherapist?.name}</p>
+                                <p><strong>Date:</strong> {date?.toLocaleDateString()}</p>
+                                <p><strong>Time:</strong> {selectedTime}</p>
+                                <p><strong>Duration:</strong> 50 minutes</p>
+                                <p><strong>Session Fee:</strong> ${selectedTherapist?.rate}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        {selectedTime && (
-                          <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6">
-                            <h4 className="font-medium text-teal-900 mb-2">Session Details</h4>
-                            <div className="space-y-1 text-sm text-teal-800">
-                              <p><strong>Navigator:</strong> {selectedTherapist?.name}</p>
-                              <p><strong>Date:</strong> {date?.toLocaleDateString()}</p>
-                              <p><strong>Time:</strong> {selectedTime}</p>
-                              <p><strong>Duration:</strong> 50 minutes</p>
-                              <p><strong>Session Fee:</strong> ${selectedTherapist?.rate}</p>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
+                        <div className="p-6 border-t bg-white flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -831,219 +880,221 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg">
-                      <CardHeader>
+                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className="flex-none h-[110px] overflow-hidden">
                         <CardTitle className="flex items-center gap-2">
                           <CreditCard className="h-6 w-6 text-teal-600" />
-                          Payment Method
+                          Step 4: Payment Method
                         </CardTitle>
                         <CardDescription>
                           Choose how you'd like to pay for your session
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3 mb-6">
-                          <div
-                            onClick={() => setPaymentMethod("credit-card")}
-                            className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "credit-card"
-                              ? "border-teal-600 bg-teal-50"
-                              : "border-gray-200 hover:border-teal-300"
-                              }`}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="credit-card" id="credit-card" />
-                              <Label htmlFor="credit-card" className="flex-1 cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                    <CreditCard className="h-5 w-5 text-teal-600" />
-                                    <div>
-                                      <p className="font-medium">Credit/Debit Card</p>
-                                      <p className="text-xs text-gray-500">Visa, Mastercard, Amex, Discover</p>
+                      <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto p-6">
+                          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3 mb-6">
+                            <div
+                              onClick={() => setPaymentMethod("credit-card")}
+                              className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "credit-card"
+                                ? "border-teal-600 bg-teal-50"
+                                : "border-gray-200 hover:border-teal-300"
+                                }`}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="credit-card" id="credit-card" />
+                                <Label htmlFor="credit-card" className="flex-1 cursor-pointer">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <CreditCard className="h-5 w-5 text-teal-600" />
+                                      <div>
+                                        <p className="font-medium">Credit/Debit Card</p>
+                                        <p className="text-xs text-gray-500">Visa, Mastercard, Amex, Discover</p>
+                                      </div>
+                                    </div>
+                                    <Shield className="h-5 w-5 text-gray-400" />
+                                  </div>
+                                </Label>
+                              </div>
+                            </div>
+
+                            <div
+                              onClick={() => setPaymentMethod("insurance")}
+                              className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "insurance"
+                                ? "border-teal-600 bg-teal-50"
+                                : "border-gray-200 hover:border-teal-300"
+                                }`}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="insurance" id="insurance" />
+                                <Label htmlFor="insurance" className="flex-1 cursor-pointer">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <Shield className="h-5 w-5 text-teal-600" />
+                                      <div>
+                                        <p className="font-medium">Insurance</p>
+                                        <p className="text-xs text-gray-500">We accept most major insurance plans</p>
+                                      </div>
                                     </div>
                                   </div>
-                                  <Shield className="h-5 w-5 text-gray-400" />
-                                </div>
-                              </Label>
+                                </Label>
+                              </div>
                             </div>
-                          </div>
 
-                          <div
-                            onClick={() => setPaymentMethod("insurance")}
-                            className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "insurance"
-                              ? "border-teal-600 bg-teal-50"
-                              : "border-gray-200 hover:border-teal-300"
-                              }`}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="insurance" id="insurance" />
-                              <Label htmlFor="insurance" className="flex-1 cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                    <Shield className="h-5 w-5 text-teal-600" />
-                                    <div>
-                                      <p className="font-medium">Insurance</p>
-                                      <p className="text-xs text-gray-500">We accept most major insurance plans</p>
+                            <div
+                              onClick={() => setPaymentMethod("hsa-fsa")}
+                              className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "hsa-fsa"
+                                ? "border-teal-600 bg-teal-50"
+                                : "border-gray-200 hover:border-teal-300"
+                                }`}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="hsa-fsa" id="hsa-fsa" />
+                                <Label htmlFor="hsa-fsa" className="flex-1 cursor-pointer">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <FileText className="h-5 w-5 text-teal-600" />
+                                      <div>
+                                        <p className="font-medium">HSA/FSA</p>
+                                        <p className="text-xs text-gray-500">Health Savings or Flexible Spending Account</p>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </Label>
+                                </Label>
+                              </div>
                             </div>
-                          </div>
 
-                          <div
-                            onClick={() => setPaymentMethod("hsa-fsa")}
-                            className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "hsa-fsa"
-                              ? "border-teal-600 bg-teal-50"
-                              : "border-gray-200 hover:border-teal-300"
-                              }`}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="hsa-fsa" id="hsa-fsa" />
-                              <Label htmlFor="hsa-fsa" className="flex-1 cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                    <FileText className="h-5 w-5 text-teal-600" />
-                                    <div>
-                                      <p className="font-medium">HSA/FSA</p>
-                                      <p className="text-xs text-gray-500">Health Savings or Flexible Spending Account</p>
+                            <div
+                              onClick={() => setPaymentMethod("pay-later")}
+                              className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "pay-later"
+                                ? "border-teal-600 bg-teal-50"
+                                : "border-gray-200 hover:border-teal-300"
+                                }`}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <RadioGroupItem value="pay-later" id="pay-later" />
+                                <Label htmlFor="pay-later" className="flex-1 cursor-pointer">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <Clock className="h-5 w-5 text-teal-600" />
+                                      <div>
+                                        <p className="font-medium">Pay at Session</p>
+                                        <p className="text-xs text-gray-500">Complete payment during your appointment</p>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </Label>
+                                </Label>
+                              </div>
                             </div>
-                          </div>
+                          </RadioGroup>
 
-                          <div
-                            onClick={() => setPaymentMethod("pay-later")}
-                            className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${paymentMethod === "pay-later"
-                              ? "border-teal-600 bg-teal-50"
-                              : "border-gray-200 hover:border-teal-300"
-                              }`}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <RadioGroupItem value="pay-later" id="pay-later" />
-                              <Label htmlFor="pay-later" className="flex-1 cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                    <Clock className="h-5 w-5 text-teal-600" />
-                                    <div>
-                                      <p className="font-medium">Pay at Session</p>
-                                      <p className="text-xs text-gray-500">Complete payment during your appointment</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </Label>
-                            </div>
-                          </div>
-                        </RadioGroup>
-
-                        {/* Credit Card Details Form */}
-                        {paymentMethod === "credit-card" && (
-                          <div className="space-y-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <h4 className="font-medium text-gray-900 mb-3">Card Details</h4>
-                            <div>
-                              <Label htmlFor="cardName">Cardholder Name</Label>
-                              <Input
-                                id="cardName"
-                                placeholder="John Doe"
-                                value={cardDetails.name}
-                                onChange={(e: any) => setCardDetails({ ...cardDetails, name: e.target.value })}
-                                className="mt-1"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="cardNumber">Card Number</Label>
-                              <Input
-                                id="cardNumber"
-                                placeholder="1234 5678 9012 3456"
-                                value={cardDetails.number}
-                                onChange={(e: any) => {
-                                  const value = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-                                  setCardDetails({ ...cardDetails, number: value });
-                                }}
-                                maxLength={19}
-                                className="mt-1"
-                              />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                          {/* Credit Card Details Form */}
+                          {paymentMethod === "credit-card" && (
+                            <div className="space-y-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                              <h4 className="font-medium text-gray-900 mb-3 text-Inter">Card Details</h4>
                               <div>
-                                <Label htmlFor="expiry">Expiry Date</Label>
+                                <Label htmlFor="cardName">Cardholder Name</Label>
                                 <Input
-                                  id="expiry"
-                                  placeholder="MM/YY"
-                                  value={cardDetails.expiry}
+                                  id="cardName"
+                                  placeholder="John Doe"
+                                  value={cardDetails.name}
+                                  onChange={(e: any) => setCardDetails({ ...cardDetails, name: e.target.value })}
+                                  className="mt-1"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="cardNumber">Card Number</Label>
+                                <Input
+                                  id="cardNumber"
+                                  placeholder="1234 5678 9012 3456"
+                                  value={cardDetails.number}
                                   onChange={(e: any) => {
-                                    let value = e.target.value.replace(/\D/g, '');
-                                    if (value.length >= 2) {
-                                      value = value.slice(0, 2) + '/' + value.slice(2, 4);
-                                    }
-                                    setCardDetails({ ...cardDetails, expiry: value });
+                                    const value = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+                                    setCardDetails({ ...cardDetails, number: value });
                                   }}
-                                  maxLength={5}
+                                  maxLength={19}
                                   className="mt-1"
                                 />
                               </div>
-                              <div>
-                                <Label htmlFor="cvc">CVC</Label>
-                                <Input
-                                  id="cvc"
-                                  placeholder="123"
-                                  value={cardDetails.cvc}
-                                  onChange={(e: any) => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })}
-                                  maxLength={4}
-                                  type="password"
-                                  className="mt-1"
-                                />
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="expiry">Expiry Date</Label>
+                                  <Input
+                                    id="expiry"
+                                    placeholder="MM/YY"
+                                    value={cardDetails.expiry}
+                                    onChange={(e: any) => {
+                                      let value = e.target.value.replace(/\D/g, '');
+                                      if (value.length >= 2) {
+                                        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                                      }
+                                      setCardDetails({ ...cardDetails, expiry: value });
+                                    }}
+                                    maxLength={5}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="cvc">CVC</Label>
+                                  <Input
+                                    id="cvc"
+                                    placeholder="123"
+                                    value={cardDetails.cvc}
+                                    onChange={(e: any) => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })}
+                                    maxLength={4}
+                                    type="password"
+                                    className="mt-1"
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-gray-600 mt-2">
+                                <Shield className="h-4 w-4" />
+                                <span>Your payment information is encrypted and secure</span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-600 mt-2">
-                              <Shield className="h-4 w-4" />
-                              <span>Your payment information is encrypted and secure</span>
-                            </div>
-                          </div>
-                        )}
+                          )}
 
-                        {paymentMethod && paymentMethod !== "credit-card" && (
-                          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
-                            <div className="flex items-start gap-3">
-                              <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                              <div>
-                                <p className="text-sm font-medium text-blue-900 mb-1">Secure Payment</p>
-                                <p className="text-xs text-blue-800">
-                                  All payment information is encrypted and secure. You'll complete payment details after confirming your appointment.
-                                </p>
+                          {paymentMethod && paymentMethod !== "credit-card" && (
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+                              <div className="flex items-start gap-3">
+                                <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="text-sm font-medium text-blue-900 mb-1">Secure Payment</p>
+                                  <p className="text-xs text-blue-800">
+                                    All payment information is encrypted and secure. You'll complete payment details after confirming your appointment.
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6">
-                          <h4 className="font-medium text-teal-900 mb-3">Booking Summary</h4>
-                          <div className="space-y-2 text-sm text-teal-800 mb-4">
-                            <div className="flex justify-between">
-                              <span>Navigator:</span>
-                              <span className="font-medium">{selectedTherapist?.name}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Date:</span>
-                              <span className="font-medium">{date?.toLocaleDateString()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Time:</span>
-                              <span className="font-medium">{selectedTime}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Duration:</span>
-                              <span className="font-medium">50 minutes</span>
-                            </div>
-                            <div className="flex justify-between pt-2 border-t border-teal-200">
-                              <span className="font-medium">Total:</span>
-                              <span className="font-medium text-lg">${selectedTherapist?.rate}</span>
+                          <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6 font-Inter">
+                            <h4 className="font-medium text-teal-900 mb-3">Booking Summary</h4>
+                            <div className="space-y-2 text-sm text-teal-800 mb-4">
+                              <div className="flex justify-between">
+                                <span>Navigator:</span>
+                                <span className="font-medium">{selectedTherapist?.name}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Date:</span>
+                                <span className="font-medium">{date?.toLocaleDateString()}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Time:</span>
+                                <span className="font-medium">{selectedTime}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Duration:</span>
+                                <span className="font-medium">50 minutes</span>
+                              </div>
+                              <div className="flex justify-between pt-2 border-t border-teal-200">
+                                <span>Total:</span>
+                                <span className="font-bold text-lg text-teal-900">${selectedTherapist?.rate}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="sticky bottom-0 bg-white pt-4 pb-2 mt-auto border-t z-20 flex gap-3">
+                        <div className="p-6 border-t bg-white flex-none flex gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
