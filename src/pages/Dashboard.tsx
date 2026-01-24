@@ -198,14 +198,11 @@ export function Dashboard() {
   }, [user, profile, loading]);
 
   useEffect(() => {
-    // Only redirect to onboarding if explicitly needed (not on every login)
-    // User can manually choose to take/retake assessment from dashboard
     const hasCompletedOnboarding = localStorage.getItem("onboarding_completed") === "true";
-    const shouldForceOnboarding = localStorage.getItem("force_onboarding") === "true";
 
-    if (!loading && profile && !profile.compassBearing && !hasCompletedOnboarding && shouldForceOnboarding) {
+    if (!loading && profile && !profile.compassBearing && !hasCompletedOnboarding) {
+      console.log("Onboarding required - redirecting...");
       navigate("/onboarding");
-      localStorage.removeItem("force_onboarding");
     }
   }, [loading, profile, navigate]);
 
@@ -330,7 +327,7 @@ export function Dashboard() {
   // Compass Calibration - Advanced Wellness Score
   const calculateCompassCalibration = () => {
     if (!profile) return { north: 0, east: 0, south: 0, west: 0, overall: 0 };
-    
+
     // NORTH - Mental Clarity (Goals, Journeys, Focus)
     const goalsCompleted = profile.goals?.filter(g => g.completed).length || 0;
     const totalGoals = profile.goals?.length || 0;
@@ -338,7 +335,7 @@ export function Dashboard() {
     const journeyProgress = profile.activeJourneys?.length || 0;
     const journeyScore = Math.min(journeyProgress * 20, 100);
     const north = Math.round((goalsScore + journeyScore) / 2);
-    
+
     // EAST - Emotional Balance (Mood tracking)
     const recentMoods = getRecentMoodData();
     let east = 50;
@@ -346,20 +343,20 @@ export function Dashboard() {
       const avgMood = recentMoods.reduce((sum, entry) => sum + entry.mood, 0) / recentMoods.length;
       east = Math.round((avgMood / 5) * 100);
     }
-    
+
     // SOUTH - Physical Vitality (Streak, Activity)
     const streakScore = Math.min((profile.wellnessStreak || 0) * 10, 100);
     const activityScore = Math.min(((profile.journalEntries?.length || 0) + (profile.appointments?.length || 0)) * 5, 100);
     const south = Math.round((streakScore + activityScore) / 2);
-    
+
     // WEST - Social Connection (Community, Appointments)
     const appointmentScore = Math.min((profile.appointments?.length || 0) * 25, 100);
     const communityScore = Math.min((profile.forumPosts || 0) * 10, 100);
     const west = Math.round((appointmentScore + communityScore) / 2);
-    
+
     // Overall compass calibration
     const overall = Math.round((north + east + south + west) / 4);
-    
+
     return { north, east, south, west, overall };
   };
 
@@ -372,11 +369,11 @@ export function Dashboard() {
 
   const getPersonalizedInsights = () => {
     if (!profile?.compassBearing) return [];
-    
+
     const insights: Array<{ icon: any; message: string; action: string; link: string }> = [];
     const recentMoods = getRecentMoodData();
     const compass = calculateCompassCalibration();
-    
+
     // Mood-based insights
     if (recentMoods.length >= 3) {
       const avgMood = recentMoods.reduce((sum, e) => sum + e.mood, 0) / recentMoods.length;
@@ -396,7 +393,7 @@ export function Dashboard() {
         });
       }
     }
-    
+
     // Journey-based insights
     if (profile.activeJourneys && profile.activeJourneys.length === 0) {
       insights.push({
@@ -406,7 +403,7 @@ export function Dashboard() {
         link: "/blog"
       });
     }
-    
+
     // Streak insights
     if ((profile.wellnessStreak || 0) >= 7) {
       insights.push({
@@ -423,7 +420,7 @@ export function Dashboard() {
         link: "#goals"
       });
     }
-    
+
     // Appointment insights
     if (!profile.appointments || profile.appointments.length === 0) {
       insights.push({
@@ -433,7 +430,7 @@ export function Dashboard() {
         link: "/appointments"
       });
     }
-    
+
     // Compass calibration insights
     if (compass.north < 40) {
       insights.push({
@@ -443,7 +440,7 @@ export function Dashboard() {
         link: "#goals"
       });
     }
-    
+
     if (compass.west < 40) {
       insights.push({
         icon: Users,
@@ -452,7 +449,7 @@ export function Dashboard() {
         link: "/community"
       });
     }
-    
+
     return insights.slice(0, 3); // Return top 3 insights
   };
 
@@ -498,7 +495,17 @@ export function Dashboard() {
   }
 
   if (!profile?.compassBearing && localStorage.getItem("onboarding_completed") !== "true") {
-    return null;
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 flex items-center justify-center">
+          <div className="text-center">
+            <Compass className="h-16 w-16 text-teal-600 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600 font-medium">Setting up your experience...</p>
+            <p className="text-sm text-gray-500 mt-2">Redirecting you to the assessment</p>
+          </div>
+        </div>
+      </PageTransition>
+    );
   }
 
   const recommendedPosts = getRecommendedPosts();
@@ -716,9 +723,9 @@ export function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <Separator />
-                      
+
                       <div>
                         <h4 className="mb-4">Display Options</h4>
                         <div className="space-y-3">
@@ -746,7 +753,7 @@ export function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <Button
                         variant="outline"
                         className="w-full"
@@ -796,7 +803,7 @@ export function Dashboard() {
               <div className="absolute inset-0 opacity-10">
                 <Compass className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-64 w-64" style={{ transform: `translate(-50%, -50%) rotate(${compassCalibration.overall}deg)` }} />
               </div>
-              
+
               <CardContent className={`${preferences.compactView ? 'p-4' : 'p-6'} relative z-10`}>
                 <div className="flex items-center gap-3 mb-6">
                   <Navigation className="h-8 w-8" />
@@ -866,7 +873,7 @@ export function Dashboard() {
                       {compassDirection.label}
                     </Badge>
                   </div>
-                  
+
                   <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                     <h4 className="flex items-center gap-2 mb-3">
                       <Lightbulb className="h-5 w-5" />
@@ -899,8 +906,8 @@ export function Dashboard() {
                       <div>
                         <CardTitle className="text-white text-xl sm:text-2xl">Your Compass Bearing</CardTitle>
                         <CardDescription className={`${preferences.darkAccents ? 'text-slate-100' : 'text-teal-100'}`}>
-                          {preferences.compassBearingExpanded 
-                            ? "Personalized guidance for your journey" 
+                          {preferences.compassBearingExpanded
+                            ? "Personalized guidance for your journey"
                             : "Click to view your personalized insights"}
                         </CardDescription>
                       </div>
@@ -1225,17 +1232,15 @@ export function Dashboard() {
                         {profile.goals.slice(0, 5).map((goal) => (
                           <div
                             key={goal.id}
-                            className={`flex items-center gap-2 ${preferences.compactView ? 'p-2' : 'p-3'} rounded-lg border ${
-                              goal.completed ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"
-                            }`}
+                            className={`flex items-center gap-2 ${preferences.compactView ? 'p-2' : 'p-3'} rounded-lg border ${goal.completed ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"
+                              }`}
                           >
                             <button
                               onClick={() => toggleGoal(goal.id)}
-                              className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center ${
-                                goal.completed
-                                  ? "bg-green-500 border-green-500"
-                                  : `border-gray-300 ${preferences.darkAccents ? 'hover:border-slate-500' : 'hover:border-teal-500'}`
-                              }`}
+                              className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center ${goal.completed
+                                ? "bg-green-500 border-green-500"
+                                : `border-gray-300 ${preferences.darkAccents ? 'hover:border-slate-500' : 'hover:border-teal-500'}`
+                                }`}
                             >
                               {goal.completed && <Check className="h-3 w-3 text-white" />}
                             </button>
