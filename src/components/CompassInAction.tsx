@@ -82,7 +82,7 @@ export function CompassInAction() {
           </div>
           <h2 className="text-white mb-4 text-3xl lg:text-4xl">The Compass in Action</h2>
           <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
-            Your personalized path to mental wellness in three simple steps
+            Your personalized path to mental wellness
           </p>
         </motion.div>
 
@@ -123,11 +123,6 @@ export function CompassInAction() {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                </div>
-
-                {/* Step number */}
-                <div className="absolute -top-3 -right-3 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white border-2 border-yellow-300 flex items-center justify-center shadow-lg">
-                  <span className="text-gray-700 font-semibold">{index + 1}</span>
                 </div>
               </motion.div>
             );
