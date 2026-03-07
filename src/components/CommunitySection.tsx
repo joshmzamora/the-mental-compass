@@ -1238,7 +1238,7 @@ export function CommunitySection() {
   };
 
   return (
-    <section id="community" className="py-12 sm:py-20 lg:py-32 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
+    <section id="community" className="py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
       <CompassDecoration variant="light" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
