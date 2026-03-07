@@ -270,60 +270,66 @@ export function DisordersSection() {
           {/* Disorders Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
             {mentalHealthDisorders.map((disorder) => {
-              const isRecommended =
-                user &&
-                profile?.compassBearing &&
-                (disorder.id ===
-                  profile.compassBearing.primaryStruggle.toLowerCase() ||
-                  disorder.name
-                    .toLowerCase()
-                    .includes(
-                      profile.compassBearing.primaryStruggle.toLowerCase(),
-                    ));
+  const isRecommended = 
+    user && 
+    profile?.compassBearing && 
+    (disorder.id === profile.compassBearing.primaryStruggle.toLowerCase() || 
+     disorder.name.toLowerCase().includes(profile.compassBearing.primaryStruggle.toLowerCase()));
 
-              return (
-                <Card
-                  key={disorder.id}
-                  className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-                  onClick={() => handleDisorderClick(disorder)}
-                >
-                  <div className="relative h-40 sm:h-48 overflow-hidden">
-                    <ImageWithFallback
-                      src={disorderImages[disorder.id]}
-                      alt={disorder.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                    {isRecommended && (
-                      <div className="absolute top-3 right-3">
-                        <Badge className="bg-teal-600 shadow-lg">
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          Recommended
-                        </Badge>
-                      </div>
-                    )}
-                    <div className="absolute bottom-2- sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3">
-                      <h3 className="text-white text-lg sm:text-xl mb-1">
-                        {disorder.name}
-                      </h3>
-                    </div>
-                  </div>
-                  <CardContent className="-mt-4 p-2 md:p-3 pt-2 md:pt-3">
-                    <p className="text-gray-700 text-sm line-clamp-3 mb-3 md:mb-4">
-                      {disorder.description}
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full group-hover:bg-teal-600 group-hover:text-white group-hover:border-teal-600 transition-colors text-sm"
-                    >
-                      Learn More
-                      <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-2" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+  return (
+    <Card
+      key={disorder.id}
+      className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col"
+      onClick={() => handleDisorderClick(disorder)}
+    >
+      <div className="relative h-40 sm:h-48 overflow-hidden flex-shrink-0">
+        <ImageWithFallback
+          src={disorderImages[disorder.id]}
+          alt={disorder.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+        {/* Darker gradient for better text contrast on tablets/desktop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+        
+        {isRecommended && (
+          <div className="absolute top-3 right-3">
+            <Badge className="bg-teal-600 shadow-lg">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Recommended
+            </Badge>
+          </div>
+        )}
+
+        {/* Desktop-only Title Overlay (Hidden on mobile) */}
+        <div className="absolute bottom-3 left-3 right-3 hidden sm:block">
+          <h3 className="text-white text-xl font-bold leading-tight">
+            {disorder.name}
+          </h3>
+        </div>
+      </div>
+
+      <CardContent className="p-4 flex flex-col flex-1">
+        {/* Mobile-only Title (Visible only on small screens) */}
+        <h3 className="text-gray-900 font-bold text-lg mb-2 sm:hidden">
+          {disorder.name}
+        </h3>
+        
+        <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
+          {disorder.description}
+        </p>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full group-hover:bg-teal-600 group-hover:text-white group-hover:border-teal-600 transition-colors text-sm"
+        >
+          Learn More
+          <ArrowRight className="h-4 w-4 ml-2" />
+        </Button>
+      </CardContent>
+    </Card>
+  );
+})}
           </div>
 
         </div>
