@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-16 lg:py-24 overflow-hidden min-h-screen flex items-center">
+    <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-24 lg:py-24 overflow-hidden min-h-screen flex items-start lg:items-center">
       {/* Animated compass background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
