@@ -177,7 +177,7 @@ export function InteractiveMentalCompass() {
   };
 
   return (
-    <section className="py-16 lg:py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden min-h-screen flex items-center">
+    <section className="py-20 sm:py-24 md:py-32 bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden flex items-center">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500 rounded-full blur-3xl"></div>
