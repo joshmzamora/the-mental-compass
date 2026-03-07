@@ -333,7 +333,7 @@ export function Appointments() {
         <CompassDecoration variant="light" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto pt-12">
             {!user && (
               <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <div className="flex items-start gap-4">
