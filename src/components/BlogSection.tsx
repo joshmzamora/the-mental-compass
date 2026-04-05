@@ -109,7 +109,7 @@ export function BlogSection() {
             {filteredPosts.map((post) => (
               <Card
                 key={post.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group gap-0"
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group flex flex-col h-full gap-0"
                 onClick={() => setSelectedPost(post)}
               >
                 <div className="aspect-[16/9] overflow-hidden bg-gray-200">
@@ -119,7 +119,7 @@ export function BlogSection() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <CardHeader>
+                <CardHeader className="flex flex-col pb-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary" className="bg-teal-100 text-teal-800">
                       {post.category}
@@ -128,12 +128,12 @@ export function BlogSection() {
                   <CardTitle className="text-xl text-gray-900 line-clamp-2">
                     {post.title}
                   </CardTitle>
-                  <CardDescription className="text-gray-700 line-clamp-3">
+                  <CardDescription className="text-gray-700 line-clamp-2 mt-2">
                     {post.excerpt}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-2 text-sm text-gray-600">
+                <CardContent className="mt-auto pt-4">
+                  <div className="flex flex-col gap-3 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       <span>{post.author}</span>
