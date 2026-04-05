@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Compass, ArrowRight } from "lucide-react";
+import { Users, ArrowRight } from "lucide-react";
 import { therapists } from "../data/therapists";
 
 export function FeaturedNavigators() {
@@ -13,10 +13,10 @@ export function FeaturedNavigators() {
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 text-teal-600">
-          <Compass className="h-32 w-32" />
+          <Users className="h-32 w-32" />
         </div>
         <div className="absolute bottom-10 right-10 text-purple-600">
-          <Compass className="h-32 w-32" />
+          <Users className="h-32 w-32" />
         </div>
       </div>
 
@@ -30,7 +30,7 @@ export function FeaturedNavigators() {
         >
           <div className="flex items-center justify-center mb-4">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-teal-400 mr-3"></div>
-            <Compass className="h-8 w-8 text-teal-600" />
+            <Users className="h-8 w-8 text-teal-600" />
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-teal-400 ml-3"></div>
           </div>
           <h2 className="text-gray-900 mb-4">Featured Navigators</h2>

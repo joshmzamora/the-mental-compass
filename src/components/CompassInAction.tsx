@@ -1,12 +1,12 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Compass, Calendar, Users, ArrowRight, Sparkles } from "lucide-react";
+import { Target, Calendar, MessageSquare, ArrowRight, Heart } from "lucide-react";
 
 export function CompassInAction() {
   const features = [
     {
-      icon: Compass,
+      icon: Target,
       title: "Set Your Compass",
       description: "Take our personalized questionnaire to discover your unique mental health profile and get customized recommendations tailored to your journey.",
       link: "/signup",
@@ -24,7 +24,7 @@ export function CompassInAction() {
       gradient: "from-blue-500 to-purple-500"
     },
     {
-      icon: Users,
+      icon: MessageSquare,
       title: "Find Your Circle",
       description: "Join our supportive community of individuals navigating similar journeys. Share experiences, offer support, and never feel alone in your mental health journey.",
       link: "/community",
@@ -43,14 +43,14 @@ export function CompassInAction() {
           animate={{ rotate: 360 }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         >
-          <Compass className="h-64 w-64" />
+          <Target className="h-64 w-64" />
         </motion.div>
         <motion.div
           className="absolute bottom-10 left-20 text-white/10 hidden lg:block"
           animate={{ rotate: -360 }}
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         >
-          <Compass className="h-48 w-48" />
+          <MessageSquare className="h-48 w-48" />
         </motion.div>
         
         {/* Grid pattern overlay */}
@@ -77,7 +77,7 @@ export function CompassInAction() {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <Sparkles className="h-10 w-10 lg:h-12 lg:w-12 text-yellow-300" />
+              <Heart className="h-10 w-10 lg:h-12 lg:w-12 text-rose-200" />
             </motion.div>
           </div>
           <h2 className="text-white mb-4 text-3xl lg:text-5xl">The Compass in Action</h2>

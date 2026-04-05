@@ -1,20 +1,10 @@
-import { Heart, Users, BookOpen, Phone, Compass, Navigation, MapPin, Map } from "lucide-react";
+import { Brain, Users, BookOpen, Phone, Compass, Navigation, FileText, Shield, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect } from "react";
+import { LayoutGroup, motion } from "motion/react";
+import { TextRotate } from "./ui/text-rotate";
 
 export function Hero() {
-  const words = ["Mental Wellness", "Inner Peace", "Healing", "Growth", "Resilience"];
-  const [currentWord, setCurrentWord] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentWord((prev) => (prev + 1) % words.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-24 lg:py-24 overflow-hidden min-h-[100dvh] flex items-center justify-center">
       {/* Animated compass background elements */}
@@ -85,22 +75,48 @@ export function Hero() {
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-teal-400 ml-4"></div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 text-gray-900 px-4">
-              Your Journey to{" "}
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={currentWord}
-                  initial={{ y: 20, opacity: 0, scale: 0.9 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: -20, opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600 inline-block align-bottom pb-2 -mb-2"
+            <div className="mb-6 px-4">
+              <LayoutGroup>
+                <motion.h1
+                  className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-4xl font-semibold text-gray-900 sm:gap-x-5 sm:text-5xl md:text-6xl lg:text-7xl"
+                  layout
                 >
-                  {words[currentWord]}
-                </motion.span>
-              </AnimatePresence>{" "}
-              Starts Here
-            </h1>
+                  <motion.span
+                    className="mr-2 sm:mr-3"
+                    layout
+                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  >
+                    Your Journey to
+                  </motion.span>
+                  <TextRotate
+                    texts={[
+                      "Healing",
+                      "Growth",
+                      "Inner Peace",
+                      "Resilience",
+                      "Mental Wellness",
+                    ]}
+                    mainClassName="justify-center overflow-hidden rounded-lg bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 px-3 py-1.5 leading-[1.12] text-white shadow-[0_16px_32px_rgba(13,148,136,0.22)] ring-1 ring-white/30 sm:px-4 sm:py-2 md:px-5 md:py-2.5"
+                    splitLevelClassName="overflow-hidden pb-[0.22em] -mb-[0.22em]"
+                    elementLevelClassName="pb-[0.14em]"
+                    staggerFrom="last"
+                    staggerDuration={0.02}
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "-120%" }}
+                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                    rotationInterval={2200}
+                  />
+                  <motion.span
+                    className="ml-2 sm:ml-3"
+                    layout
+                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  >
+                    Starts Here
+                  </motion.span>
+                </motion.h1>
+              </LayoutGroup>
+            </div>
             <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 text-gray-700 max-w-3xl mx-auto px-4">
               Navigate your mental health journey with compassion, support, and
               expert resources. You don't have to face it alone.
@@ -130,7 +146,7 @@ export function Hero() {
               className="border-teal-600 text-teal-600 hover:bg-teal-50 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
             >
               <Link to="/disorders">
-                <Map className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <BookOpen className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Explore Resources
               </Link>
             </Button>
@@ -145,9 +161,9 @@ export function Hero() {
               className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-100 hover:border-teal-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 text-teal-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <MapPin className="h-16 w-16 -mr-4 -mt-4" />
+                <FileText className="h-16 w-16 -mr-4 -mt-4" />
               </div>
-              <Heart className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
+              <Brain className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Expert Resources</h3>
               <p className="text-sm text-gray-600">
                 Evidence-based information about mental health conditions
@@ -161,7 +177,7 @@ export function Hero() {
               className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-blue-100 hover:border-blue-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 text-blue-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Compass className="h-16 w-16 -mr-4 -mt-4" />
+                <Shield className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">24/7 Support</h3>
@@ -177,9 +193,9 @@ export function Hero() {
               className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-purple-100 hover:border-purple-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 text-purple-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Navigation className="h-16 w-16 -mr-4 -mt-4" />
+                <Users className="h-16 w-16 -mr-4 -mt-4" />
               </div>
-              <Users className="h-12 w-12 text-purple-600 mx-auto mb-4 relative z-10" />
+              <MessageSquare className="h-12 w-12 text-purple-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Community</h3>
               <p className="text-sm text-gray-600">
                 Connect with others who understand your journey
@@ -193,7 +209,7 @@ export function Hero() {
               className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-100 hover:border-teal-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 text-teal-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Map className="h-16 w-16 -mr-4 -mt-4" />
+                <FileText className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <BookOpen className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Education</h3>

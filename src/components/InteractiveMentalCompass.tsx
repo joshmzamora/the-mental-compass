@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Compass, Lightbulb, Users, Calendar, Heart, Sparkles, ArrowRight } from "lucide-react";
+import { Compass, Brain, MessageSquare, Calendar, Heart, ArrowRight } from "lucide-react";
 import { Card } from "./ui/card";
 
 interface CompassPoint {
@@ -39,7 +39,7 @@ const compassPoints: CompassPointExtended[] = [
     description: "Understanding Mental Health",
     longDescription: "Gain insight into mental health conditions, symptoms, and treatment options. Knowledge is the first step toward healing.",
     features: ["Comprehensive disorder guides", "Expert-reviewed information", "Self-assessment tools"],
-    icon: Lightbulb,
+    icon: Brain,
     route: "/disorders",
     color: "from-yellow-400 to-orange-500",
     angle: 0, // North
@@ -50,7 +50,7 @@ const compassPoints: CompassPointExtended[] = [
     description: "Community Support",
     longDescription: "Join a supportive community where you can share experiences, find encouragement, and realize you're not alone.",
     features: ["Moderated forums", "Real-time chat rooms", "Peer support groups"],
-    icon: Users,
+    icon: MessageSquare,
     route: "/community",
     color: "from-blue-400 to-indigo-600",
     angle: 90, // East
