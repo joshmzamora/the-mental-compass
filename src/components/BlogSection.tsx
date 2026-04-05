@@ -107,7 +107,11 @@ export function BlogSection() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
-              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
+              <Card
+                key={post.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                onClick={() => setSelectedPost(post)}
+              >
                 <div className="aspect-[16/9] overflow-hidden bg-gray-200">
                   <ImageWithFallback
                     src={post.imageUrl}
@@ -165,22 +169,25 @@ export function BlogSection() {
           {selectedPost && (
             <>
               {/* Sticky Header with Hero Image */}
-              <DialogHeader className="sticky top-0 z-10 bg-white border-b flex-shrink-0 p-0 space-y-0">
-                <div className="relative h-40 md:h-52 lg:h-64 overflow-hidden w-full">
+              <DialogHeader className="sticky top-0 z-10 bg-black border-b flex-shrink-0 p-0 space-y-0">
+                <div className="relative min-h-[300px] md:min-h-[400px] lg:min-h-[500px] overflow-hidden w-full flex items-end bg-black">
                   <ImageWithFallback
                     src={selectedPost.imageUrl}
                     alt={selectedPost.title}
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                  <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8 lg:left-12 right-4 sm:right-6 md:right-8 lg:right-12">
-                    <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-3">
+                  {/* Heavy dark overlay to make background image less visible */}
+                  <div className="absolute inset-0 bg-black/100"></div>
+                  {/* Additional gradient for text readability at the bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                  <div className="relative z-10 w-full p-6 sm:p-8 md:p-12 pb-8">
+                    <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-4">
                       {selectedPost.category}
                     </Badge>
-                    <DialogTitle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold leading-tight shadow-sm">
+                    <DialogTitle className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight shadow-sm max-w-5xl">
                       {selectedPost.title}
                     </DialogTitle>
-                    <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl mt-2 max-w-4xl font-medium">
+                    <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl lg:text-2xl mt-4 max-w-4xl font-medium leading-relaxed">
                       {selectedPost.excerpt}
                     </DialogDescription>
                   </div>
@@ -189,7 +196,7 @@ export function BlogSection() {
 
               {/* Scrollable Content Area */}
               <div className="flex-1 overflow-y-auto bg-white">
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12">
 
                   {/* Metadata Row */}
                   <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-100">
@@ -220,11 +227,29 @@ export function BlogSection() {
                   {/* Main Article Content */}
                   <article className="prose prose-lg prose-teal max-w-none leading-relaxed font-serif">
                     {/* Render paragraphs cleanly */}
-                    {selectedPost.content.split('\n\n').map((paragraph, idx) => (
-                      <p key={idx} className="mb-6 text-gray-800 text-lg md:text-xl leading-8">
-                        {paragraph}
-                      </p>
-                    ))}
+                    {selectedPost.content.split('\n\n').map((paragraph, idx) => {
+                      if (paragraph.startsWith('### ')) {
+                        return (
+                          <h3 key={idx} className="text-2xl md:text-3xl font-bold text-gray-900 mt-10 mb-6 font-sans">
+                            {paragraph.replace('### ', '')}
+                          </h3>
+                        );
+                      }
+
+                      // Handle basic bolding
+                      const parts = paragraph.split(/(\*\*.*?\*\*)/g);
+
+                      return (
+                        <p key={idx} className="mb-6 text-gray-800 text-lg md:text-xl leading-8">
+                          {parts.map((part, i) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return <strong key={i} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>;
+                            }
+                            return part;
+                          })}
+                        </p>
+                      );
+                    })}
 
                     {/* Pull Quote */}
                     {selectedPost.quote && (

@@ -17,125 +17,86 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
   {
     id: '1',
-    title: 'Understanding the Difference Between Sadness and Depression',
-    excerpt:
-        'Learn how to recognize when everyday sadness might be something more serious and when to seek help.',
-    content:
-        'Everyone experiences sadness from time to time. It\'s a normal human emotion that typically passes with time. However, depression is more than just feeling sad—it\'s a persistent mental health condition that affects how you think, feel, and function in daily life.\n\nKey Differences:\n\nSadness is usually triggered by a specific event or situation. It\'s temporary and tends to lift once you process the event or circumstances change. You can still enjoy activities and connect with others, even while feeling sad.\n\nDepression, on the other hand, persists for weeks or months regardless of circumstances. It affects your ability to function, enjoy activities you once loved, and maintain relationships. Common symptoms include persistent low mood, loss of interest in activities, changes in sleep and appetite, difficulty concentrating, and thoughts of worthlessness or hopelessness.\n\nWhen to Seek Help:\n\nIf you\'ve been experiencing these symptoms for more than two weeks, or if they\'re significantly impacting your daily life, it\'s time to reach out to a mental health professional. Depression is treatable, and seeking help is a sign of strength, not weakness.\n\nRemember: Mental health is just as important as physical health, and you deserve support and care.',
-    author: 'Dr. Sarah Mitchell',
-    date: '2025-10-15',
-    category: 'Education',
-    readTime: '5 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1546954026-42149614d27f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D=rb-4.1.0&q=80&w=1080',
-    quote:
-        'Sadness is like a passing cloud, but depression contributes to the weather climate of your mind.',
-    quoteAuthor: 'Dr. Sarah Mitchell',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1544027993-37dbfe43562a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdW5saWdodCUyMGhvcGUlMjBjbG91ZHN8ZW58MXx8fHwxNzYyMjczMzg4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'Dr. Sarah Mitchell is a licensed clinical psychologist with over 15 years of experience specializing in mood disorders. She is passionate about making mental health education accessible to everyone.'
+    title: 'Understanding the Nuances: Sadness vs. Clinical Depression',
+    excerpt: 'Differentiating between natural emotional responses and clinical symptoms is the first step toward effective mental health management. Learn how to recognize the signs.',
+    content: 'Everyone experiences profound sadness at various points in their lives. It is a natural emotional response to challenging circumstances, loss, or disappointment. However, understanding when everyday sadness transforms into clinical depression requires a deeper look at the persistency and intensity of these feelings.\n\n### The Anatomy of Clinical Depression\n\nUnlike sadness, which is typically tied to a specific event and eases over time, depression is a pervasive, unyielding condition. It actively impairs a person’s ability to function at work, socialize, or find joy in previously cherished activities. From a neurobiological standpoint, clinical depression involves complex interactions among neurotransmitters like serotonin, dopamine, and norepinephrine.\n\n### Recognizing Key Symptoms\n\nProfessional diagnosis often looks for symptoms lasting longer than two weeks. These include persistent depressed mood, chronic fatigue, changes in sleep patterns (either insomnia or hypersomnia), appetite fluctuations, and cognitive difficulties characterized by a lack of focus and persistent self-deprecation. \n\n### Taking the Next Steps\n\nRecognizing the difference empowers individuals to seek appropriate care. If these symptoms resonate with you or a loved one, consulting a licensed mental health professional can open doors to therapeutic interventions, including cognitive-behavioral therapy (CBT) and, when appropriate, pharmacological support. Seeking help is an act of profound self-advocacy and strength.',
+    author: 'Dr. Sarah Mitchell, Psy.D',
+    date: '2026-04-01',
+    category: 'Clinical Insights',
+    readTime: '6 min read',
+    imageUrl: '/images/mental_health_depression_1775406645376.png',
+    quote: 'Depression is not mere sadness; it is the progressive emotional flattening that clouds our inherent psychological resilience.',
+    quoteAuthor: 'Dr. Sarah Mitchell, Psy.D',
+    authorBio: 'Dr. Sarah Mitchell is a licensed clinical psychologist and mood disorder specialist, bringing over 15 years of evidence-based practice to her advocacy for accessible mental health education.'
   },
   {
     id: '2',
-    title: '5 Daily Habits to Support Your Mental Health',
-    excerpt:
-        'Small, consistent actions can make a big difference in your mental wellbeing. Here are five science-backed habits to try.',
-    content:
-        'Taking care of your mental health doesn\'t always require dramatic changes. Often, it\'s the small, daily habits that make the biggest difference. Here are five evidence-based practices you can start today:\n\n1. Move Your Body: Even 15 minutes of movement can boost mood-enhancing endorphins. Whether it\'s a walk, yoga, or dancing in your kitchen, find movement that feels good.\n\n2. Practice Gratitude: Take a moment each day to acknowledge three things you\'re grateful for. This simple practice can rewire your brain to notice positive aspects of life.\n\n3. Connect with Others: Reach out to a friend, family member, or support group. Human connection is essential for mental wellbeing.\n\n4. Prioritize Sleep: Aim for 7-9 hours of quality sleep. Good sleep hygiene includes a consistent schedule, limiting screen time before bed, and creating a calm sleep environment.\n\n5. Limit Social Media: Set boundaries around social media use. Constant comparison and information overload can negatively impact mental health.\n\nStart with one habit and build from there. Small, consistent steps lead to lasting change.',
-    author: 'Marcus Johnson',
-    date: '2025-10-12',
-    category: 'Wellness',
-    readTime: '4 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1610050731641-f855ccdaf3f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWFkaW5nJTIwYm9vayUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MTg0MTAzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    quote:
-        'You don\'t have to overhaul your life overnight. Small degrees of change can lead to a completely new destination.',
-    quoteAuthor: 'Mental Compass Philosophy',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9uJTIweW9nYXxlbnwxfHx8fDE3NjIyNzM0NDV8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'Marcus Johnson is a holistic wellness coach and mindfulness practitioner. He helps individuals build sustainable habits for better mental and physical health.'
+    title: '5 Science-Backed Daily Habits for Peak Mental Wellness',
+    excerpt: 'Optimize your mental resilience through manageable, evidence-based daily interventions. Small shifts can yield profound long-term neurological benefits.',
+    content: 'Sustainable mental health isn\'t built through sporadic, drastic life overhauls, but via consistent, scientifically supported daily habits that promote neuroplasticity and emotional regulation.\n\n### 1. Intentional Movement\n\nResearch consistently links moderate physical exercise to the release of endorphins and brain-derived neurotrophic factor (BDNF). Engaging in just 20 minutes of mindful movement daily can significantly lower baseline cortisol and elevate mood.\n\n### 2. Cognitive Reappraisal through Gratitude\n\nPracticing gratitude is fundamentally an exercise in cognitive reappraisal. By taking five minutes daily to document specific positive outcomes, you actively train your brain to filter for constructive environmental cues rather than threats.\n\n### 3. Deliberate Social Connection\n\nHumans are biologically wired for community. In-person or high-quality virtual interactions lower systemic stress levels and increase oxytocin production. Prioritize at least one meaningful interaction devoid of digital distraction daily.\n\n### 4. Circadian Rhythm Optimization\n\nSleep hygiene is the bedrock of psychiatric health. Exposure to natural morning light and the complete removal of blue-light-emitting devices 60 minutes prior to sleep can radically improve REM cycles and cognitive recovery.\n\n### 5. Mindful Digital Consumption\n\nThe human brain is not evolved to process continuous, global streams of crisis information. Curating your digital environment and implementing strict temporal boundaries around social media usage is crucial for maintaining cognitive bandwidth.',
+    author: 'Marcus Johnson, M.S. Kinesiology',
+    date: '2026-03-20',
+    category: 'Proactive Wellness',
+    readTime: '5 min read',
+    imageUrl: '/images/daily_wellness_habits_1775406671749.png',
+    quote: 'Neurological resilience is constructed not through grand interventions, but through the architecture of our daily choices.',
+    quoteAuthor: 'Marcus Johnson',
+    authorBio: 'Marcus Johnson is a wellness researcher and coach, specializing in the intersection of circadian biology, habit formation, and mental health.'
   },
   {
     id: '3',
-    title: 'Breaking the Stigma: Why It\'s Okay to Ask for Help',
-    excerpt:
-        'Exploring why mental health stigma persists and how we can all work together to create a more supportive society.',
-    content:
-        'Despite growing awareness, stigma around mental health remains a significant barrier to treatment. Many people still feel ashamed or embarrassed to admit they\'re struggling. But seeking help is a sign of strength, not weakness.\n\nWhy Stigma Persists:\n\nHistorically, mental health conditions have been misunderstood, leading to harmful stereotypes. Media portrayals often perpetuate misconceptions. Fear of judgment can prevent people from opening up about their struggles.\n\nThe Cost of Silence:\n\nStigma prevents people from seeking help early when treatment is most effective. It creates isolation, making people feel alone in their struggles. Untreated mental health conditions can worsen over time and impact all areas of life.\n\nHow We Can Make a Difference:\n\nSpeak openly about mental health. Share your experiences if you\'re comfortable. Challenge stigmatizing language and attitudes when you encounter them. Educate yourself and others about mental health conditions. Support policies and organizations that promote mental health awareness.\n\nRemember: Mental health conditions are medical conditions, just like diabetes or heart disease. You wouldn\'t hesitate to seek treatment for a broken bone—your mental health deserves the same care and attention.',
-    author: 'Dr. Emily Chen',
-    date: '2025-10-08',
-    category: 'Advocacy',
-    readTime: '6 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwdGFsa2luZ3xlbnwxfHx8fDE3NjIyNzM2NTZ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    quote:
-        'Asking for help isn\'t giving up; it\'s refusing to give up on yourself.',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0aGVyYXB5JTIwdGFsa2luZ3xlbnwxfHx8fDE3NjIyNzM0ODV8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'Dr. Emily Chen is a psychiatrist and mental health advocate. She frequently writes about destigmatizing mental illness and policy reform in healthcare.'
+    title: 'Dismantling the Stigma: The Economics & Ethics of Mental Health Disclosure',
+    excerpt: 'Examining the systemic barriers that perpetuate mental health stigma, and the data-driven case for promoting psychological safety in communities and workplaces.',
+    content: 'The stigma surrounding mental illness is not merely a social faux pas; it is a profound public health crisis that deters intervention and costs the global economy trillions in lost productivity annually. \n\n### The Roots of Stigma\n\nStigma operates on multiple levels: institutional policies that fail to provide parity for psychiatric care, societal stereotypes fueled by media misrepresentations, and internalized shame. This triad actively prevents individuals from pursuing highly effective clinical treatments.\n\n### The Cost of Silence\n\nWhen psychological distress is framed as a moral failing or weakness, individuals delay care. This results in the exacerbation of symptoms and necessitates more intensive, complex interventions later. From an organizational perspective, environments lacking psychological safety observe higher turnover and profound losses in creative problem-solving.\n\n### Strategies for Cultural Transformation\n\n1. **Language Matters:** Adopting person-first language and treating psychiatric terminology with respect removes the barrier of colloquial trivialization.\n2. **Leadership Transparency:** When leaders and public figures disclose their own navigation of mental health care, it provides an implicit social permission structure for others to do the same.\n3. **Policy Equity:** Advocating for comprehensive mental health coverage is equally as critical as interpersonal support.',
+    author: 'Dr. Emily Chen, M.D.',
+    date: '2026-02-28',
+    category: 'Advocacy & Policy',
+    readTime: '7 min read',
+    imageUrl: '/images/breaking_stigma_1775406698580.png',
+    quote: 'Ending stigma requires moving from passive awareness to active, systemic accommodation for psychological diversity.',
+    quoteAuthor: 'Dr. Emily Chen, M.D.',
+    authorBio: 'Dr. Emily Chen is a psychiatrist and public policy consultant advising regional governments on structural destigmatization initiatives.'
   },
   {
     id: '4',
-    title: 'Managing Anxiety in the Workplace',
-    excerpt:
-        'Practical strategies for coping with work-related anxiety and creating a healthier work-life balance.',
-    content:
-        'Work-related anxiety is incredibly common, but it doesn\'t have to control your life. Whether you\'re dealing with deadline pressure, difficult colleagues, or general workplace stress, there are effective strategies you can use...',
-    author: 'James Peterson',
-    date: '2025-10-05',
-    category: 'Coping Strategies',
-    readTime: '7 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1497215728101-856f4ea42174?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2V8ZW58MXx8fHwxNzYyMjczNjc3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    quote:
-        'Productivity should never come at the cost of your peace. You can be successful and sane at the same time.',
+    title: 'Mitigating Workplace Anxiety in High-Performance Environments',
+    excerpt: 'High-stress corporate cultures don\'t have to result in burnout. Implement these psychological safeguards to manage professional anxiety proactively.',
+    content: 'In our rapidly evolving, hyper-connected professional landscape, workplace anxiety is transitioning from an anomaly to an epidemic. Managing this requires moving beyond standard "stress relief" to implementing robust psychological boundaries.\n\n### Identifying the Triggers\n\nWorkplace anxiety frequently stems from ambiguous expectations, a lack of psychological safety, or imposter syndrome. Identifying whether your anxiety is somatic (physical symptoms like a racing heart) or cognitive (racing, catastrophic thoughts) is the first step in addressing it.\n\n### Professional Coping Mechanisms\n\n**1. Micro-Restoration:** You cannot run on empty. Integrating 5-minute periods of sensory detachment—stepping away from screens, deep diaphragmatic breathing—can reset your autonomic nervous system.\n\n**2. The Power of "No":** Setting boundaries is a professional skill, not a deficiency. Clearly communicating capacity and prioritizing high-impact tasks reduces the overwhelm that precipitates panic.\n\n**3. Cognitive Reframing:** When facing a high-stakes presentation or difficult project, consciously shift your internal narrative from threat-based ("I am going to fail") to challenge-based ("This is an opportunity to execute my training").\n\nFor chronic cases, engaging with an executive coach or a cognitive-behavioral therapist can provide customized strategies for thriving, rather than just surviving, at work.',
+    author: 'James Peterson, Org. Psych.',
+    date: '2026-01-15',
+    category: 'Professional Development',
+    readTime: '8 min read',
+    imageUrl: '/images/workplace_anxiety_1775406710936.png',
+    quote: 'True professional resilience is knowing how to sprint, but also knowing exactly how to rest.',
     quoteAuthor: 'James Peterson',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmVhayUyMHRpbWV8ZW58MXx8fHwxNzYyMjczODA2fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'James Peterson is an organizational psychologist and career counselor. He specializes in helping professionals navigate workplace stress and burnout.'
+    authorBio: 'James Peterson holds a Master\'s in Organizational Psychology and consults for Fortune 500 companies on employee well-being and systemic burnout reduction.'
   },
   {
     id: '5',
-    title: 'The Connection Between Sleep and Mental Health',
-    excerpt:
-        'Discover how sleep quality impacts your mental wellbeing and what you can do to improve both.',
-    content:
-        'The relationship between sleep and mental health is bidirectional—poor sleep can contribute to mental health problems, and mental health issues can make it harder to sleep well. Understanding this connection is crucial...',
-    author: 'Dr. Rachel Adams',
-    date: '2025-09-28',
-    category: 'Wellness',
-    readTime: '5 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1691076198378-124d0985c851?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzbGVlcGluZyUyMHBlYWNlZnVsJTIwcmVzdHxlbnwxfHx8fDE3NjE4NDEwMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    quote:
-        'The bridge between despair and hope is often a good night\'s sleep.',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1511295742362-92c96b1cf484?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaWxsb3dzJTIwY29tZm9ydHxlbnwxfHx8fDE3NjIyNzM4MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'Dr. Rachel Adams is a neuroscientist exploring the intersection of sleep and mental health. Her research focuses on circadian rhythms and mood regulation.'
+    title: 'The Neuroscience of Sleep and Emotional Regulation',
+    excerpt: 'An in-depth exploration of how restorative sleep architecture acts as the primary mechanism for daily psychological repair and emotional stability.',
+    content: 'Sleep is not an inactive state of rest; it is an active, vital neurobiological process during which the brain undergoes essential maintenance. The relationship between psychiatric stability and sleep quality is intimately connected and inherently bidirectional.\n\n### REM Sleep as Emotional First Aid\n\nDuring Rapid Eye Movement (REM) sleep, the brain processes emotionally charged memories in a neurochemical environment devoid of the stress hormone noradrenaline. This allows us to wake up subjective to the emotional sting of the previous day’s events. Without adequate REM sleep, our emotional reactivity to negative stimuli can increase by up to 60%.\n\n### The Impact of Deficits\n\nChronic sleep deprivation alters the functional connectivity between the prefrontal cortex—responsible for rational decision-making—and the amygdala, our emotional center. This neurological disconnect manifests as increased anxiety, lower frustration tolerance, and an elevated risk of clinical depression.\n\n### Clinical Recommendations for Architecture\n\nTo optimize sleep for mental health, consistency is paramount. Anchor your wake time, utilize light therapy in darker months, ensure your sleeping environment is optimized for physical cooling, and consult a sleep specialist if you suspect conditions like sleep apnea or chronic insomnia are undermining your mental health.',
+    author: 'Dr. Rachel Adams, Ph.D.',
+    date: '2025-12-05',
+    category: 'Neuroscience',
+    readTime: '6 min read',
+    imageUrl: '/images/sleep_mental_health_1775406760137.png',
+    quote: 'Sleep is the single most effective thing we can do to reset our brain and body health each day.',
+    quoteAuthor: 'Dr. Rachel Adams, Ph.D.',
+    authorBio: 'Dr. Rachel Adams is a neuroscientist and sleep researcher whose clinical work focuses on the integration of circadian alignment with psychiatric care.'
   },
   {
     id: '6',
-    title: 'Supporting a Loved One with Depression',
-    excerpt:
-        'How to be there for someone struggling with depression while taking care of your own mental health.',
-    content:
-        'When someone you care about is dealing with depression, it can be difficult to know to help. You want to be supportive, but you might worry about saying the wrong thing or making things worse...',
-    author: 'Lisa Williams',
-    date: '2025-09-22',
-    category: 'Support',
-    readTime: '6 min read',
-    imageUrl:
-        'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kc3xlbnwxfHx8fDE3NjIyNzM2OTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    quote:
-        'Being there for someone doesn\'t mean fixing them. It means standing with them while they fix themselves.',
-    secondaryImageUrl:
-        'https://images.unsplash.com/photo-1494451930944-8998635c2123?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YWxraW5nJTIwdG9nZXRoZXJ8ZW58MXx8fHwxNzYyMjczODcxfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    authorBio:
-        'Lisa Williams is a licensed family therapist and author. She supports families navigating mental health challenges together.'
+    title: 'The Architecture of Support: Navigating a Loved One\'s Depression',
+    excerpt: 'Caregiving and emotional support require boundaries, empathy, and professional guidance. Learn the clinical best practices for supporting a partner or family member.',
+    content: 'When someone close to you is diagnosed with clinical depression, the psychological impact ripples outward. Many individuals wish to help, but inadvertently adopt the role of a therapist, which can strain the relationship and burn out the supporter.\n\n### Empathy over Fixing\n\nThe most common error in supporting someone with depression is the attempt to "fix" their mood with logic, unsolicited advice, or forced positivity. The clinical gold standard for support involves active listening and validation. Acknowledging their pain without immediately attempting to resolve it provides immense relief.\n\n### Instrumental vs. Emotional Support\n\nSometimes, the best support is not a deep conversation, but practical, instrumental help. Assisting with mundane tasks—grocery shopping, doing laundry, or accompanying them to therapy appointments—can significantly reduce their cognitive load and demonstrate profound care.\n\n### The Imperative of Boundaries\n\nYou cannot serve as someone\'s sole psychological anchor. Setting clear boundaries and encouraging professional psychiatric intervention is critical. Furthermore, maintaining your own mental health through individual therapy, support groups, and protected personal time ensures you have the emotional bandwidth necessary to remain supportive long-term.',
+    author: 'Lisa Williams, LMFT',
+    date: '2025-11-20',
+    category: 'Relationships & Care',
+    readTime: '7 min read',
+    imageUrl: '/images/supporting_loved_one_1775406838638.png',
+    quote: 'Validating another person\'s pain without absorbing it is the highest form of supportive love.',
+    quoteAuthor: 'Lisa Williams, LMFT',
+    authorBio: 'Lisa Williams is a Licensed Marriage and Family Therapist (LMFT) emphasizing systemic approaches to managing mood disorders within family units.'
   }
 ];
