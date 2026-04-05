@@ -176,15 +176,16 @@ export function BlogSection() {
                     alt={selectedPost.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  {/* Heavy dark overlay to make background image less visible */}
-                  <div className="absolute inset-0 bg-black/100"></div>
-                  {/* Additional gradient for text readability at the bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                  {/* Dark overlay for readability */}
+                  <div className="absolute inset-0 bg-black/50"></div>
+
+                  {/* Gradient for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
                   <div className="relative z-10 w-full p-6 sm:p-8 md:p-12 pb-8">
                     <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-4">
                       {selectedPost.category}
                     </Badge>
-                    <DialogTitle className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight shadow-sm max-w-5xl">
+                    <DialogTitle className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight max-w-5xl [text-shadow:0_2px_8px_rgba(0,0,0,0.8)]">
                       {selectedPost.title}
                     </DialogTitle>
                     <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl lg:text-2xl mt-4 max-w-4xl font-medium leading-relaxed">
