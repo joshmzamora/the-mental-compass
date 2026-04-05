@@ -474,6 +474,146 @@ export function CommunitySection() {
   const loadMockPosts = () => {
     const mockPosts: ForumPost[] = [
       {
+        id: "new-1",
+        userId: "mock-new-1",
+        author: "Alex J.",
+        title: "New to the community and looking for support",
+        content: "Hi everyone, I just joined The Mental Compass today. I've been dealing with some rough patches recently and decided it's time to reach out. Really glad to find a community like this.",
+        tags: ["Support", "Wellness"],
+        replies: 1,
+        likes: 12,
+        likedBy: [],
+        timestamp: new Date("2026-04-05T08:15:00"),
+        responses: [
+          {
+            id: "r-new-1-1",
+            postId: "new-1",
+            userId: "mock2",
+            author: "Mike T.",
+            content: "Welcome, Alex! Taking the first step to reach out is huge. You're in a safe place here.",
+            timestamp: new Date("2026-04-05T09:30:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "new-2",
+        userId: "mock-new-2",
+        author: "Emily R.",
+        title: "Managing spring triggers",
+        content: "Does anyone else find their anxiety spikes when the seasons change? The transition to spring always makes me feel off-balance and overwhelmed. Any tips for managing seasonal transitions?",
+        tags: ["Anxiety", "Coping Strategies"],
+        replies: 2,
+        likes: 34,
+        likedBy: [],
+        timestamp: new Date("2026-04-04T14:20:00"),
+        responses: [
+          {
+            id: "r-new-2-1",
+            postId: "new-2",
+            userId: "mock8",
+            author: "Emma L.",
+            content: "Absolutely. The change in daylight and routine always throws me off. Sticking to a strict sleep schedule helps me a lot.",
+            timestamp: new Date("2026-04-04T16:10:00"),
+            likes: 14,
+            likedBy: []
+          },
+          {
+            id: "r-new-2-2",
+            postId: "new-2",
+            userId: "mock9",
+            author: "Rachel W.",
+            content: "I totally get this. I try to spend 15 minutes outside every morning just to let my body adjust gradually to the new season's light.",
+            timestamp: new Date("2026-04-04T18:45:00"),
+            likes: 8,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "new-3",
+        userId: "mock-new-3",
+        author: "Marcus T.",
+        title: "Journaling has completely changed my mindset",
+        content: "I wanted to share a win. About a month ago, I started writing down three things I'm grateful for every night. It felt silly at first, but it's genuinely shifted how I view my days. Highly recommend giving it a try.",
+        tags: ["Wellness", "Self-Care", "Recovery"],
+        replies: 1,
+        likes: 89,
+        likedBy: [],
+        timestamp: new Date("2026-03-22T20:00:00"),
+        responses: [
+          {
+            id: "r-new-3-1",
+            postId: "new-3",
+            userId: "mock4",
+            author: "Maya P.",
+            content: "This is so inspiring! I've been trying to get into journaling. Thank you for sharing your positive experience.",
+            timestamp: new Date("2026-03-23T09:15:00"),
+            likes: 21,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "new-4",
+        userId: "mock-new-4",
+        author: "Sam D.",
+        title: "Navigating relationship boundaries with a partner",
+        content: "How do you explain your mental health boundaries to a partner who doesn't fully understand? I need alone time to recharge, but they take it personally. I love them but the guilt is exhausting.",
+        tags: ["Relationships", "Support"],
+        replies: 2,
+        likes: 67,
+        likedBy: [],
+        timestamp: new Date("2026-02-15T11:30:00"),
+        responses: [
+          {
+            id: "r-new-4-1",
+            postId: "new-4",
+            userId: "mock11",
+            author: "Nina S.",
+            content: "Communication is key. Try emphasizing that your need for space is about *your* well-being, not a reflection of how you feel about them.",
+            timestamp: new Date("2026-02-15T13:20:00"),
+            likes: 31,
+            likedBy: []
+          },
+          {
+            id: "r-new-4-2",
+            postId: "new-4",
+            userId: "mock12",
+            author: "Tom B.",
+            content: "I use the 'battery' analogy. I tell my partner my social battery is low and needs to charge. It makes it less personal and more about energy levels.",
+            timestamp: new Date("2026-02-15T15:05:00"),
+            likes: 45,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "new-5",
+        userId: "mock-new-5",
+        author: "Jordan F.",
+        title: "Finding motivation on the bad days",
+        content: "Some days, getting out of bed feels like climbing a mountain. For anyone else struggling today, please remember that surviving is enough. Be kind to yourselves.",
+        tags: ["Depression", "Support"],
+        replies: 1,
+        likes: 134,
+        likedBy: [],
+        timestamp: new Date("2026-01-28T08:45:00"),
+        responses: [
+          {
+            id: "r-new-5-1",
+            postId: "new-5",
+            userId: "mock26",
+            author: "Riley C.",
+            content: "Needed to hear this today. Thank you. Sometimes just making a cup of tea is an achievement.",
+            timestamp: new Date("2026-01-28T10:10:00"),
+            likes: 56,
+            likedBy: []
+          }
+        ]
+      },
+      {
         id: "1",
         userId: "mock1",
         author: "Sarah M.",
