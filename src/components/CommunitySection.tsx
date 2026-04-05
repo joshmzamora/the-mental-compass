@@ -1534,7 +1534,7 @@ export function CommunitySection() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="space-y-4 sm:space-y-6"
+                className="space-y-6 sm:space-y-8 max-w-4xl mx-auto"
               >
 
                 {/* Search and Filter Bar */}
@@ -1890,79 +1890,70 @@ export function CommunitySection() {
 
                 {/* Pagination */}
                 {!loading && totalPages > 1 && (
-                  <Card className="mt-6">
-                    <CardContent className="p-3 sm:p-4">
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-                        <p className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                          Page {currentPage} of {totalPages} ({totalPosts} discussions)
-                        </p>
-                        <Pagination>
-                          <PaginationContent className="gap-1">
-                            <PaginationItem>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="gap-1 h-8 sm:h-9 px-2 sm:px-3"
-                              >
-                                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline">Previous</span>
-                                <span className="sm:hidden">Prev</span>
-                              </Button>
-                            </PaginationItem>
+                  <div className="mt-12 pt-8 border-t border-teal-100/50 w-full mb-8">
+                    <div className="flex flex-col items-center justify-center gap-6 w-full">
+                      <Pagination className="w-full flex justify-center">
+                        <PaginationContent className="gap-2 sm:gap-3 justify-center">
+                          <PaginationItem>
+                            <Button
+                              variant="outline"
+                              size="default"
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className="gap-2 h-9 sm:h-10 px-3 sm:px-4 bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm transition-all"
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                              <span className="hidden sm:inline">Previous</span>
+                              <span className="sm:hidden">Prev</span>
+                            </Button>
+                          </PaginationItem>
 
-                            {/* Page numbers - fewer on mobile */}
-                            <div className="hidden sm:flex gap-1">
-                              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                let pageNum;
-                                if (totalPages <= 5) {
-                                  pageNum = i + 1;
-                                } else if (currentPage <= 3) {
-                                  pageNum = i + 1;
-                                } else if (currentPage >= totalPages - 2) {
-                                  pageNum = totalPages - 4 + i;
-                                } else {
-                                  pageNum = currentPage - 2 + i;
-                                }
+                          <div className="hidden sm:flex gap-2">
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                              let pageNum;
+                              if (totalPages <= 5) pageNum = i + 1;
+                              else if (currentPage <= 3) pageNum = i + 1;
+                              else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
+                              else pageNum = currentPage - 2 + i;
 
-                                return (
-                                  <PaginationItem key={pageNum}>
-                                    <PaginationLink
-                                      onClick={() => handlePageChange(pageNum)}
-                                      isActive={currentPage === pageNum}
-                                      className="cursor-pointer"
-                                    >
-                                      {pageNum}
-                                    </PaginationLink>
-                                  </PaginationItem>
-                                );
-                              })}
-                            </div>
+                              return (
+                                <PaginationItem key={pageNum}>
+                                  <PaginationLink
+                                    onClick={() => handlePageChange(pageNum)}
+                                    isActive={currentPage === pageNum}
+                                    className={`cursor-pointer h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-md transition-all ${currentPage === pageNum ? 'bg-teal-600 text-white border-teal-600 shadow-md' : 'bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm'}`}
+                                  >
+                                    {pageNum}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              );
+                            })}
+                          </div>
 
-                            {/* Mobile: just show current page */}
-                            <div className="sm:hidden flex items-center px-2 text-sm text-gray-700">
-                              {currentPage}/{totalPages}
-                            </div>
+                          <div className="sm:hidden flex items-center px-4 h-9 bg-white border border-teal-100 rounded-md text-sm font-medium text-teal-700 shadow-sm">
+                            {currentPage} / {totalPages}
+                          </div>
 
-                            <PaginationItem>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="gap-1 h-8 sm:h-9 px-2 sm:px-3"
-                              >
-                                <span className="sm:hidden">Next</span>
-                                <span className="hidden sm:inline">Next</span>
-                                <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </Button>
-                            </PaginationItem>
-                          </PaginationContent>
-                        </Pagination>
-                      </div>
-                    </CardContent>
-                  </Card>
+                          <PaginationItem>
+                            <Button
+                              variant="outline"
+                              size="default"
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className="gap-2 h-9 sm:h-10 px-3 sm:px-4 bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm transition-all"
+                            >
+                              <span className="hidden sm:inline">Next</span>
+                              <span className="sm:hidden">Next</span>
+                              <ChevronRightIcon className="h-4 w-4" />
+                            </Button>
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                      <p className="text-sm text-gray-500 font-medium tracking-wide">
+                        Page <span className="text-teal-700 font-bold">{currentPage}</span> of {totalPages} <span className="text-gray-300 mx-2">|</span> {totalPosts} total discussions
+                      </p>
+                    </div>
+                  </div>
                 )}
               </motion.div>
             </TabsContent>
@@ -1973,6 +1964,7 @@ export function CommunitySection() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
+                className="max-w-4xl mx-auto"
               >
 
                 {/* Real-time Info Banner */}
