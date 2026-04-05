@@ -1,9 +1,20 @@
 import { Heart, Users, BookOpen, Phone, Compass, Navigation, MapPin, Map } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
 
 export function Hero() {
+  const words = ["Mental Wellness", "Inner Peace", "Healing", "Growth", "Resilience"];
+  const [currentWord, setCurrentWord] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWord((prev) => (prev + 1) % words.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-24 lg:py-24 overflow-hidden min-h-[100dvh] flex items-center justify-center">
       {/* Animated compass background elements */}
@@ -74,10 +85,23 @@ export function Hero() {
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-teal-400 ml-4"></div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-slate-900 px-4">
-              Your Journey to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Mental Wellness</span> Starts Here
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 text-gray-900 px-4">
+              Your Journey to{" "}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentWord}
+                  initial={{ y: 20, opacity: 0, scale: 0.9 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: -20, opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600 inline-block align-bottom pb-2 -mb-2"
+                >
+                  {words[currentWord]}
+                </motion.span>
+              </AnimatePresence>{" "}
+              Starts Here
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 text-slate-700 max-w-3xl mx-auto px-4">
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 text-gray-700 max-w-3xl mx-auto px-4">
               Navigate your mental health journey with compassion, support, and
               expert resources. You don't have to face it alone.
             </p>
@@ -124,8 +148,8 @@ export function Hero() {
                 <MapPin className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <Heart className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
-              <h3 className="mb-2 text-slate-900 font-bold text-xl">Expert Resources</h3>
-              <p className="text-sm text-slate-600 font-medium">
+              <h3 className="mb-2 text-gray-900 text-xl">Expert Resources</h3>
+              <p className="text-sm text-gray-600">
                 Evidence-based information about mental health conditions
               </p>
             </motion.div>
@@ -140,8 +164,8 @@ export function Hero() {
                 <Compass className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4 relative z-10" />
-              <h3 className="mb-2 text-slate-900 font-bold text-xl">24/7 Support</h3>
-              <p className="text-sm text-slate-600 font-medium">
+              <h3 className="mb-2 text-gray-900 text-xl">24/7 Support</h3>
+              <p className="text-sm text-gray-600">
                 Access to helplines and crisis support anytime you need it
               </p>
             </motion.div>
@@ -156,8 +180,8 @@ export function Hero() {
                 <Navigation className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <Users className="h-12 w-12 text-purple-600 mx-auto mb-4 relative z-10" />
-              <h3 className="mb-2 text-slate-900 font-bold text-xl">Community</h3>
-              <p className="text-sm text-slate-600 font-medium">
+              <h3 className="mb-2 text-gray-900 text-xl">Community</h3>
+              <p className="text-sm text-gray-600">
                 Connect with others who understand your journey
               </p>
             </motion.div>
@@ -172,8 +196,8 @@ export function Hero() {
                 <Map className="h-16 w-16 -mr-4 -mt-4" />
               </div>
               <BookOpen className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
-              <h3 className="mb-2 text-slate-900 font-bold text-xl">Education</h3>
-              <p className="text-sm text-slate-600 font-medium">
+              <h3 className="mb-2 text-gray-900 text-xl">Education</h3>
+              <p className="text-sm text-gray-600">
                 Read stories and learn coping strategies from experts
               </p>
             </motion.div>

@@ -80,8 +80,8 @@ export function CompassInAction() {
               <Sparkles className="h-10 w-10 lg:h-12 lg:w-12 text-yellow-300" />
             </motion.div>
           </div>
-          <h2 className="text-white mb-4 text-3xl lg:text-5xl font-extrabold tracking-tight">The Compass in Action</h2>
-          <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto font-medium">
+          <h2 className="text-white mb-4 text-3xl lg:text-5xl">The Compass in Action</h2>
+          <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
             Your personalized path to mental wellness
           </p>
         </motion.div>
@@ -105,8 +105,8 @@ export function CompassInAction() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-slate-900 mb-3 text-xl lg:text-2xl font-bold tracking-tight">{feature.title}</h3>
-                  <p className="text-slate-600 mb-6 flex-grow text-sm lg:text-base font-medium">
+                  <h3 className="text-gray-900 mb-3 text-xl lg:text-2xl">{feature.title}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow text-sm lg:text-base">
                     {feature.description}
                   </p>
 
