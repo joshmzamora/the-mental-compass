@@ -133,52 +133,54 @@ export function AppointmentSection() {
   const availableTherapists = date ? getAvailableTherapistsForDate(date) : [];
 
   return (
-    <section id="appointment" className="py-20 bg-white relative overflow-hidden">
+    <section id="appointment" className="pt-48 pb-20 bg-white relative overflow-hidden">
       <CompassDecoration variant="light" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          {!user && (
-            <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <User className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-blue-900 mb-2">Account Required for Booking</h3>
-                  <p className="text-sm text-blue-800 mb-4">
-                    To schedule an appointment and access your personalized dashboard, please log in or create an account.
-                  </p>
-                  <div className="flex gap-3">
-                    <Button onClick={() => navigate("/login")} variant="outline" size="sm">
-                      Log In
-                    </Button>
-                    <Button onClick={() => navigate("/signup")} className="bg-blue-600 hover:bg-blue-700" size="sm">
-                      Create Account
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="text-center mb-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12 relative">
             <div className="flex items-center justify-center mb-4">
-              <CalendarIcon className="h-8 w-8 text-teal-600 mr-3" />
-              <h2 className="text-3xl md:text-4xl text-gray-900">
+              <CalendarIcon className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 mr-2 sm:mr-3" />
+              <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">
                 Schedule a Counseling Session
               </h2>
             </div>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
               Take the first step towards better mental health. Book an
               appointment with one of our licensed navigators.
             </p>
             <div className="flex items-center justify-center gap-2 mt-4">
               <div className="h-px w-20 bg-gradient-to-r from-transparent to-teal-400"></div>
-              <Navigation className="h-5 w-5 text-teal-600" />
+              <Compass className="h-5 w-5 text-teal-600" />
               <div className="h-px w-20 bg-gradient-to-l from-transparent to-teal-400"></div>
             </div>
           </div>
+
+          {!user && (
+            <Card className="mb-6 sm:mb-8 bg-blue-50 border-blue-200">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <User className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600 flex-shrink-0 mt-1" />
+                  <div className="flex-1">
+                    <h3 className="text-sm sm:text-base text-blue-900 mb-2">
+                      <strong>Account Required for Booking</strong>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-blue-800 leading-relaxed mb-4">
+                      To schedule an appointment and access your personalized dashboard, please log in or create an account.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button onClick={() => navigate("/login")} variant="outline" size="sm" className="bg-white hover:bg-blue-100 text-blue-700 border-blue-300 text-xs sm:text-sm">
+                        Log In
+                      </Button>
+                      <Button onClick={() => navigate("/signup")} className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm" size="sm">
+                        Create Account
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Progress Stepper */}
           <div className="mb-8 max-w-3xl mx-auto">
@@ -273,8 +275,8 @@ export function AppointmentSection() {
                         key={therapist.id}
                         onClick={() => setSelectedTherapist(therapist)}
                         className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${selectedTherapist?.id === therapist.id
-                            ? "border-teal-600 bg-teal-50"
-                            : "border-gray-200 hover:border-teal-300"
+                          ? "border-teal-600 bg-teal-50"
+                          : "border-gray-200 hover:border-teal-300"
                           }`}
                       >
                         <div className="flex items-start gap-3">
@@ -330,10 +332,10 @@ export function AppointmentSection() {
                           onClick={() => !isBooked && setSelectedTime(time)}
                           disabled={isBooked}
                           className={`w-full p-3 rounded-lg text-left transition-all ${selectedTime === time
-                              ? "bg-teal-600 text-white"
-                              : isBooked
-                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                : "bg-gray-50 hover:bg-teal-50 text-gray-900"
+                            ? "bg-teal-600 text-white"
+                            : isBooked
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-gray-50 hover:bg-teal-50 text-gray-900"
                             }`}
                         >
                           <div className="flex items-center justify-between">

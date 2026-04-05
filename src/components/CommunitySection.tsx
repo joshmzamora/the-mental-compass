@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   MessageCircle,
   Users,
@@ -1528,342 +1529,195 @@ export function CommunitySection() {
               <TabsTrigger value="chat" className="text-sm sm:text-base">Live Chat</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="forums" className="space-y-4 sm:space-y-6">
-              {/* Search and Filter Bar */}
-              <Card className="shadow-md" id="forum-posts-section">
-                <CardContent className="p-3 sm:p-5">
-                  <div className="flex flex-col gap-3 sm:gap-4">
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                      <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                        <Input
-                          type="text"
-                          placeholder="Search discussions..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-9 sm:pl-10 text-sm sm:text-base"
-                        />
-                      </div>
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2 text-sm sm:text-base"
-                      >
-                        <Filter className="h-4 w-4" />
-                        <span className="hidden sm:inline">Filter by Tags</span>
-                        <span className="sm:hidden">Filters</span>
-                        {selectedTags.length > 0 && (
-                          <Badge className="ml-1 bg-teal-600 text-xs">
-                            {selectedTags.length}
-                          </Badge>
-                        )}
-                      </Button>
-                    </div>
+            <TabsContent value="forums" className="space-y-4 sm:space-y-6 outline-none">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="space-y-6 sm:space-y-8 max-w-4xl mx-auto"
+              >
 
-                    {/* Date Range Filter */}
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-gray-600" />
-                        <Label className="text-xs sm:text-sm text-gray-700">Date Range:</Label>
-                      </div>
-                      <div className="flex flex-col gap-3 w-full">
-                        <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
-                          <Select value={dateRangeFilter} onValueChange={(value: DateRangeFilter) => setDateRangeFilter(value)}>
-                            <SelectTrigger className="w-full sm:w-[180px] text-sm">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">All Time</SelectItem>
-                              <SelectItem value="today">Today</SelectItem>
-                              <SelectItem value="week">Last 7 Days</SelectItem>
-                              <SelectItem value="month">Last 30 Days</SelectItem>
-                              <SelectItem value="3months">Last 3 Months</SelectItem>
-                              <SelectItem value="6months">Last 6 Months</SelectItem>
-                              <SelectItem value="custom">Custom Range</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {dateRangeFilter !== "all" && (
-                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
-                              Date filtered
-                            </Badge>
-                          )}
-                        </div>
-
-                        {dateRangeFilter === "custom" && (
-                          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full">
-                            <Input
-                              type="date"
-                              value={customStartDate}
-                              onChange={(e) => setCustomStartDate(e.target.value)}
-                              className="w-full sm:w-[150px] text-sm"
-                              placeholder="Start date"
-                            />
-                            <span className="text-gray-500 text-center sm:text-left text-sm">to</span>
-                            <Input
-                              type="date"
-                              value={customEndDate}
-                              onChange={(e) => setCustomEndDate(e.target.value)}
-                              className="w-full sm:w-[150px] text-sm"
-                              placeholder="End date"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Filter Panel */}
-                  {showFilters && (
-                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t">
-                      <div className="flex items-center justify-between mb-3">
-                        <Label className="text-xs sm:text-sm">Filter by Topics</Label>
-                        {selectedTags.length > 0 && (
-                          <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs sm:text-sm h-8">
-                            Clear All
-                          </Button>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-                        {COMMUNITY_TAGS.map((tag) => (
-                          <button
-                            key={tag}
-                            onClick={() => toggleTag(tag)}
-                            className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors ${selectedTags.includes(tag)
-                              ? "bg-teal-600 text-white"
-                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                              }`}
-                          >
-                            {selectedTags.includes(tag) && <X className="h-3 w-3 flex-shrink-0" />}
-                            <span className="truncate">{tag}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Active Filters Display */}
-                  {(searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all") && (
-                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
-                      <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                        <TrendingUp className="h-4 w-4 text-teal-600" />
-                        <span>
-                          Showing {filteredPosts.length} discussion{filteredPosts.length !== 1 ? 's' : ''}
-                        </span>
-                      </div>
-                      <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs sm:text-sm h-8">
-                        <X className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                        Clear Filters
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Feed Content */}
-              {isSearching ? (
-                <div className="space-y-4 sm:space-y-6">
-                  {/* Search Results Header */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-white/50 p-4 rounded-xl border border-teal-100/50 backdrop-blur-sm shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
-                        <Search className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900 leading-tight">Search Results</h3>
-                        <p className="text-xs text-gray-600">Found {filteredPosts.length} matches for your criteria</p>
-                      </div>
-                    </div>
-                    {filteredPosts.length > 0 && (
-                      <Badge variant="outline" className="bg-teal-50 border-teal-200 text-teal-700">
-                        {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredPosts.length)} of {filteredPosts.length}
-                      </Badge>
-                    )}
-                  </div>
-
-                  {loading ? (
-                    <Card className="p-12 text-center overflow-hidden relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-blue-50/50 opacity-50" />
-                      <div className="relative z-10">
-                        <div className="flex flex-col items-center justify-center gap-3">
-                          <div className="relative">
-                            <Compass className="h-10 w-10 text-teal-600 animate-spin" />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="h-1.5 w-1.5 bg-teal-600 rounded-full" />
-                            </div>
-                          </div>
-                          <p className="text-gray-600 font-medium">Scanning discussions...</p>
-                        </div>
-                      </div>
-                    </Card>
-                  ) : filteredPosts.length === 0 ? (
-                    <Card className="p-12 text-center bg-white border-dashed border-2 border-gray-200 shadow-sm">
-                      <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
-                        <Search className="h-8 w-8 text-gray-300" />
-                      </div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">No matches found</h4>
-                      <p className="text-gray-600 max-w-sm mx-auto mb-6 italic">
-                        "Your search didn't return any results. Try adjusting your filters or using different keywords."
-                      </p>
-                      <Button variant="outline" onClick={clearFilters} className="border-teal-200 text-teal-700 hover:bg-teal-50">
-                        Clear all filters
-                      </Button>
-                    </Card>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-4">
-                      {currentPosts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          post={post}
-                          onSelect={setSelectedPost}
-                          onLike={handleLikePost}
-                          navigate={navigate}
-                          formatPostTimestamp={formatPostTimestamp}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  {/* Start a New Discussion Button */}
-                  <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="text-center sm:text-left">
-                          <h3 className="text-base sm:text-lg text-gray-900 mb-1">
-                            Share Your Story or Ask for Support
-                          </h3>
-                          <p className="text-xs sm:text-sm text-gray-600">
-                            Start a conversation with the community. Your voice matters.
-                          </p>
+                {/* Search and Filter Bar */}
+                <Card className="shadow-md" id="forum-posts-section">
+                  <CardContent className="p-3 sm:p-5">
+                    <div className="flex flex-col gap-3 sm:gap-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <div className="flex-1 relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                          <Input
+                            type="text"
+                            placeholder="Search discussions..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9 sm:pl-10 text-sm sm:text-base"
+                          />
                         </div>
                         <Button
-                          onClick={() => user ? setShowNewPostDialog(true) : setShowLoginDialog(true)}
-                          className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto whitespace-nowrap"
-                          size="lg"
+                          variant="outline"
+                          onClick={() => setShowFilters(!showFilters)}
+                          className="flex items-center gap-2 text-sm sm:text-base"
                         >
-                          <Plus className="h-5 w-5 mr-2" />
-                          Start a Discussion
+                          <Filter className="h-4 w-4" />
+                          <span className="hidden sm:inline">Filter by Tags</span>
+                          <span className="sm:hidden">Filters</span>
+                          {selectedTags.length > 0 && (
+                            <Badge className="ml-1 bg-teal-600 text-xs">
+                              {selectedTags.length}
+                            </Badge>
+                          )}
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
 
-                  {/* Featured/Most Interacted Posts */}
-                  {forumPosts.length > 0 && (() => {
-                    const featuredPosts = [...forumPosts]
-                      .sort((a, b) => (b.likes + b.replies * 2) - (a.likes + a.replies * 2))
-                      .slice(0, 3);
-
-                    return featuredPosts.length > 0 && (
-                      <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
-                                  <TrendingUp className="h-4 w-4" />
-                                  <span className="text-sm font-medium">Featured Discussions</span>
-                                </div>
-                                <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
-                                  Most Active
-                                </Badge>
-                              </div>
-                              <CardDescription className="text-sm text-gray-700 mt-2">
-                                Join the most engaging conversations in our community
-                              </CardDescription>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setIsFeaturedMinimized(!isFeaturedMinimized)}
-                              className="flex-shrink-0 h-8 w-8 p-0 hover:bg-orange-100"
-                            >
-                              {isFeaturedMinimized ? (
-                                <ChevronDown className="h-4 w-4 text-orange-700" />
-                              ) : (
-                                <ChevronUp className="h-4 w-4 text-orange-700" />
-                              )}
-                            </Button>
+                      {/* Date Range Filter */}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-gray-600" />
+                          <Label className="text-xs sm:text-sm text-gray-700">Date Range:</Label>
+                        </div>
+                        <div className="flex flex-col gap-3 w-full">
+                          <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+                            <Select value={dateRangeFilter} onValueChange={(value: DateRangeFilter) => setDateRangeFilter(value)}>
+                              <SelectTrigger className="w-full sm:w-[180px] text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Time</SelectItem>
+                                <SelectItem value="today">Today</SelectItem>
+                                <SelectItem value="week">Last 7 Days</SelectItem>
+                                <SelectItem value="month">Last 30 Days</SelectItem>
+                                <SelectItem value="3months">Last 3 Months</SelectItem>
+                                <SelectItem value="6months">Last 6 Months</SelectItem>
+                                <SelectItem value="custom">Custom Range</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {dateRangeFilter !== "all" && (
+                              <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
+                                Date filtered
+                              </Badge>
+                            )}
                           </div>
-                        </CardHeader>
-                        {!isFeaturedMinimized && (
-                          <CardContent className="space-y-3 sm:space-y-4">
-                            {featuredPosts.map((post) => (
-                              <PostCard
-                                key={post.id}
-                                post={post}
-                                onSelect={setSelectedPost}
-                                onLike={handleLikePost}
-                                navigate={navigate}
-                                formatPostTimestamp={formatPostTimestamp}
+
+                          {dateRangeFilter === "custom" && (
+                            <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full">
+                              <Input
+                                type="date"
+                                value={customStartDate}
+                                onChange={(e) => setCustomStartDate(e.target.value)}
+                                className="w-full sm:w-[150px] text-sm"
+                                placeholder="Start date"
                               />
-                            ))}
-                          </CardContent>
-                        )}
-                      </Card>
-                    );
-                  })()}
-
-                  {/* Personalized Recommendations */}
-                  {recommendedPosts.length > 0 && (
-                    <div className="space-y-3 sm:space-y-4">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                        <h3 className="text-base sm:text-lg text-gray-900">
-                          Recommended For You
-                        </h3>
-                        <Badge className="bg-teal-600 text-xs sm:text-sm">
-                          <span className="hidden sm:inline">Based on your Compass Bearing</span>
-                          <span className="sm:hidden">For You</span>
-                        </Badge>
+                              <span className="text-gray-500 text-center sm:text-left text-sm">to</span>
+                              <Input
+                                type="date"
+                                value={customEndDate}
+                                onChange={(e) => setCustomEndDate(e.target.value)}
+                                className="w-full sm:w-[150px] text-sm"
+                                placeholder="End date"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {recommendedPosts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          post={post}
-                          onSelect={setSelectedPost}
-                          onLike={handleLikePost}
-                          navigate={navigate}
-                          formatPostTimestamp={formatPostTimestamp}
-                          isPrioritized={true}
-                        />
-                      ))}
                     </div>
-                  )}
 
-                  {/* Regular Posts */}
-                  <div className="space-y-3 sm:space-y-4">
-                    {recommendedPosts.length > 0 && (
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 mt-6 sm:mt-8">
-                        <h3 className="text-base sm:text-lg text-gray-900">All Discussions</h3>
-                        {totalPosts > 0 && (
-                          <p className="text-xs sm:text-sm text-gray-600">
-                            Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, totalPosts)} of {totalPosts}
-                          </p>
-                        )}
+                    {/* Filter Panel */}
+                    {showFilters && (
+                      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t">
+                        <div className="flex items-center justify-between mb-3">
+                          <Label className="text-xs sm:text-sm">Filter by Topics</Label>
+                          {selectedTags.length > 0 && (
+                            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs sm:text-sm h-8">
+                              Clear All
+                            </Button>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+                          {COMMUNITY_TAGS.map((tag) => (
+                            <button
+                              key={tag}
+                              onClick={() => toggleTag(tag)}
+                              className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm transition-colors ${selectedTags.includes(tag)
+                                ? "bg-teal-600 text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                }`}
+                            >
+                              {selectedTags.includes(tag) && <X className="h-3 w-3 flex-shrink-0" />}
+                              <span className="truncate">{tag}</span>
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     )}
 
+                    {/* Active Filters Display */}
+                    {(searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all") && (
+                      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                          <TrendingUp className="h-4 w-4 text-teal-600" />
+                          <span>
+                            Showing {filteredPosts.length} discussion{filteredPosts.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs sm:text-sm h-8">
+                          <X className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                          Clear Filters
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Feed Content */}
+                {isSearching ? (
+                  <div className="space-y-4 sm:space-y-6">
+                    {/* Search Results Header */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-white/50 p-4 rounded-xl border border-teal-100/50 backdrop-blur-sm shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+                          <Search className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 leading-tight">Search Results</h3>
+                          <p className="text-xs text-gray-600">Found {filteredPosts.length} matches for your criteria</p>
+                        </div>
+                      </div>
+                      {filteredPosts.length > 0 && (
+                        <Badge variant="outline" className="bg-teal-50 border-teal-200 text-teal-700">
+                          {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredPosts.length)} of {filteredPosts.length}
+                        </Badge>
+                      )}
+                    </div>
+
                     {loading ? (
-                      <Card className="p-8 text-center">
-                        <div className="flex items-center justify-center gap-3">
-                          <Compass className="h-6 w-6 text-teal-600 animate-spin" />
-                          <p className="text-gray-600">Loading discussions...</p>
+                      <Card className="p-12 text-center overflow-hidden relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-blue-50/50 opacity-50" />
+                        <div className="relative z-10">
+                          <div className="flex flex-col items-center justify-center gap-3">
+                            <div className="relative">
+                              <Compass className="h-10 w-10 text-teal-600 animate-spin" />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="h-1.5 w-1.5 bg-teal-600 rounded-full" />
+                              </div>
+                            </div>
+                            <p className="text-gray-600 font-medium">Scanning discussions...</p>
+                          </div>
                         </div>
                       </Card>
-                    ) : regularPosts.length === 0 ? (
-                      <Card className="p-8 text-center bg-yellow-50 border-yellow-200">
-                        <AlertCircle className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
-                        <p className="text-gray-700 mb-2">No discussions found</p>
-                        <p className="text-sm text-gray-600">
-                          {searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all"
-                            ? "Try adjusting your filters or search terms"
-                            : "Be the first to start a conversation!"}
+                    ) : filteredPosts.length === 0 ? (
+                      <Card className="p-12 text-center bg-white border-dashed border-2 border-gray-200 shadow-sm">
+                        <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
+                          <Search className="h-8 w-8 text-gray-300" />
+                        </div>
+                        <h4 className="text-lg font-bold text-gray-900 mb-2">No matches found</h4>
+                        <p className="text-gray-600 max-w-sm mx-auto mb-6 italic">
+                          "Your search didn't return any results. Try adjusting your filters or using different keywords."
                         </p>
+                        <Button variant="outline" onClick={clearFilters} className="border-teal-200 text-teal-700 hover:bg-teal-50">
+                          Clear all filters
+                        </Button>
                       </Card>
                     ) : (
-                      <>
+                      <div className="grid grid-cols-1 gap-4">
                         {currentPosts.map((post) => (
                           <PostCard
                             key={post.id}
@@ -1874,56 +1728,200 @@ export function CommunitySection() {
                             formatPostTimestamp={formatPostTimestamp}
                           />
                         ))}
-                      </>
+                      </div>
                     )}
                   </div>
-                </>
-              )}
+                ) : (
+                  <>
+                    {/* Start a New Discussion Button */}
+                    <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                          <div className="text-center sm:text-left">
+                            <h3 className="text-base sm:text-lg text-gray-900 mb-1">
+                              Share Your Story or Ask for Support
+                            </h3>
+                            <p className="text-xs sm:text-sm text-gray-600">
+                              Start a conversation with the community. Your voice matters.
+                            </p>
+                          </div>
+                          <Button
+                            onClick={() => user ? setShowNewPostDialog(true) : setShowLoginDialog(true)}
+                            className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto whitespace-nowrap"
+                            size="lg"
+                          >
+                            <Plus className="h-5 w-5 mr-2" />
+                            Start a Discussion
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-              {/* Pagination */}
-              {!loading && totalPages > 1 && (
-                <Card className="mt-6">
-                  <CardContent className="p-3 sm:p-4">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-                      <p className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                        Page {currentPage} of {totalPages} ({totalPosts} discussions)
-                      </p>
-                      <Pagination>
-                        <PaginationContent className="gap-1">
+                    {/* Featured/Most Interacted Posts */}
+                    {forumPosts.length > 0 && (() => {
+                      const featuredPosts = [...forumPosts]
+                        .sort((a, b) => (b.likes + b.replies * 2) - (a.likes + a.replies * 2))
+                        .slice(0, 3);
+
+                      return featuredPosts.length > 0 && (
+                        <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full shadow-md">
+                                    <TrendingUp className="h-4 w-4" />
+                                    <span className="text-sm font-medium">Featured Discussions</span>
+                                  </div>
+                                  <Badge className="bg-orange-600 text-white text-xs border-none shadow-sm">
+                                    Most Active
+                                  </Badge>
+                                </div>
+                                <CardDescription className="text-sm text-gray-700 mt-2">
+                                  Join the most engaging conversations in our community
+                                </CardDescription>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setIsFeaturedMinimized(!isFeaturedMinimized)}
+                                className="flex-shrink-0 h-8 w-8 p-0 hover:bg-orange-100"
+                              >
+                                {isFeaturedMinimized ? (
+                                  <ChevronDown className="h-4 w-4 text-orange-700" />
+                                ) : (
+                                  <ChevronUp className="h-4 w-4 text-orange-700" />
+                                )}
+                              </Button>
+                            </div>
+                          </CardHeader>
+                          {!isFeaturedMinimized && (
+                            <CardContent className="space-y-3 sm:space-y-4">
+                              {featuredPosts.map((post) => (
+                                <PostCard
+                                  key={post.id}
+                                  post={post}
+                                  onSelect={setSelectedPost}
+                                  onLike={handleLikePost}
+                                  navigate={navigate}
+                                  formatPostTimestamp={formatPostTimestamp}
+                                />
+                              ))}
+                            </CardContent>
+                          )}
+                        </Card>
+                      );
+                    })()}
+
+                    {/* Personalized Recommendations */}
+                    {recommendedPosts.length > 0 && (
+                      <div className="space-y-3 sm:space-y-4">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                          <h3 className="text-base sm:text-lg text-gray-900">
+                            Recommended For You
+                          </h3>
+                          <Badge className="bg-teal-600 text-xs sm:text-sm">
+                            <span className="hidden sm:inline">Based on your Compass Bearing</span>
+                            <span className="sm:hidden">For You</span>
+                          </Badge>
+                        </div>
+                        {recommendedPosts.map((post) => (
+                          <PostCard
+                            key={post.id}
+                            post={post}
+                            onSelect={setSelectedPost}
+                            onLike={handleLikePost}
+                            navigate={navigate}
+                            formatPostTimestamp={formatPostTimestamp}
+                            isPrioritized={true}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Regular Posts */}
+                    <div className="space-y-3 sm:space-y-4">
+                      {recommendedPosts.length > 0 && (
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 mt-6 sm:mt-8">
+                          <h3 className="text-base sm:text-lg text-gray-900">All Discussions</h3>
+                          {totalPosts > 0 && (
+                            <p className="text-xs sm:text-sm text-gray-600">
+                              Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, totalPosts)} of {totalPosts}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {loading ? (
+                        <Card className="p-8 text-center">
+                          <div className="flex items-center justify-center gap-3">
+                            <Compass className="h-6 w-6 text-teal-600 animate-spin" />
+                            <p className="text-gray-600">Loading discussions...</p>
+                          </div>
+                        </Card>
+                      ) : regularPosts.length === 0 ? (
+                        <Card className="p-8 text-center bg-yellow-50 border-yellow-200">
+                          <AlertCircle className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
+                          <p className="text-gray-700 mb-2">No discussions found</p>
+                          <p className="text-sm text-gray-600">
+                            {searchQuery || selectedTags.length > 0 || dateRangeFilter !== "all"
+                              ? "Try adjusting your filters or search terms"
+                              : "Be the first to start a conversation!"}
+                          </p>
+                        </Card>
+                      ) : (
+                        <>
+                          {currentPosts.map((post) => (
+                            <PostCard
+                              key={post.id}
+                              post={post}
+                              onSelect={setSelectedPost}
+                              onLike={handleLikePost}
+                              navigate={navigate}
+                              formatPostTimestamp={formatPostTimestamp}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {/* Pagination */}
+                {!loading && totalPages > 1 && (
+                  <div className="mt-12 pt-8 border-t border-teal-100/50 w-full mb-8">
+                    <div className="flex flex-col items-center justify-center gap-6 w-full">
+                      <Pagination className="w-full flex justify-center">
+                        <PaginationContent className="gap-2 sm:gap-3 justify-center">
                           <PaginationItem>
                             <Button
                               variant="outline"
-                              size="sm"
+                              size="default"
                               onClick={() => handlePageChange(currentPage - 1)}
                               disabled={currentPage === 1}
-                              className="gap-1 h-8 sm:h-9 px-2 sm:px-3"
+                              className="gap-2 h-9 sm:h-10 px-3 sm:px-4 bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm transition-all"
                             >
-                              <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <ChevronLeft className="h-4 w-4" />
                               <span className="hidden sm:inline">Previous</span>
                               <span className="sm:hidden">Prev</span>
                             </Button>
                           </PaginationItem>
 
-                          {/* Page numbers - fewer on mobile */}
-                          <div className="hidden sm:flex gap-1">
+                          <div className="hidden sm:flex gap-2">
                             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                               let pageNum;
-                              if (totalPages <= 5) {
-                                pageNum = i + 1;
-                              } else if (currentPage <= 3) {
-                                pageNum = i + 1;
-                              } else if (currentPage >= totalPages - 2) {
-                                pageNum = totalPages - 4 + i;
-                              } else {
-                                pageNum = currentPage - 2 + i;
-                              }
+                              if (totalPages <= 5) pageNum = i + 1;
+                              else if (currentPage <= 3) pageNum = i + 1;
+                              else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
+                              else pageNum = currentPage - 2 + i;
 
                               return (
                                 <PaginationItem key={pageNum}>
                                   <PaginationLink
                                     onClick={() => handlePageChange(pageNum)}
                                     isActive={currentPage === pageNum}
-                                    className="cursor-pointer"
+                                    className={`cursor-pointer h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-md transition-all ${currentPage === pageNum ? 'bg-teal-600 text-white border-teal-600 shadow-md' : 'bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm'}`}
                                   >
                                     {pageNum}
                                   </PaginationLink>
@@ -1932,153 +1930,163 @@ export function CommunitySection() {
                             })}
                           </div>
 
-                          {/* Mobile: just show current page */}
-                          <div className="sm:hidden flex items-center px-2 text-sm text-gray-700">
-                            {currentPage}/{totalPages}
+                          <div className="sm:hidden flex items-center px-4 h-9 bg-white border border-teal-100 rounded-md text-sm font-medium text-teal-700 shadow-sm">
+                            {currentPage} / {totalPages}
                           </div>
 
                           <PaginationItem>
                             <Button
                               variant="outline"
-                              size="sm"
+                              size="default"
                               onClick={() => handlePageChange(currentPage + 1)}
                               disabled={currentPage === totalPages}
-                              className="gap-1 h-8 sm:h-9 px-2 sm:px-3"
+                              className="gap-2 h-9 sm:h-10 px-3 sm:px-4 bg-white hover:bg-teal-50 border-teal-100 text-teal-700 shadow-sm transition-all"
                             >
-                              <span className="sm:hidden">Next</span>
                               <span className="hidden sm:inline">Next</span>
-                              <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="sm:hidden">Next</span>
+                              <ChevronRightIcon className="h-4 w-4" />
                             </Button>
                           </PaginationItem>
                         </PaginationContent>
                       </Pagination>
+                      <p className="text-sm text-gray-500 font-medium tracking-wide">
+                        Page <span className="text-teal-700 font-bold">{currentPage}</span> of {totalPages} <span className="text-gray-300 mx-2">|</span> {totalPosts} total discussions
+                      </p>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                )}
+              </motion.div>
             </TabsContent>
 
             {/* Chat Tab */}
-            <TabsContent value="chat" className="space-y-4">
-              {/* Real-time Info Banner */}
-              <Card className="bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-900 mb-1">
-                        <strong>Real-Time Chat Enabled</strong>
-                      </p>
-                      <p className="text-xs text-gray-700">
-                        Messages appear instantly across all connected devices. Your conversations are synchronized in real-time.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="chat" className="space-y-4 outline-none">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="max-w-4xl mx-auto"
+              >
 
-              <Card className="h-[600px] flex flex-col shadow-lg">
-                <CardHeader className="border-b">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2 text-gray-900">
-                        <Users className="h-5 w-5 text-teal-600" />
-                        General Support Chat
-                      </CardTitle>
-                      <CardDescription>
-                        <span className="inline-flex items-center gap-1">
-                          <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                          {23 + chatMessages.length - initialChatMessages.length} people online
-                        </span>
-                      </CardDescription>
+                {/* Real-time Info Banner */}
+                <Card className="bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm text-gray-900 mb-1">
+                          <strong>Real-Time Chat Enabled</strong>
+                        </p>
+                        <p className="text-xs text-gray-700">
+                          Messages appear instantly across all connected devices. Your conversations are synchronized in real-time.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col p-0">
-                  <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
-                    {chatLoading ? (
-                      <div className="flex items-center justify-center h-full">
-                        <div className="text-center">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-2"></div>
-                          <p className="text-sm text-gray-600">Loading messages...</p>
-                        </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="h-[600px] flex flex-col shadow-lg">
+                  <CardHeader className="border-b">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="flex items-center gap-2 text-gray-900">
+                          <Users className="h-5 w-5 text-teal-600" />
+                          General Support Chat
+                        </CardTitle>
+                        <CardDescription>
+                          <span className="inline-flex items-center gap-1">
+                            <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                            {23 + chatMessages.length - initialChatMessages.length} people online
+                          </span>
+                        </CardDescription>
                       </div>
-                    ) : chatMessages.length === 0 ? (
-                      <div className="flex items-center justify-center h-full">
-                        <div className="text-center">
-                          <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                          <p className="text-sm text-gray-600">No messages yet</p>
-                          <p className="text-xs text-gray-500 mt-1">Be the first to start the conversation!</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        {chatMessages.map((msg) => (
-                          <div key={msg.id} className="flex gap-3 animate-in fade-in duration-300">
-                            <Avatar className="h-8 w-8 flex-shrink-0">
-                              <AvatarFallback className={`${msg.user_id === user?.id
-                                ? "bg-teal-100 text-teal-700"
-                                : "bg-purple-100 text-purple-700"
-                                }`}>
-                                {msg.avatar}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <button
-                                  onClick={() => msg.user_id !== 'system' && navigate(`/user/${msg.user_id}`)}
-                                  className={`text-sm ${msg.user_id !== 'system' ? 'hover:underline' : ''} ${msg.user_id === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
-                                    }`}
-                                >
-                                  {msg.author}
-                                </button>
-                                <span className="text-xs text-gray-500">
-                                  {formatTimestamp(new Date(msg.created_at))}
-                                </span>
-                              </div>
-                              <p className={`text-sm text-gray-700 rounded-lg p-3 ${msg.user_id === user?.id ? "bg-teal-100" : "bg-white"
-                                }`}>
-                                {msg.content}
-                              </p>
-                            </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col p-0">
+                    <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
+                      {chatLoading ? (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="text-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-2"></div>
+                            <p className="text-sm text-gray-600">Loading messages...</p>
                           </div>
-                        ))}
-                        <div ref={chatEndRef} />
-                      </>
-                    )}
-                  </div>
-
-                  <div className="p-4 border-t bg-white">
-                    <div className="flex gap-2">
-                      <Textarea
-                        placeholder={user ? "Type your message..." : "Log in to chat..."}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSendMessage();
-                          }
-                        }}
-                        className="resize-none"
-                        rows={2}
-                        disabled={!user}
-                      />
-                      <Button
-                        onClick={handleSendMessage}
-                        className="bg-teal-600 hover:bg-teal-700"
-                        size="icon"
-                        disabled={!message.trim() || !user}
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
+                        </div>
+                      ) : chatMessages.length === 0 ? (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="text-center">
+                            <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                            <p className="text-sm text-gray-600">No messages yet</p>
+                            <p className="text-xs text-gray-500 mt-1">Be the first to start the conversation!</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {chatMessages.map((msg) => (
+                            <div key={msg.id} className="flex gap-3 animate-in fade-in duration-300">
+                              <Avatar className="h-8 w-8 flex-shrink-0">
+                                <AvatarFallback className={`${msg.user_id === user?.id
+                                  ? "bg-teal-100 text-teal-700"
+                                  : "bg-purple-100 text-purple-700"
+                                  }`}>
+                                  {msg.avatar}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <button
+                                    onClick={() => msg.user_id !== 'system' && navigate(`/user/${msg.user_id}`)}
+                                    className={`text-sm ${msg.user_id !== 'system' ? 'hover:underline' : ''} ${msg.user_id === user?.id ? "text-teal-700 font-medium" : "text-gray-900"
+                                      }`}
+                                  >
+                                    {msg.author}
+                                  </button>
+                                  <span className="text-xs text-gray-500">
+                                    {formatTimestamp(new Date(msg.created_at))}
+                                  </span>
+                                </div>
+                                <p className={`text-sm text-gray-700 rounded-lg p-3 ${msg.user_id === user?.id ? "bg-teal-100" : "bg-white"
+                                  }`}>
+                                  {msg.content}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                          <div ref={chatEndRef} />
+                        </>
+                      )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Press Enter to send, Shift+Enter for new line
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    <div className="p-4 border-t bg-white">
+                      <div className="flex gap-2">
+                        <Textarea
+                          placeholder={user ? "Type your message..." : "Log in to chat..."}
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSendMessage();
+                            }
+                          }}
+                          className="resize-none"
+                          rows={2}
+                          disabled={!user}
+                        />
+                        <Button
+                          onClick={handleSendMessage}
+                          className="bg-teal-600 hover:bg-teal-700"
+                          size="icon"
+                          disabled={!message.trim() || !user}
+                        >
+                          <Send className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Press Enter to send, Shift+Enter for new line
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </TabsContent>
           </Tabs>
         </div>
