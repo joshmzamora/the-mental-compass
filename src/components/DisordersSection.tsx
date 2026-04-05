@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { AIChatSection } from "./AIChatSection";
 
 // Mapping of disorder IDs to abstract images
@@ -190,11 +190,11 @@ export function DisordersSection() {
     const disorder = mentalHealthDisorders.find(
       (d) =>
         d.id ===
-        profile.compassBearing?.primaryStruggle.toLowerCase() ||
+        profile.compassBearing?.primaryStruggle?.toLowerCase() ||
         d.name
           .toLowerCase()
           .includes(
-            profile.compassBearing?.primaryStruggle.toLowerCase(),
+            profile.compassBearing?.primaryStruggle?.toLowerCase() || "",
           ),
     );
 
@@ -279,7 +279,7 @@ export function DisordersSection() {
   return (
     <Card
       key={disorder.id}
-      className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col"
+      className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col gap-0"
       onClick={() => handleDisorderClick(disorder)}
     >
       <div className="relative h-40 sm:h-48 overflow-hidden flex-shrink-0">
@@ -338,7 +338,7 @@ export function DisordersSection() {
       {/* Disorder Detail Dialog - Full Screen */}
       <Dialog
         open={!!selectedDisorder}
-        onOpenChange={(open) =>
+        onOpenChange={(open: boolean) =>
           !open && setSelectedDisorder(null)
         }
       >

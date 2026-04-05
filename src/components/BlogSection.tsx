@@ -109,7 +109,7 @@ export function BlogSection() {
             {filteredPosts.map((post) => (
               <Card
                 key={post.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group gap-0"
                 onClick={() => setSelectedPost(post)}
               >
                 <div className="aspect-[16/9] overflow-hidden bg-gray-200">
