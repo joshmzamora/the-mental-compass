@@ -333,33 +333,54 @@ export function Appointments() {
         <CompassDecoration variant="light" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-7xl mx-auto pt-12">
-            {!user && (
-              <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <User className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-blue-900 mb-2">Account Required for Booking</h3>
-                    <p className="text-sm text-blue-800 mb-4">
-                      To schedule an appointment and access your personalized dashboard, please log in or create an account.
-                    </p>
-                    <div className="flex gap-3">
-                      <Button onClick={() => navigate("/login")} variant="outline" size="sm">
-                        Log In
-                      </Button>
-                      <Button onClick={() => navigate("/signup")} className="bg-blue-600 hover:bg-blue-700" size="sm">
-                        Create Account
-                      </Button>
-                    </div>
-                  </div>
+        <div className="max-w-6xl mx-auto pt-48 text-center">
+            {/* Hero Section */}
+            <section className="mb-8 sm:mb-12 relative">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <CalendarIcon className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 mr-2 sm:mr-3" />
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">
+                    Schedule a Counseling Session
+                  </h1>
+                </div>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4 mb-4 md:mb-6">
+                  Take the first step towards better mental health. Book an
+                  appointment with one of our licensed mental health navigators.
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-px w-20 bg-gradient-to-r from-transparent to-teal-400"></div>
+                  <Compass className="h-5 w-5 text-teal-600" />
+                  <div className="h-px w-20 bg-gradient-to-l from-transparent to-teal-400"></div>
                 </div>
               </div>
+            </section>
+
+            {!user && (
+              <Card className="mb-6 sm:mb-8 bg-blue-50 border-blue-200 text-left">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <User className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600 flex-shrink-0 mt-1" />
+                    <div className="flex-1">
+                      <h3 className="text-sm sm:text-base text-blue-900 mb-2 font-bold">Account Required for Booking</h3>
+                      <p className="text-xs sm:text-sm text-blue-800 leading-relaxed mb-4">
+                        To schedule an appointment and access your personalized dashboard, please log in or create an account.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button onClick={() => navigate("/login")} variant="outline" size="sm" className="bg-white hover:bg-blue-100 text-blue-700 border-blue-300 text-xs sm:text-sm">
+                          Log In
+                        </Button>
+                        <Button onClick={() => navigate("/signup")} className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm" size="sm">
+                          Create Account
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {specialtyFilter && (
-              <div className="mb-6 bg-teal-50 border border-teal-200 rounded-lg p-4">
+              <div className="mb-6 bg-teal-50 border border-teal-200 rounded-lg p-4 text-left">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="h-5 w-5 text-teal-600" />
@@ -385,27 +406,6 @@ export function Appointments() {
                 </div>
               </div>
             )}
-
-            {/* Hero Section */}
-            <section className="py-12 md:py-16 bg-transparent">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <CalendarIcon className="h-6 w-6 md:h-8 md:w-8 text-teal-600 mr-2 md:mr-3" />
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl text-gray-900">
-                    Schedule a Counseling Session
-                  </h1>
-                </div>
-                <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-4 md:mb-6 px-4">
-                  Take the first step towards better mental health. Book an
-                  appointment with one of our licensed mental health navigators.
-                </p>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-px w-20 bg-gradient-to-r from-transparent to-teal-400"></div>
-                  <CalendarIcon className="h-5 w-5 text-teal-600" />
-                  <div className="h-px w-20 bg-gradient-to-l from-transparent to-teal-400"></div>
-                </div>
-              </div>
-            </section>
 
             {/* How It Works Section */}
             <Card className="max-w-6xl mx-auto shadow-lg mb-16">
