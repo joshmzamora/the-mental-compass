@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { supabase } from "../utils/supabase/client";
 import { projectId } from "../utils/supabase/info";
 
+const EDGE_FUNCTIONS_ENABLED =
+  import.meta.env.VITE_ENABLE_SUPABASE_EDGE_FUNCTIONS === "true";
+
 /**
  * Authentication Context with Silent Edge Function Fallback
  * 
@@ -57,6 +60,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       if (session?.user) {
+        if (!EDGE_FUNCTIONS_ENABLED) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email!,
+            name: session.user.user_metadata?.name || session.user.email!.split('@')[0],
+          });
+          return;
+        }
+
         // Try to fetch user metadata from edge function
         try {
           const response = await fetch(
@@ -100,6 +112,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = async (email: string, password: string, name: string) => {
     try {
+      if (!EDGE_FUNCTIONS_ENABLED) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: name,
+            },
+          },
+        });
+
+        if (error) throw error;
+
+        if (data.user && data.session) {
+          setUser({
+            id: data.user.id,
+            email: data.user.email!,
+            name: name,
+          });
+
+          localStorage.setItem("access_token", data.session.access_token);
+        }
+        return;
+      }
+
       // Try edge function first
       try {
         const response = await fetch(
@@ -168,6 +205,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data.user) {
+        if (!EDGE_FUNCTIONS_ENABLED) {
+          setUser({
+            id: data.user.id,
+            email: data.user.email!,
+            name: data.user.user_metadata?.name || data.user.email!.split('@')[0],
+          });
+
+          localStorage.setItem("access_token", data.session.access_token);
+          return;
+        }
+
         // Try to fetch user metadata from edge function
         let userName = data.user.user_metadata?.name || data.user.email!.split('@')[0];
         

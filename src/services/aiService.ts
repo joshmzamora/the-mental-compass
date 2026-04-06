@@ -1,6 +1,9 @@
 const API_KEY =
   import.meta.env.VITE_GROQ_API_KEY || "";
 
+const MISSING_API_KEY_MESSAGE =
+  "AI chat is not configured for this local app yet. Add VITE_GROQ_API_KEY to your .env.local file and restart Vite.";
+
 const MODEL_NAME = "llama-3.3-70b-versatile";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -166,7 +169,7 @@ export async function sendMessageToAI(
   history: ChatMessage[] = [],
 ): Promise<string> {
   if (!API_KEY) {
-    throw new Error("AI API key is missing.");
+    throw new Error(MISSING_API_KEY_MESSAGE);
   }
 
   const response = await fetch(API_URL, {

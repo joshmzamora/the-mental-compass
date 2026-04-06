@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useAuth } from "./AuthContext";
 import { projectId } from "../utils/supabase/info";
 
+const EDGE_FUNCTIONS_ENABLED =
+  import.meta.env.VITE_ENABLE_SUPABASE_EDGE_FUNCTIONS === "true";
+
 interface CompassBearing {
   analysis: string;
   primaryStruggle: string;
@@ -131,6 +134,11 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
     try {
+      if (!EDGE_FUNCTIONS_ENABLED) {
+        initializeDefaultProfile();
+        return;
+      }
+
       const accessToken = localStorage.getItem("access_token");
 
       try {
@@ -183,6 +191,10 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
     const updatedProfile = { ...profile, ...updates };
     setProfile(updatedProfile);
+
+    if (!EDGE_FUNCTIONS_ENABLED) {
+      return;
+    }
 
     // Try to sync with backend
     try {
