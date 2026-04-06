@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
+import { AIChatSection } from "./components/AIChatSection";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -59,6 +60,7 @@ export default function App() {
               </Routes>
             </main>
             <Footer />
+            <AIChatSection />
             <Toaster />
           </div>
         </UserProfileProvider>

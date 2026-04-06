@@ -40,7 +40,6 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
 import { toast } from "sonner";
-import { AIChatSection } from "./AIChatSection";
 
 // Mapping of disorder IDs to abstract images
 const disorderImages: Record<string, string> = {
@@ -762,8 +761,6 @@ export function DisordersSection() {
           </div>
         </DialogContent>
       </Dialog>
-
-      <AIChatSection />
     </section>
   );
 }

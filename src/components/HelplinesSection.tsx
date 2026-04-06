@@ -202,7 +202,7 @@ export function HelplinesSection() {
           </div>
 
           {/* Location-Based Resource Finder */}
-          <Card className="mb-8 border-2 border-teal-200 bg-teal-50/30 overflow-hidden">
+          <Card className="mb-8 border border-teal-200/80 bg-white/95 shadow-sm overflow-hidden">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Target className="h-6 w-6 text-teal-600" />
@@ -251,8 +251,14 @@ export function HelplinesSection() {
                   </div>
                   <div className="flex items-center justify-center font-medium text-gray-400 px-4 pt-6">OR</div>
                   <div className="flex-1 flex items-end">
-                    <Button onClick={handleEnableLocation} variant="outline" className="w-full border-teal-200 text-teal-700 hover:bg-teal-50" disabled={isSearching}>
-                      <Navigation className="h-4 w-4 mr-2" /> Use My Location
+                    <Button
+                      onClick={handleEnableLocation}
+                      variant="outline"
+                      className="w-full border-teal-200 bg-teal-50/70 text-teal-800 hover:bg-teal-100 hover:text-teal-900"
+                      disabled={isSearching}
+                    >
+                      <Navigation className="h-4 w-4 mr-2" />
+                      Use My Location
                     </Button>
                   </div>
                 </div>
