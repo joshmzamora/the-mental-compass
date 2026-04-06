@@ -1,8 +1,33 @@
-import { Brain, Users, BookOpen, Phone, Compass, Navigation, FileText, Shield, MessageSquare } from "lucide-react";
+import { Brain, Users, BookOpen, Phone, Compass, Navigation, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { LayoutGroup, motion } from "motion/react";
 import { TextRotate } from "./ui/text-rotate";
+
+const heroCardsContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.25,
+    },
+  },
+};
+
+const heroCardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 12,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
 
 export function Hero() {
   return (
@@ -75,10 +100,19 @@ export function Hero() {
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-teal-400 ml-4"></div>
             </div>
 
-            <div className="mb-6 px-4">
+            <div className="mb-10 px-4 sm:mb-12">
+              <motion.h1
+                className="text-5xl font-semibold text-gray-900 sm:text-6xl md:text-7xl lg:text-8xl"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                The Mental Compass
+              </motion.h1>
+
               <LayoutGroup>
-                <motion.h1
-                  className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-4xl font-semibold text-gray-900 sm:gap-x-5 sm:text-5xl md:text-6xl lg:text-7xl"
+                <motion.h2
+                  className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-2xl font-normal text-gray-700 sm:mt-2 sm:text-3xl md:text-4xl lg:text-5xl"
                   layout
                 >
                   <motion.span
@@ -96,9 +130,9 @@ export function Hero() {
                       "Resilience",
                       "Mental Wellness",
                     ]}
-                    mainClassName="justify-center overflow-hidden rounded-lg bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 px-3 py-1.5 leading-[1.12] text-white shadow-[0_16px_32px_rgba(13,148,136,0.22)] ring-1 ring-white/30 sm:px-4 sm:py-2 md:px-5 md:py-2.5"
+                    mainClassName="mx-2 justify-center overflow-hidden rounded-lg bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 px-3 py-1.5 leading-[1.12] text-white shadow-[0_16px_32px_rgba(13,148,136,0.22)] ring-1 ring-white/30 sm:mx-3 sm:px-4 sm:py-2 md:px-5 md:py-2.5"
                     splitLevelClassName="overflow-hidden pb-[0.22em] -mb-[0.22em]"
-                    elementLevelClassName="pb-[0.14em]"
+                    elementLevelClassName="pb-[0.14em] font-semibold"
                     staggerFrom="last"
                     staggerDuration={0.02}
                     initial={{ y: "100%" }}
@@ -114,13 +148,9 @@ export function Hero() {
                   >
                     Starts Here
                   </motion.span>
-                </motion.h1>
+                </motion.h2>
               </LayoutGroup>
             </div>
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 text-gray-700 max-w-3xl mx-auto px-4">
-              Navigate your mental health journey with compassion, support, and
-              expert resources. You don't have to face it alone.
-            </p>
           </motion.div>
 
           <motion.div
@@ -153,16 +183,16 @@ export function Hero() {
           </motion.div>
 
           {/* Feature Cards with compass theme */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-8 sm:mt-16 px-4">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-8 sm:mt-16 px-4"
+            variants={heroCardsContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-100 hover:border-teal-300 relative overflow-hidden group"
+              variants={heroCardVariants}
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-300 hover:border-teal-400 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 text-teal-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <FileText className="h-16 w-16 -mr-4 -mt-4" />
-              </div>
               <Brain className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Expert Resources</h3>
               <p className="text-sm text-gray-600">
@@ -171,14 +201,9 @@ export function Hero() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-blue-100 hover:border-blue-300 relative overflow-hidden group"
+              variants={heroCardVariants}
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-blue-300 hover:border-blue-400 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 text-blue-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Shield className="h-16 w-16 -mr-4 -mt-4" />
-              </div>
               <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">24/7 Support</h3>
               <p className="text-sm text-gray-600">
@@ -187,14 +212,9 @@ export function Hero() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-purple-100 hover:border-purple-300 relative overflow-hidden group"
+              variants={heroCardVariants}
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-purple-300 hover:border-purple-400 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 text-purple-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Users className="h-16 w-16 -mr-4 -mt-4" />
-              </div>
               <MessageSquare className="h-12 w-12 text-purple-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Community</h3>
               <p className="text-sm text-gray-600">
@@ -203,21 +223,16 @@ export function Hero() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-100 hover:border-teal-300 relative overflow-hidden group"
+              variants={heroCardVariants}
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md transition-all border border-teal-300 hover:border-teal-400 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 text-teal-100 opacity-50 group-hover:opacity-100 transition-opacity">
-                <FileText className="h-16 w-16 -mr-4 -mt-4" />
-              </div>
               <BookOpen className="h-12 w-12 text-teal-600 mx-auto mb-4 relative z-10" />
               <h3 className="mb-2 text-gray-900 text-xl">Education</h3>
               <p className="text-sm text-gray-600">
                 Read stories and learn coping strategies from experts
               </p>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

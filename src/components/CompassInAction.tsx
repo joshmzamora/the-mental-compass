@@ -77,7 +77,7 @@ export function CompassInAction() {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <Heart className="h-10 w-10 lg:h-12 lg:w-12 text-rose-200" />
+              <Heart className="h-10 w-10 lg:h-12 lg:w-12 text-rose-200 stroke-[2.25]" />
             </motion.div>
           </div>
           <h2 className="text-white mb-4 text-3xl lg:text-5xl">The Compass in Action</h2>

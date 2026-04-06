@@ -83,8 +83,6 @@ export function InteractiveMentalCompass() {
   const navigate = useNavigate();
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
   const [needleAngle, setNeedleAngle] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const compassRef = useRef<HTMLDivElement>(null);
   const targetAngleRef = useRef(0);
   const currentAngleRef = useRef(0);
@@ -140,23 +138,15 @@ export function InteractiveMentalCompass() {
       angle = ((angle % 360) + 360) % 360;
       
       targetAngleRef.current = angle;
-      setIsDragging(true);
-    };
-
-    const handleMouseStop = () => {
-      setIsDragging(false);
     };
     
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseStop);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseleave', handleMouseStop);
     };
   }, [hoveredPoint]);
 
   const handlePointClick = (point: CompassPoint) => {
-    setIsAnimating(true);
     // Animate needle to point
     targetAngleRef.current = point.angle;
     // Navigate after a brief animation
@@ -170,9 +160,6 @@ export function InteractiveMentalCompass() {
     // Rotate compass needle to point at hovered direction
     if (point) {
       targetAngleRef.current = point.angle;
-      setIsAnimating(true);
-      // Reset animation flag after transition
-      setTimeout(() => setIsAnimating(false), 300);
     }
   };
 
@@ -202,9 +189,13 @@ export function InteractiveMentalCompass() {
             {/* Main Container for Compass and Info Card */}
             <div className="hidden md:flex items-center justify-center gap-8">
               {/* Main Compass Container - Hidden on Mobile */}
+              <div
+                className="relative flex-shrink-0"
+                style={{ width: "600px", height: "500px" }}
+              >
               <div 
                 ref={compassRef}
-                className="relative flex-shrink-0" 
+                className="relative"
                 style={{ width: "500px", height: "500px" }}
               >
               {/* Outer Circle with Glow */}
@@ -227,18 +218,57 @@ export function InteractiveMentalCompass() {
               </div>
 
               {/* Compass Needle (Follows Cursor or Points to Hovered Direction) */}
-              <div 
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                style={{ transform: `rotate(${needleAngle}deg)` }}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  transform: `rotate(${needleAngle}deg)`,
+                  transformOrigin: "50% 50%",
+                  willChange: "transform",
+                }}
               >
-                <div className="relative">
-                  {/* Needle pointing up - Red with enhanced shadow */}
-                  <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[130px] border-b-red-600 drop-shadow-lg" 
-                    style={{ filter: "drop-shadow(0 4px 6px rgba(220, 38, 38, 0.4)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3))" }}
-                  ></div>
-                  {/* Needle pointing down - Gray */}
-                  <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[65px] border-t-gray-400 opacity-80"></div>
-                </div>
+                <svg
+                  className="absolute inset-0 h-full w-full overflow-visible"
+                  viewBox="0 0 500 500"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <filter
+                      id="compass-needle-shadow"
+                      x="-50%"
+                      y="-50%"
+                      width="200%"
+                      height="200%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="8"
+                        stdDeviation="8"
+                        floodColor="rgba(15, 23, 42, 0.18)"
+                      />
+                    </filter>
+                  </defs>
+
+                  <g filter="url(#compass-needle-shadow)">
+                    <polygon
+                      points="250,110 234,248 250,232 266,248"
+                      fill="#dc2626"
+                    />
+                    <polygon
+                      points="250,138 243,246 250,238 257,246"
+                      fill="#ffffff"
+                      opacity="0.26"
+                    />
+                    <polygon
+                      points="250,390 240,252 250,268 260,252"
+                      fill="#94a3b8"
+                    />
+                    <polygon
+                      points="250,362 245,254 250,262 255,254"
+                      fill="#ffffff"
+                      opacity="0.22"
+                    />
+                  </g>
+                </svg>
               </div>
 
               {/* Center Hub with Pulsing Effect - Now Interactive */}
@@ -320,6 +350,7 @@ export function InteractiveMentalCompass() {
                     </div>
                   );
                 })}
+              </div>
               </div>
               </div>
 

@@ -329,13 +329,13 @@ export function Appointments() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden pt-16 sm:pt-20 pb-12 sm:pb-16">
         <CompassDecoration variant="light" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-6xl mx-auto pt-48 text-center">
+        <div className="max-w-6xl mx-auto text-center">
             {/* Hero Section */}
-            <section className="mb-8 sm:mb-12 relative">
+            <section className="relative mb-8 sm:mb-12">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-4">
                   <CalendarIcon className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 mr-2 sm:mr-3" />
