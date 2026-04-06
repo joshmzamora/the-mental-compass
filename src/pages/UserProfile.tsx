@@ -19,7 +19,7 @@ export function UserProfile() {
         <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto text-center">
-              <h1 className="text-3xl text-gray-900 mb-4">User Not Found</h1>
+              <h1 className="text-3xl font-medium text-gray-900 mb-4">User Not Found</h1>
               <p className="text-gray-600 mb-6">
                 We couldn't find the profile you're looking for.
               </p>
@@ -63,7 +63,7 @@ export function UserProfile() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <h1 className="text-3xl text-gray-900 mb-2">{profile.name}</h1>
+                    <h1 className="text-3xl font-medium text-gray-900 mb-2">{profile.name}</h1>
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
                       <Calendar className="h-4 w-4" />
                       <span>Member since {memberSince}</span>

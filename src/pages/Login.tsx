@@ -47,7 +47,7 @@ export function Login() {
                 </div>
               </div>
             </div>
-            <h1 className="text-3xl text-gray-900 mb-2">Welcome Back</h1>
+            <h1 className="text-3xl font-medium text-gray-900 mb-2">Welcome Back</h1>
             <p className="text-gray-600">Log in to continue your mental health journey</p>
           </div>
 

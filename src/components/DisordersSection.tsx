@@ -216,7 +216,7 @@ export function DisordersSection() {
           <div className="text-center mb-8 md:mb-12">
             <div className="flex items-center justify-center mb-4">
               <Map className="h-6 w-6 md:h-8 md:w-8 text-teal-600 mr-2 md:mr-3" />
-              <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900">
                 Understanding Mental Health Conditions
               </h2>
             </div>

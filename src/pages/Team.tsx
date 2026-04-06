@@ -106,7 +106,7 @@ export function Team() {
             {/* Header */}
             <div className="text-center mb-12 sm:mb-16">
               <Users className="h-12 w-12 sm:h-16 sm:w-16 text-teal-600 mx-auto mb-4" />
-              <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-4">
                 Meet Our Team
               </h1>
               <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">

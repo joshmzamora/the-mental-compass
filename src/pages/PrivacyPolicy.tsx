@@ -10,7 +10,7 @@ export function PrivacyPolicy() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <Shield className="h-16 w-16 text-teal-600 mx-auto mb-4" />
-              <h1 className="text-4xl text-gray-900 mb-4">Privacy Policy</h1>
+              <h1 className="text-4xl font-medium text-gray-900 mb-4">Privacy Policy</h1>
               <p className="text-lg text-gray-600">
                 Last Updated: November 4, 2025
               </p>

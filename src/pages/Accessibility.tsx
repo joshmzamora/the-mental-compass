@@ -71,7 +71,7 @@ export function Accessibility() {
             {/* Header */}
             <div className="text-center mb-12">
               <AccessibilityIcon className="h-16 w-16 text-teal-600 mx-auto mb-4" />
-              <h1 className="text-4xl md:text-5xl text-gray-900 mb-4">
+              <h1 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4">
                 Accessibility Statement
               </h1>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">

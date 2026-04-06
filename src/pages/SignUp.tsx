@@ -59,7 +59,7 @@ export function SignUp() {
                 </div>
               </div>
             </div>
-            <h1 className="text-3xl text-gray-900 mb-2">Begin Your Journey</h1>
+            <h1 className="text-3xl font-medium text-gray-900 mb-2">Begin Your Journey</h1>
             <p className="text-gray-600">Create an account to access personalized support</p>
           </div>
 

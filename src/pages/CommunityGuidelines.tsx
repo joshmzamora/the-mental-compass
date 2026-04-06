@@ -38,7 +38,7 @@ export function CommunityGuidelines() {
             <div className="text-center mb-12">
               <div className="flex items-center justify-center mb-4">
                 <Shield className="h-12 w-12 text-teal-600 mr-3" />
-                <h1 className="text-4xl md:text-5xl text-gray-900">
+                <h1 className="text-4xl md:text-5xl font-medium text-gray-900">
                   Community Guidelines
                 </h1>
               </div>

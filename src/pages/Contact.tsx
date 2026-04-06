@@ -26,7 +26,7 @@ export function Contact() {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <Mail className="h-16 w-16 text-teal-600 mx-auto mb-4" />
-              <h1 className="text-4xl text-gray-900 mb-4">Contact Us</h1>
+              <h1 className="text-4xl font-medium text-gray-900 mb-4">Contact Us</h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Have questions, feedback, or need assistance? We're here to help. Reach out to us through any of the methods below.
               </p>

@@ -574,7 +574,7 @@ export function Dashboard() {
                   </Dialog>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl text-gray-900 flex flex-wrap items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 flex flex-wrap items-center gap-2">
                     <span className="truncate">Welcome back, {profile?.name || user?.name}</span>
                     <Button
                       variant="ghost"

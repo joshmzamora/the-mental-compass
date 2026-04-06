@@ -253,7 +253,7 @@ export function Onboarding() {
                 </div>
               </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl text-gray-900 mb-2">Set Your Compass Bearing</h1>
+            <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-2">Set Your Compass Bearing</h1>
             <p className="text-sm sm:text-base text-gray-600 px-4">
               Help us personalize your mental health journey
             </p>

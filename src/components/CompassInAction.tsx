@@ -1,14 +1,14 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Target, Calendar, MessageSquare, ArrowRight, Heart } from "lucide-react";
+import { Target, Calendar, MessageSquare, ArrowRight, Compass } from "lucide-react";
 
 export function CompassInAction() {
   const features = [
     {
       icon: Target,
       title: "Set Your Compass",
-      description: "Take our personalized questionnaire to discover your unique mental health profile and get customized recommendations tailored to your journey.",
+      description: "Answer a few guided questions to understand your needs and get recommendations that fit your journey.",
       link: "/signup",
       cta: "Start Your Journey",
       color: "teal",
@@ -17,7 +17,7 @@ export function CompassInAction() {
     {
       icon: Calendar,
       title: "Global Course Correction",
-      description: "Connect with experienced mental health professionals who understand your needs. Schedule appointments that fit your schedule and specialty requirements.",
+      description: "Find mental health professionals who match your needs and book a time that works for you.",
       link: "/appointments",
       cta: "Book an Appointment",
       color: "blue",
@@ -26,7 +26,7 @@ export function CompassInAction() {
     {
       icon: MessageSquare,
       title: "Find Your Circle",
-      description: "Join our supportive community of individuals navigating similar journeys. Share experiences, offer support, and never feel alone in your mental health journey.",
+      description: "Join a supportive community, share your experience, and connect with people who understand.",
       link: "/community",
       cta: "Join the Community",
       color: "purple",
@@ -74,13 +74,13 @@ export function CompassInAction() {
         >
           <div className="flex items-center justify-center mb-4">
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
+              animate={{ rotate: [-10, 10, -10] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <Heart className="h-10 w-10 lg:h-12 lg:w-12 text-rose-200 stroke-[2.25]" />
+              <Compass className="h-16 w-16 lg:h-14 lg:w-14 text-white stroke-[2.25]" />
             </motion.div>
           </div>
-          <h2 className="text-white mb-4 text-3xl lg:text-5xl">The Compass in Action</h2>
+          <h2 className="text-white mb-4 text-4xl font-bold lg:text-6xl">The Compass in Action</h2>
           <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
             Your personalized path to mental wellness
           </p>

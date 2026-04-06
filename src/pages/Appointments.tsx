@@ -329,7 +329,7 @@ export function Appointments() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden pt-16 sm:pt-20 pb-12 sm:pb-16">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 relative overflow-hidden py-20">
         <CompassDecoration variant="light" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -339,7 +339,7 @@ export function Appointments() {
               <div className="text-center">
                 <div className="flex items-center justify-center mb-4">
                   <CalendarIcon className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 mr-2 sm:mr-3" />
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-900">
                     Schedule a Counseling Session
                   </h1>
                 </div>

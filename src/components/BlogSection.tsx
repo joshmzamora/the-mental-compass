@@ -62,7 +62,7 @@ export function BlogSection() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-4">
               <BookOpen className="h-8 w-8 text-teal-600 mr-3" />
-              <h2 className="text-3xl md:text-4xl text-gray-900">
+              <h2 className="text-3xl md:text-4xl font-medium text-gray-900">
                 Mental Health Blog
               </h2>
             </div>

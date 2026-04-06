@@ -1388,7 +1388,7 @@ export function CommunitySection() {
           <div className="text-center mb-8 sm:mb-12 relative">
             <div className="flex items-center justify-center mb-4">
               <Users className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 mr-2 sm:mr-3" />
-              <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-900">
                 Community Support
               </h2>
             </div>
