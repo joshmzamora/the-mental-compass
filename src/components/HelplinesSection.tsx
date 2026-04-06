@@ -17,6 +17,11 @@ export function HelplinesSection() {
   const [detectedCity, setDetectedCity] = useState<string>("");
   const [showLocalResources, setShowLocalResources] = useState(false);
   const [detectedZipCode, setDetectedZipCode] = useState<string>("");
+  const [inlineError, setInlineError] = useState<{ visible: boolean; title: string; message: string }>({
+    visible: false,
+    title: "",
+    message: ""
+  });
 
   const crisisHelplines = helplines.filter((h) => h.type === "crisis");
   const otherHelplines = helplines.filter((h) => h.type !== "crisis");
@@ -103,11 +108,19 @@ export function HelplinesSection() {
         },
         (error) => {
           console.log("Location access denied:", error);
-          alert("Unable to access your location. Please enter your ZIP code instead.");
+          setInlineError({
+            visible: true,
+            title: "Location Access Denied",
+            message: "Please enter your ZIP code manually."
+          });
         }
       );
     } else {
-      alert("Geolocation is not supported by your browser. Please enter your ZIP code instead.");
+      setInlineError({
+        visible: true,
+        title: "Not Supported",
+        message: "Geolocation is not supported by your browser."
+      });
     }
   };
 
@@ -126,7 +139,11 @@ export function HelplinesSection() {
         setDetectedCity(`ZIP ${userZipCode}`);
       }
     } else {
-      alert("Please enter a valid 5-digit ZIP code");
+      setInlineError({
+        visible: true,
+        title: "Invalid ZIP Code",
+        message: "Enter exactly 5 digits for a valid U.S. ZIP code."
+      });
     }
   };
 
@@ -269,6 +286,17 @@ export function HelplinesSection() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                {inlineError.visible && (
+                  <Alert variant="destructive" className="mb-4 bg-red-50 border-red-200 animate-in fade-in slide-in-from-top-1">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertDescription className="text-red-900 text-sm flex items-center justify-between">
+                      <span><strong>{inlineError.title}:</strong> {inlineError.message}</span>
+                      <Button variant="ghost" size="sm" onClick={() => setInlineError(prev => ({ ...prev, visible: false }))} className="h-6 w-6 p-0 hover:bg-red-100">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
                     <Label htmlFor="zipcode" className="text-sm text-gray-700 mb-2 block">
@@ -280,7 +308,10 @@ export function HelplinesSection() {
                         type="text"
                         placeholder="e.g., 10001"
                         value={userZipCode}
-                        onChange={(e) => setUserZipCode(e.target.value)}
+                        onChange={(e) => {
+                          setUserZipCode(e.target.value);
+                          if (inlineError.visible) setInlineError(prev => ({ ...prev, visible: false }));
+                        }}
                         maxLength={5}
                         className="flex-1"
                       />
