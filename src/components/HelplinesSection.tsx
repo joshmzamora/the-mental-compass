@@ -164,13 +164,15 @@ export function HelplinesSection() {
             <h3 className="text-2xl mb-6 text-gray-900">Crisis Support</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {crisisHelplines.map((helpline) => (
-                <Card key={helpline.id} className="border-2 border-red-200 bg-red-50/50 shadow-sm">
-                  <CardHeader>
+                <Card key={helpline.id} className="border-2 border-red-200 bg-red-50/20 shadow-sm transition-all hover:shadow-md">
+                  <CardHeader className="space-y-4">
                     <div className="flex items-start justify-between">
-                      <CardTitle className="text-gray-900">{helpline.name}</CardTitle>
-                      <Badge className="bg-red-600 hover:bg-red-700">Crisis</Badge>
+                      <CardTitle className="text-xl font-bold text-gray-900 leading-tight">
+                        {helpline.name}
+                      </CardTitle>
+                      <Badge className="bg-red-600 hover:bg-red-700 shrink-0">Crisis</Badge>
                     </div>
-                    <CardDescription className="text-gray-700">
+                    <CardDescription className="text-gray-700 leading-relaxed min-h-[4rem]">
                       {helpline.description}
                     </CardDescription>
                   </CardHeader>
@@ -319,7 +321,7 @@ export function HelplinesSection() {
                               <CardTitle className="text-lg text-gray-900">{resource.name}</CardTitle>
                               <Badge className={badge.className}>{badge.label}</Badge>
                             </div>
-                            <CardDescription className="text-gray-600 text-sm line-clamp-2">
+                            <CardDescription className="text-gray-700">
                               {resource.description}
                             </CardDescription>
                           </CardHeader>
@@ -356,21 +358,48 @@ export function HelplinesSection() {
              <div className="mb-12">
                <h3 className="text-2xl mb-6 text-gray-900">National & International Resources</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {otherHelplines.map((helpline) => (
-                   <Card key={helpline.id} className="hover:shadow-sm transition-shadow">
-                     <CardHeader>
-                       <CardTitle className="text-gray-900 font-medium">{helpline.name}</CardTitle>
-                       <CardDescription className="text-gray-600 text-sm line-clamp-2">{helpline.description}</CardDescription>
-                     </CardHeader>
-                     <CardContent className="space-y-3">
-                       <div className="flex items-center gap-2">
-                         <Phone className="h-4 w-4 text-teal-600" />
-                         <span className="text-sm font-medium">{helpline.phone}</span>
-                       </div>
-                       <div className="text-xs text-gray-500 font-medium">{helpline.availability}</div>
-                     </CardContent>
-                   </Card>
-                 ))}
+                 {otherHelplines.map((helpline) => {
+                   const bgClass = "bg-teal-50/30 border-teal-100 shadow-sm";
+                   const iconColor = "text-teal-600";
+                   
+                   return (
+                     <Card key={helpline.id} className={`flex flex-col h-full hover:shadow-md transition-all border-2 ${bgClass}`}>
+                       <CardHeader className="space-y-4 flex-grow">
+                         <CardTitle className="text-lg font-bold text-gray-900 leading-snug">
+                           {helpline.name}
+                         </CardTitle>
+                         <CardDescription className="text-gray-700 leading-relaxed">
+                           {helpline.description}
+                         </CardDescription>
+                       </CardHeader>
+                       <CardContent className="space-y-4 pt-4 border-t border-teal-100/50">
+                         <div className="space-y-2">
+                           <div className="flex items-center gap-2">
+                             <Phone className={`h-4 w-4 ${iconColor}`} />
+                             <span className="text-sm font-bold text-gray-900 tracking-tight">{helpline.phone}</span>
+                           </div>
+                           <div className="flex items-center gap-2">
+                             <Clock className={`h-4 w-4 ${iconColor}`} />
+                             <span className="text-xs text-gray-500 font-semibold">{helpline.availability}</span>
+                           </div>
+                           {helpline.website && (
+                             <div className="flex items-center gap-2 pt-1">
+                               <Globe className={`h-4 w-4 ${iconColor}`} />
+                               <a 
+                                 href={helpline.website} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer" 
+                                 className="text-xs font-bold text-teal-700 hover:underline flex items-center"
+                               >
+                                 Visit Official Website
+                               </a>
+                             </div>
+                           )}
+                         </div>
+                       </CardContent>
+                     </Card>
+                   );
+                 })}
                </div>
              </div>
           )}
