@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Phone, Globe, Clock, AlertCircle, Compass, Navigation, MapPin, Target, X, Building2 } from "lucide-react";
 import { helplines } from "../data/helplines";
 import { searchResourcesByZipCode, LocalResource } from "../data/local-resources";
+import { lookupZip3 } from "../data/zip-codes";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Alert, AlertDescription } from "./ui/alert";
@@ -117,63 +118,12 @@ export function HelplinesSection() {
       setLocationEnabled(true);
       setDetectedZipCode(userZipCode);
       
-      // Map known ZIP codes to cities
-      const zipToCity: Record<string, string> = {
-        // Tennessee
-        "37203": "Nashville, TN",
-        "37204": "Nashville, TN",
-        "37212": "Nashville, TN",
-        "38104": "Memphis, TN",
-        "38116": "Memphis, TN",
-        "38115": "Memphis, TN",
-        "37902": "Knoxville, TN",
-        "37918": "Knoxville, TN",
-        "37404": "Chattanooga, TN",
-        "37402": "Chattanooga, TN",
-        "38301": "Jackson, TN",
-        "37129": "Murfreesboro, TN",
-        // Texas
-        "77002": "Houston, TX",
-        "77030": "Houston, TX",
-        "77024": "Houston, TX",
-        "75201": "Dallas, TX",
-        "75234": "Dallas, TX",
-        "75235": "Dallas, TX",
-        "75208": "Dallas, TX",
-        "78701": "Austin, TX",
-        "78756": "Austin, TX",
-        "78705": "Austin, TX",
-        "78205": "San Antonio, TX",
-        "78207": "San Antonio, TX",
-        "76104": "Fort Worth, TX",
-        "79905": "El Paso, TX",
-        "79401": "Lubbock, TX",
-        "78401": "Corpus Christi, TX",
-        // Other states
-        "10001": "New York, NY",
-        "90210": "Los Angeles, CA",
-        "94102": "San Francisco, CA",
-        "60601": "Chicago, IL",
-        "33101": "Miami, FL"
-      };
-      
-      // Try to find city, or use generic area message
-      const city = zipToCity[userZipCode];
-      if (city) {
-        setDetectedCity(city);
+      // Try to find city using our comprehensive mapping
+      const zipInfo = lookupZip3(userZipCode);
+      if (zipInfo) {
+        setDetectedCity(`${zipInfo.city}, ${zipInfo.state}`);
       } else {
-        // Try to guess based on ZIP prefix
-        const prefix = userZipCode.substring(0, 3);
-        if (prefix.startsWith("77")) setDetectedCity("Houston area, TX");
-        else if (prefix.startsWith("75")) setDetectedCity("Dallas area, TX");
-        else if (prefix.startsWith("78")) setDetectedCity("Central Texas");
-        else if (prefix.startsWith("76")) setDetectedCity("Fort Worth area, TX");
-        else if (prefix.startsWith("79")) setDetectedCity("West Texas");
-        else if (prefix.startsWith("372") || prefix.startsWith("373")) setDetectedCity("Nashville area, TN");
-        else if (prefix.startsWith("381")) setDetectedCity("Memphis area, TN");
-        else if (prefix.startsWith("379")) setDetectedCity("Knoxville area, TN");
-        else if (prefix.startsWith("374")) setDetectedCity("Chattanooga area, TN");
-        else setDetectedCity(`ZIP ${userZipCode}`);
+        setDetectedCity(`ZIP ${userZipCode}`);
       }
     } else {
       alert("Please enter a valid 5-digit ZIP code");
