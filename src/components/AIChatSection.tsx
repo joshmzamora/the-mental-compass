@@ -34,7 +34,7 @@ const MESSAGE_ERROR_TEXT =
   "I'm having trouble reaching the AI assistant right now. Please try again in a moment. If you need immediate support, visit [Get Help](/helplines) or call/text 988.";
 
 const MISSING_KEY_ERROR_TEXT =
-  "AI chat is not configured on this device yet. Add `VITE_GROQ_API_KEY` to your local `.env.local`, restart the dev server, and try again.";
+  "AI chat is not configured on this server yet. Add `GROQ_API_KEY` to your local `.env.local` or your Vercel project settings, then restart or redeploy and try again.";
 
 const LINK_PATTERN = /\[([^\]]+)\]\(([^)]+)\)/g;
 
@@ -180,7 +180,7 @@ export function AIChatSection() {
       console.error("Failed to send message", error);
       const message =
         error instanceof Error &&
-        error.message.includes("VITE_GROQ_API_KEY")
+        error.message.includes("GROQ_API_KEY")
           ? MISSING_KEY_ERROR_TEXT
           : MESSAGE_ERROR_TEXT;
 
