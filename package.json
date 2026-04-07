@@ -65,7 +65,7 @@
       },
       "scripts": {
             "dev": "vite",
-            "start": "serve -s build -l $PORT",
+            "start": "node server.js",
             "build": "vite build"
       }
 }
