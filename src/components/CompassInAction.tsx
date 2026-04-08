@@ -80,9 +80,9 @@ export function CompassInAction() {
               <Compass className="h-16 w-16 lg:h-14 lg:w-14 text-white stroke-[2.25]" />
             </motion.div>
           </div>
-          <h2 className="text-white mb-4 text-4xl font-bold lg:text-6xl">The Compass in Action</h2>
-          <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
-            Your personalized path to mental wellness
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-white mb-4">How The Compass Works</h2>
+          <p className="text-lg text-white/90 max-w-2xl mx-auto">
+            A personalized path to support, care, and progress.
           </p>
         </motion.div>
 

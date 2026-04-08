@@ -33,9 +33,9 @@ export function FeaturedNavigators() {
             <Users className="h-8 w-8 text-teal-600" />
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-teal-400 ml-3"></div>
           </div>
-          <h2 className="text-gray-900 mb-4">Featured Navigators</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Meet our experienced mental health professionals ready to guide you on your journey
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900 mb-4">Meet Your Navigators</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Connect with experienced mental health professionals ready to support your next step.
           </p>
         </motion.div>
 

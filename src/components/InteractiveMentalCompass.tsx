@@ -175,12 +175,12 @@ export function InteractiveMentalCompass() {
         <div className="text-center mb-8 lg:mb-12">
           <div className="flex items-center justify-center mb-3 gap-2">
             <Compass className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-teal-600 flex-shrink-0" />
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900">
-              Navigate Your Mental Health Journey
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900">
+              Find Your Direction
             </h2>
           </div>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-            Choose your path forward. Click any direction to explore resources tailored to your needs.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            Choose a path forward and explore resources tailored to your needs.
           </p>
         </div>
 
