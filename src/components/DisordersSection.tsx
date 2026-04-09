@@ -225,12 +225,25 @@ export function DisordersSection() {
   const journalPromptTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const breathingTimer = window.setInterval(() => {
-      setBreathingPhaseIndex(
-        (prevIndex) =>
-          (prevIndex + 1) % breathingPhases.length,
+    const cycleStart = performance.now();
+    const phaseDurationMs = 4000;
+    const cycleDurationMs =
+      phaseDurationMs * breathingPhases.length;
+
+    const updatePhase = () => {
+      const elapsed =
+        (performance.now() - cycleStart) % cycleDurationMs;
+      const nextPhase = Math.floor(
+        elapsed / phaseDurationMs,
       );
-    }, 4000);
+      setBreathingPhaseIndex(nextPhase);
+    };
+
+    updatePhase();
+    const breathingTimer = window.setInterval(
+      updatePhase,
+      120,
+    );
 
     return () => {
       window.clearInterval(breathingTimer);
@@ -390,6 +403,15 @@ export function DisordersSection() {
     setDisplayedMythCards(getRandomMythCards(6));
     setFlippedMythCards({});
   };
+
+  const isExpandingPhase = breathingPhaseIndex === 0;
+  const isShrinkingPhase = breathingPhaseIndex === 2;
+  const isLargeBubble =
+    breathingPhaseIndex === 0 || breathingPhaseIndex === 1;
+  const bubbleScale = isLargeBubble ? 2.18 : 1;
+  const bubbleOpacity = isLargeBubble ? 1 : 0.86;
+  const bubbleTransitionMs =
+    isExpandingPhase || isShrinkingPhase ? 4000 : 220;
 
   return (
     <section
@@ -648,52 +670,33 @@ export function DisordersSection() {
                               />
                             </radialGradient>
                           </defs>
-                          <circle
-                            cx="100"
-                            cy="100"
-                            r="34"
-                            fill="url(#breathingGradient)"
-                            opacity="0.9"
+                          <g
+                            style={{
+                              transformOrigin: "100px 100px",
+                              transform: `scale(${bubbleScale})`,
+                              transition: `transform ${bubbleTransitionMs}ms linear`,
+                            }}
                           >
-                            <animate
-                              attributeName="r"
-                              values="34;74;74;34;34"
-                              dur="16s"
-                              keyTimes="0;0.25;0.5;0.75;1"
-                              repeatCount="indefinite"
+                            <circle
+                              cx="100"
+                              cy="100"
+                              r="34"
+                              fill="url(#breathingGradient)"
+                              opacity={bubbleOpacity}
                             />
-                            <animate
-                              attributeName="opacity"
-                              values="0.82;1;1;0.82;0.82"
-                              dur="16s"
-                              keyTimes="0;0.25;0.5;0.75;1"
-                              repeatCount="indefinite"
+                            <circle
+                              cx="100"
+                              cy="100"
+                              r="56"
+                              fill="none"
+                              stroke="#5eead4"
+                              strokeOpacity={isLargeBubble ? 0.18 : 0.3}
+                              strokeWidth="1.5"
+                              style={{
+                                transition: `stroke-opacity ${bubbleTransitionMs}ms linear`,
+                              }}
                             />
-                          </circle>
-                          <circle
-                            cx="100"
-                            cy="100"
-                            r="56"
-                            fill="none"
-                            stroke="#5eead4"
-                            strokeOpacity="0.32"
-                            strokeWidth="1.5"
-                          >
-                            <animate
-                              attributeName="r"
-                              values="56;84;84;56;56"
-                              dur="16s"
-                              keyTimes="0;0.25;0.5;0.75;1"
-                              repeatCount="indefinite"
-                            />
-                            <animate
-                              attributeName="stroke-opacity"
-                              values="0.28;0.1;0.1;0.28;0.28"
-                              dur="16s"
-                              keyTimes="0;0.25;0.5;0.75;1"
-                              repeatCount="indefinite"
-                            />
-                          </circle>
+                          </g>
                           <circle
                             cx="100"
                             cy="100"
@@ -756,10 +759,14 @@ export function DisordersSection() {
                             "Hold 4 sec",
                             "Exhale 4 sec",
                             "Hold 4 sec",
-                          ].map((phase) => (
+                          ].map((phase, index) => (
                             <div
                               key={phase}
-                              className="rounded-lg bg-teal-50 border border-teal-100 p-3 text-sm text-teal-900"
+                              className={`rounded-lg border p-3 text-sm transition-all duration-300 ${
+                                index === breathingPhaseIndex
+                                  ? "bg-teal-100 border-teal-300 text-teal-900 shadow-sm"
+                                  : "bg-teal-50 border-teal-100 text-teal-900"
+                              }`}
                             >
                               {phase}
                             </div>
