@@ -73,6 +73,7 @@ export function Appointments() {
   const [loading, setLoading] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [specialtyFilter, setSpecialtyFilter] = useState<string>("");
+  const [showAllTherapists, setShowAllTherapists] = useState(false);
 
   useEffect(() => {
     // Check for specialty filter in URL params
@@ -85,6 +86,10 @@ export function Appointments() {
 
     fetchBookings();
   }, []);
+
+  useEffect(() => {
+    setShowAllTherapists(false);
+  }, [date, specialtyFilter]);
 
   const fetchBookings = async () => {
     try {
@@ -314,8 +319,20 @@ export function Appointments() {
   const canProceedToStep2 = date !== undefined;
   const canProceedToStep3 = selectedTherapist !== null;
   const canProceedToStep4 = selectedTime !== "";
+  const stepHeaderClass = "flex-none px-6 md:px-8 pt-6 pb-4 border-b border-slate-100 text-left";
+  const stepTitleClass = "flex items-center gap-2 text-xl md:text-2xl font-semibold tracking-tight text-slate-900";
+  const stepDescriptionClass = "mt-1 text-sm md:text-base leading-relaxed text-slate-600 text-left";
+  const bookingSteps = [
+    { num: 1, label: "Date" },
+    { num: 2, label: "Navigator" },
+    { num: 3, label: "Time" },
+    { num: 4, label: "Payment" },
+  ];
 
   const availableTherapists = date ? getAvailableTherapistsForDate(date) : [];
+  const displayedTherapists = showAllTherapists
+    ? availableTherapists
+    : availableTherapists.slice(0, 5);
 
   const nextStep = () => {
     if (currentStep === 1 && canProceedToStep2) setCurrentStep(2);
@@ -512,13 +529,9 @@ export function Appointments() {
 
             {/* Progress Indicator */}
             <div className="mb-12 max-w-4xl mx-auto">
-              <div className="flex items-center justify-between">
-                {[
-                  { num: 1, label: "Date" },
-                  { num: 2, label: "Navigator" },
-                  { num: 3, label: "Time" },
-                  { num: 4, label: "Payment" },
-                ].map((step, index) => (
+              <div className="overflow-x-auto pb-2">
+                <div className="flex items-center justify-between min-w-[560px] sm:min-w-0 sm:w-full mx-auto">
+                  {bookingSteps.map((step, index) => (
                   <div
                     key={step.num}
                     className="relative flex items-center flex-1 last:flex-none"
@@ -537,13 +550,13 @@ export function Appointments() {
                           step.num
                         )}
                       </div>
-                      <span className="mt-3 text-sm font-medium text-gray-700">
+                      <span className="mt-3 text-xs sm:text-sm font-medium text-gray-700">
                         {step.label}
                       </span>
                     </div>
 
                     {/* Connecting Line */}
-                    {index < 3 && (
+                    {index < bookingSteps.length - 1 && (
                       <div className="absolute top-6 left-12 right-0 h-1 -z-10">
                         <div
                           className="h-full transition-all duration-500"
@@ -561,7 +574,8 @@ export function Appointments() {
                       </div>
                     )}
                   </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -577,13 +591,13 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
-                      <CardHeader className="flex-none h-[110px] overflow-hidden">
-                        <CardTitle className="flex items-center gap-2">
-                          <CalendarIcon className="h-6 w-6 text-teal-600" />
+                    <Card className="shadow-lg min-h-[620px] md:min-h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className={stepHeaderClass}>
+                        <CardTitle className={stepTitleClass}>
+                          <CalendarIcon className="h-5 w-5 text-teal-600" />
                           Step 1: Choose a Date
                         </CardTitle>
-                        <CardDescription>Select a date for your counseling session</CardDescription>
+                        <CardDescription className={stepDescriptionClass}>Select a date for your counseling session</CardDescription>
                       </CardHeader>
                       <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center">
@@ -591,7 +605,7 @@ export function Appointments() {
                             mode="single"
                             selected={date}
                             onSelect={(date: any) => setDate(date)}
-                            className="rounded-md border"
+                            className="rounded-md border w-fit mx-auto"
                             disabled={(date: any) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                           />
                           {date && (
@@ -628,26 +642,26 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
-                      <CardHeader className="flex-none h-[110px] overflow-hidden">
-                        <CardTitle className="flex items-center gap-2">
-                          <User className="h-6 w-6 text-teal-600" />
+                    <Card className="shadow-lg min-h-[620px] md:min-h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className={stepHeaderClass}>
+                        <CardTitle className={stepTitleClass}>
+                          <User className="h-5 w-5 text-teal-600" />
                           Step 2: Choose Your Navigator
                         </CardTitle>
-                        <CardDescription className="line-clamp-2">
+                        <CardDescription className={stepDescriptionClass}>
                           Select from our team of experienced professionals
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-6">
-                          {availableTherapists.length === 0 ? (
+                          {displayedTherapists.length === 0 ? (
                             <div className="text-center py-8 text-gray-500">
                               <User className="h-12 w-12 mx-auto mb-2 text-gray-300" />
                               <p>No navigators available on this day</p>
                             </div>
                           ) : (
                             <div className="space-y-4">
-                              {availableTherapists.map((therapist) => (
+                              {displayedTherapists.map((therapist) => (
                                 <div
                                   key={therapist.id}
                                   onClick={() => setSelectedTherapist(therapist)}
@@ -663,13 +677,13 @@ export function Appointments() {
                                         {therapist.name.split(" ").map(n => n[0]).join("")}
                                       </AvatarFallback>
                                     </Avatar>
-                                    <div className="flex-1 w-full">
-                                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                                        <div>
+                                    <div className="flex-1 w-full text-left">
+                                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3 text-left">
+                                        <div className="text-left">
                                           <h4 className="font-bold text-gray-900 text-lg leading-tight">{therapist.name}</h4>
                                           <p className="text-sm text-teal-600 font-medium">{therapist.credential}</p>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 sm:ml-4">
                                           <Badge variant="secondary" className="bg-teal-100 text-teal-700 font-semibold px-3">
                                             ${therapist.rate}/session
                                           </Badge>
@@ -755,11 +769,25 @@ export function Appointments() {
                                   </div>
                                 </div>
                               ))}
+                              {availableTherapists.length > 5 && (
+                                <div className="pt-2 flex justify-center">
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setShowAllTherapists((prev) => !prev)}
+                                    className="border-teal-300 text-teal-700 hover:bg-teal-50"
+                                  >
+                                    {showAllTherapists
+                                      ? "Show Less"
+                                      : `See More Navigators (${availableTherapists.length - 5} more)`}
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
 
-                        <div className="p-6 border-t bg-white flex-none flex gap-3">
+                        <div className="p-6 border-t bg-white flex-none flex flex-col sm:flex-row gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -791,13 +819,13 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
-                      <CardHeader className="flex-none h-[110px] overflow-hidden">
-                        <CardTitle className="flex items-center gap-2">
-                          <Clock className="h-6 w-6 text-teal-600" />
+                    <Card className="shadow-lg min-h-[620px] md:min-h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className={stepHeaderClass}>
+                        <CardTitle className={stepTitleClass}>
+                          <Clock className="h-5 w-5 text-teal-600" />
                           Step 3: Select Your Time
                         </CardTitle>
-                        <CardDescription className="line-clamp-2">
+                        <CardDescription className={stepDescriptionClass}>
                           Choose an available time slot with {selectedTherapist?.name}
                         </CardDescription>
                       </CardHeader>
@@ -835,7 +863,7 @@ export function Appointments() {
                           </div>
 
                           {selectedTime && (
-                            <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6 font-Inter">
+                            <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6">
                               <h4 className="font-medium text-teal-900 mb-2">Session Details</h4>
                               <div className="space-y-1 text-sm text-teal-800">
                                 <p><strong>Navigator:</strong> {selectedTherapist?.name}</p>
@@ -848,7 +876,7 @@ export function Appointments() {
                           )}
                         </div>
 
-                        <div className="p-6 border-t bg-white flex gap-3">
+                        <div className="p-6 border-t bg-white flex flex-col sm:flex-row gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}
@@ -880,13 +908,13 @@ export function Appointments() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-lg h-[650px] flex flex-col overflow-hidden">
-                      <CardHeader className="flex-none h-[110px] overflow-hidden">
-                        <CardTitle className="flex items-center gap-2">
-                          <CreditCard className="h-6 w-6 text-teal-600" />
+                    <Card className="shadow-lg min-h-[620px] md:min-h-[650px] flex flex-col overflow-hidden">
+                      <CardHeader className={stepHeaderClass}>
+                        <CardTitle className={stepTitleClass}>
+                          <CreditCard className="h-5 w-5 text-teal-600" />
                           Step 4: Payment Method
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className={stepDescriptionClass}>
                           Choose how you'd like to pay for your session
                         </CardDescription>
                       </CardHeader>
@@ -900,13 +928,13 @@ export function Appointments() {
                                 : "border-gray-200 hover:border-teal-300"
                                 }`}
                             >
-                              <div className="flex items-center space-x-3">
+                              <div className="flex items-start space-x-3">
                                 <RadioGroupItem value="credit-card" id="credit-card" />
-                                <Label htmlFor="credit-card" className="flex-1 cursor-pointer">
-                                  <div className="flex items-center justify-between">
+                                <Label htmlFor="credit-card" className="flex-1 w-full cursor-pointer text-left">
+                                  <div className="flex items-start justify-between w-full">
                                     <div className="flex items-center gap-3">
                                       <CreditCard className="h-5 w-5 text-teal-600" />
-                                      <div>
+                                      <div className="text-left">
                                         <p className="font-medium">Credit/Debit Card</p>
                                         <p className="text-xs text-gray-500">Visa, Mastercard, Amex, Discover</p>
                                       </div>
@@ -924,13 +952,13 @@ export function Appointments() {
                                 : "border-gray-200 hover:border-teal-300"
                                 }`}
                             >
-                              <div className="flex items-center space-x-3">
+                              <div className="flex items-start space-x-3">
                                 <RadioGroupItem value="insurance" id="insurance" />
-                                <Label htmlFor="insurance" className="flex-1 cursor-pointer">
-                                  <div className="flex items-center justify-between">
+                                <Label htmlFor="insurance" className="flex-1 w-full cursor-pointer text-left">
+                                  <div className="flex items-start justify-between w-full">
                                     <div className="flex items-center gap-3">
                                       <Shield className="h-5 w-5 text-teal-600" />
-                                      <div>
+                                      <div className="text-left">
                                         <p className="font-medium">Insurance</p>
                                         <p className="text-xs text-gray-500">We accept most major insurance plans</p>
                                       </div>
@@ -947,13 +975,13 @@ export function Appointments() {
                                 : "border-gray-200 hover:border-teal-300"
                                 }`}
                             >
-                              <div className="flex items-center space-x-3">
+                              <div className="flex items-start space-x-3">
                                 <RadioGroupItem value="hsa-fsa" id="hsa-fsa" />
-                                <Label htmlFor="hsa-fsa" className="flex-1 cursor-pointer">
-                                  <div className="flex items-center justify-between">
+                                <Label htmlFor="hsa-fsa" className="flex-1 w-full cursor-pointer text-left">
+                                  <div className="flex items-start justify-between w-full">
                                     <div className="flex items-center gap-3">
                                       <FileText className="h-5 w-5 text-teal-600" />
-                                      <div>
+                                      <div className="text-left">
                                         <p className="font-medium">HSA/FSA</p>
                                         <p className="text-xs text-gray-500">Health Savings or Flexible Spending Account</p>
                                       </div>
@@ -970,13 +998,13 @@ export function Appointments() {
                                 : "border-gray-200 hover:border-teal-300"
                                 }`}
                             >
-                              <div className="flex items-center space-x-3">
+                              <div className="flex items-start space-x-3">
                                 <RadioGroupItem value="pay-later" id="pay-later" />
-                                <Label htmlFor="pay-later" className="flex-1 cursor-pointer">
-                                  <div className="flex items-center justify-between">
+                                <Label htmlFor="pay-later" className="flex-1 w-full cursor-pointer text-left">
+                                  <div className="flex items-start justify-between w-full">
                                     <div className="flex items-center gap-3">
                                       <Clock className="h-5 w-5 text-teal-600" />
-                                      <div>
+                                      <div className="text-left">
                                         <p className="font-medium">Pay at Session</p>
                                         <p className="text-xs text-gray-500">Complete payment during your appointment</p>
                                       </div>
@@ -990,7 +1018,7 @@ export function Appointments() {
                           {/* Credit Card Details Form */}
                           {paymentMethod === "credit-card" && (
                             <div className="space-y-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                              <h4 className="font-medium text-gray-900 mb-3 text-Inter">Card Details</h4>
+                              <h4 className="font-medium text-gray-900 mb-3">Card Details</h4>
                               <div>
                                 <Label htmlFor="cardName">Cardholder Name</Label>
                                 <Input
@@ -1054,10 +1082,10 @@ export function Appointments() {
                           )}
 
                           {paymentMethod && paymentMethod !== "credit-card" && (
-                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
-                              <div className="flex items-start gap-3">
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6 text-left">
+                              <div className="flex items-start gap-3 w-full">
                                 <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                                <div>
+                                <div className="flex-1 text-left">
                                   <p className="text-sm font-medium text-blue-900 mb-1">Secure Payment</p>
                                   <p className="text-xs text-blue-800">
                                     All payment information is encrypted and secure. You'll complete payment details after confirming your appointment.
@@ -1067,7 +1095,7 @@ export function Appointments() {
                             </div>
                           )}
 
-                          <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6 font-Inter">
+                          <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mb-6">
                             <h4 className="font-medium text-teal-900 mb-3">Booking Summary</h4>
                             <div className="space-y-2 text-sm text-teal-800 mb-4">
                               <div className="flex justify-between">
@@ -1094,7 +1122,7 @@ export function Appointments() {
                           </div>
                         </div>
 
-                        <div className="p-6 border-t bg-white flex-none flex gap-3">
+                        <div className="p-6 border-t bg-white flex-none flex flex-col sm:flex-row gap-3">
                           <Button
                             variant="outline"
                             onClick={prevStep}

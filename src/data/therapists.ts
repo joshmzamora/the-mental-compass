@@ -27,7 +27,7 @@ export const therapists: Therapist[] = [
     approach: "Evidence-based, client-centered therapy combining CBT, ACT, and mindfulness techniques",
     languages: ["English", "Spanish"],
     imageUrl: "/images/therapists/female-1.png",
-    availableDays: ["Monday", "Wednesday", "Friday"],
+    availableDays: ["Monday", "Wednesday", "Friday", "Sunday"],
     rate: 180
   },
   {
@@ -42,7 +42,7 @@ export const therapists: Therapist[] = [
     approach: "Trauma-informed care using EMDR, Somatic Experiencing, and Internal Family Systems (IFS)",
     languages: ["English"],
     imageUrl: "/images/therapists/male-1.png",
-    availableDays: ["Tuesday", "Thursday", "Saturday"],
+    availableDays: ["Tuesday", "Thursday", "Saturday", "Sunday"],
     rate: 195
   },
   {
@@ -57,7 +57,7 @@ export const therapists: Therapist[] = [
     approach: "Systemic and attachment-based therapy using EFT, Gottman Method, and Solution-Focused techniques",
     languages: ["English", "Mandarin", "Cantonese"],
     imageUrl: "/images/therapists/female-2.png",
-    availableDays: ["Monday", "Tuesday", "Thursday"],
+    availableDays: ["Monday", "Tuesday", "Thursday", "Sunday"],
     rate: 175
   },
   {
@@ -72,7 +72,7 @@ export const therapists: Therapist[] = [
     approach: "Integrative psychiatry combining psychopharmacology, psychotherapy, and lifestyle medicine",
     languages: ["English", "French"],
     imageUrl: "/images/therapists/male-2.png",
-    availableDays: ["Wednesday", "Friday"],
+    availableDays: ["Wednesday", "Friday", "Sunday"],
     rate: 250
   },
   {
@@ -87,7 +87,7 @@ export const therapists: Therapist[] = [
     approach: "Integrative approach combining mindfulness, positive psychology, and wellness coaching",
     languages: ["English"],
     imageUrl: "/images/therapists/female-3.png",
-    availableDays: ["Monday", "Wednesday", "Friday", "Saturday"],
+    availableDays: ["Monday", "Wednesday", "Friday", "Saturday", "Sunday"],
     rate: 165
   },
   {
@@ -102,7 +102,7 @@ export const therapists: Therapist[] = [
     approach: "Integrated treatment using Motivational Interviewing, CBT, and trauma-informed addiction therapy",
     languages: ["English", "Spanish"],
     imageUrl: "/images/therapists/male-3.png",
-    availableDays: ["Monday", "Tuesday", "Wednesday", "Saturday"],
+    availableDays: ["Monday", "Tuesday", "Wednesday", "Saturday", "Sunday"],
     rate: 185
   },
   {
@@ -117,7 +117,7 @@ export const therapists: Therapist[] = [
     approach: "Developmentally-informed therapy using play therapy, CBT for youth, and family systems work",
     languages: ["English", "Hindi", "Gujarati"],
     imageUrl: "/images/therapists/female-1.png",
-    availableDays: ["Tuesday", "Thursday", "Friday"],
+    availableDays: ["Tuesday", "Thursday", "Friday", "Sunday"],
     rate: 170
   },
   {
@@ -132,7 +132,7 @@ export const therapists: Therapist[] = [
     approach: "Evidence-based couples therapy using Gottman Method and EFT",
     languages: ["English", "Korean"],
     imageUrl: "/images/therapists/male-2.png",
-    availableDays: ["Monday", "Wednesday", "Thursday", "Friday"],
+    availableDays: ["Monday", "Wednesday", "Thursday", "Friday", "Sunday"],
     rate: 190
   },
   {
@@ -147,7 +147,7 @@ export const therapists: Therapist[] = [
     approach: "Comprehensive eating disorder treatment using CBT-E, DBT, and family-based therapy",
     languages: ["English"],
     imageUrl: "/images/therapists/female-1.png",
-    availableDays: ["Monday", "Tuesday", "Thursday", "Friday"],
+    availableDays: ["Monday", "Tuesday", "Thursday", "Friday", "Sunday"],
     rate: 200
   },
   {
@@ -162,7 +162,7 @@ export const therapists: Therapist[] = [
     approach: "Specialized OCD treatment using ERP, ACT, and mindfulness-based interventions",
     languages: ["English", "Mandarin"],
     imageUrl: "/images/therapists/male-1.png",
-    availableDays: ["Tuesday", "Wednesday", "Friday", "Saturday"],
+    availableDays: ["Tuesday", "Wednesday", "Friday", "Saturday", "Sunday"],
     rate: 185
   },
   {
@@ -177,7 +177,7 @@ export const therapists: Therapist[] = [
     approach: "Integrated treatment combining psychoeducation, CBT, interpersonal therapy, and wellness planning",
     languages: ["English", "Spanish"],
     imageUrl: "/images/therapists/female-3.png",
-    availableDays: ["Monday", "Wednesday", "Thursday"],
+    availableDays: ["Monday", "Wednesday", "Thursday", "Sunday"],
     rate: 175
   }
 ];
