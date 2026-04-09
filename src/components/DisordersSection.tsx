@@ -35,6 +35,7 @@ import {
   ArrowRight,
   Sparkles,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
@@ -101,7 +102,12 @@ const breathingPhases = [
   },
 ];
 
-const mythVsFactCards = [
+type MythFactCard = {
+  myth: string;
+  fact: string;
+};
+
+const mythVsFactCardPool: MythFactCard[] = [
   {
     myth: "People should be able to just snap out of anxiety or depression.",
     fact: "Mental health conditions are real medical experiences, not mindset failures. Support, therapy, and treatment make a measurable difference.",
@@ -126,7 +132,72 @@ const mythVsFactCards = [
     myth: "If someone is high-functioning, they are fine.",
     fact: "People can appear successful while silently struggling. Compassion and check-ins still matter.",
   },
+  { myth: "Mental health problems are rare.", fact: "Mental health conditions are common and affect people across every age group and background." },
+  { myth: "Children do not experience serious mental health issues.", fact: "Children and teens can experience anxiety, depression, trauma, and other conditions that deserve support." },
+  { myth: "Therapy is only for people with severe illness.", fact: "Therapy can help with stress, relationships, life transitions, and emotional skills at any stage." },
+  { myth: "If I start therapy, I will be in it forever.", fact: "Many people attend therapy for a defined period based on their goals and needs." },
+  { myth: "Medication is always the first step.", fact: "Treatment plans vary and can include therapy, lifestyle strategies, community support, and medication when appropriate." },
+  { myth: "Mental illness is caused by weak character.", fact: "Mental health conditions are influenced by biology, environment, trauma, and stress, not character flaws." },
+  { myth: "People with mental illness cannot work or succeed.", fact: "With the right support and treatment, many people thrive in school, work, and relationships." },
+  { myth: "Talking to friends is enough; professionals are unnecessary.", fact: "Friends are important, and professional care can add evidence-based tools and structure." },
+  { myth: "If someone smiles, they are definitely okay.", fact: "People often mask distress. Gentle check-ins can make a real difference." },
+  { myth: "You should keep emotional struggles private.", fact: "Safe, trusted conversations can reduce shame and increase access to support." },
+  { myth: "Anxiety is just overreacting.", fact: "Anxiety can involve real physical symptoms and nervous-system activation that need care and coping skills." },
+  { myth: "Depression is just sadness.", fact: "Depression can affect sleep, energy, appetite, concentration, motivation, and physical health." },
+  { myth: "Panic attacks are dangerous and always indicate a medical emergency.", fact: "Panic attacks are intense but usually pass. Learning grounding and breathing techniques helps recovery." },
+  { myth: "People with OCD are simply neat.", fact: "OCD involves distressing obsessions and compulsions, not just preference for cleanliness or order." },
+  { myth: "PTSD only affects military veterans.", fact: "PTSD can affect anyone after trauma, including accidents, violence, loss, or medical events." },
+  { myth: "Trauma has to be extreme to count.", fact: "Trauma responses are personal. Events that overwhelm coping can have real psychological impact." },
+  { myth: "Eating disorders are a choice.", fact: "Eating disorders are serious mental health conditions that require compassionate, specialized care." },
+  { myth: "Only women experience eating disorders.", fact: "People of all genders can experience eating disorders." },
+  { myth: "Substance use means someone has no willpower.", fact: "Addiction is a treatable health condition influenced by brain chemistry, stress, and environment." },
+  { myth: "Self-care is selfish.", fact: "Healthy self-care improves resilience and helps people show up better for others." },
+  { myth: "Needing rest means you are lazy.", fact: "Rest is a biological need and a core part of emotional regulation and recovery." },
+  { myth: "If treatment works, you should stop it right away.", fact: "Any treatment changes should be discussed with a qualified clinician to avoid setbacks." },
+  { myth: "Therapists just tell you what to do.", fact: "Effective therapy is collaborative and helps you build your own insight and coping skills." },
+  { myth: "Support groups are only for severe cases.", fact: "Support groups help many people feel less alone and learn practical coping tools." },
+  { myth: "People who seek help are attention-seeking.", fact: "Help-seeking is responsible and often prevents problems from escalating." },
+  { myth: "Mental health apps replace professional care.", fact: "Apps can support wellbeing but are best used as tools alongside appropriate care." },
+  { myth: "Mindfulness is only for calm people.", fact: "Mindfulness is a trainable skill that can help during stress, anxiety, and overwhelm." },
+  { myth: "Boundaries are rude.", fact: "Healthy boundaries protect relationships and reduce resentment, burnout, and confusion." },
+  { myth: "You must have a diagnosis to deserve support.", fact: "Anyone experiencing distress can benefit from support and coping resources." },
+  { myth: "Talking about suicide puts ideas in someone's head.", fact: "Asking directly and compassionately can save lives and connect people to urgent help." },
+  { myth: "Recovery is a straight line.", fact: "Progress often includes setbacks. Consistent support and skills still lead to meaningful improvement." },
+  { myth: "You should handle grief quickly and move on.", fact: "Grief has no fixed timeline and can be supported through counseling and community." },
+  { myth: "Anger means someone is a bad person.", fact: "Anger is a normal emotion. Learning safe expression and regulation is what matters." },
+  { myth: "Men should not talk about emotions.", fact: "Emotional openness supports wellbeing and stronger relationships for everyone." },
+  { myth: "If a person is social, they cannot be depressed.", fact: "Social behavior can coexist with depression; symptoms are often hidden." },
+  { myth: "People with bipolar disorder are always unstable.", fact: "Many people with bipolar disorder live stable, meaningful lives with treatment and support." },
+  { myth: "Medication for mental health is addictive by default.", fact: "Many psychiatric medications are not addictive and are prescribed with monitoring." },
+  { myth: "You can always think your way out of trauma.", fact: "Trauma affects body and brain systems; structured treatment can help regulate both." },
+  { myth: "Burnout is just part of being productive.", fact: "Burnout is a health warning sign and requires recovery, boundaries, and support." },
+  { myth: "Sleep has little effect on mood.", fact: "Sleep and mental health are tightly linked; improving sleep often improves emotional stability." },
+  { myth: "If you meditate once, stress should disappear.", fact: "Stress skills work through repetition and consistency over time." },
+  { myth: "People with anxiety should avoid all stress forever.", fact: "Gradual, supported exposure can build confidence and reduce avoidance." },
+  { myth: "You must hit rock bottom before changing habits.", fact: "Early support and small steps are powerful and can prevent crises." },
+  { myth: "Couples therapy means a relationship is failing.", fact: "Couples therapy can strengthen communication and prevent long-term conflict." },
+  { myth: "Journaling is only for people who like writing.", fact: "Journaling can be brief, structured, and practical for almost anyone." },
+  { myth: "If coping skills work, you should never feel anxious again.", fact: "Coping skills reduce intensity and duration, but difficult emotions are still human and normal." },
+  { myth: "People who cancel plans are unreliable.", fact: "Sometimes cancellations reflect overwhelm, chronic stress, or health needs, not lack of care." },
+  { myth: "Therapy is too expensive to ever be accessible.", fact: "Many communities offer sliding scale clinics, school counselors, nonprofits, and low-cost resources." },
+  { myth: "Support from faith or culture and therapy cannot coexist.", fact: "Many people combine cultural, spiritual, and clinical supports in meaningful ways." },
+  { myth: "You must know exactly what is wrong before asking for help.", fact: "It is okay to seek help when you only know that something feels off." },
+  { myth: "If someone says they are okay, you should not ask again.", fact: "Respectful follow-up check-ins can show care and create safety over time." },
+  { myth: "Mental health education is only for people in treatment.", fact: "Learning mental health basics benefits families, teams, schools, and communities." },
+  { myth: "Digital boundaries are unnecessary.", fact: "Reducing doomscrolling and setting screen boundaries can meaningfully improve mood and sleep." },
+  { myth: "Neurodivergent people just need to try harder to fit in.", fact: "Supportive environments and accommodations improve wellbeing and functioning." },
+  { myth: "Asking for accommodations gives unfair advantage.", fact: "Accommodations create access, not advantage, by removing barriers." },
+  { myth: "If someone relapses, treatment failed.", fact: "Relapse can be part of recovery and is a signal to adjust support, not give up." },
 ];
+
+const getRandomMythCards = (
+  count = 6,
+): MythFactCard[] => {
+  const shuffled = [...mythVsFactCardPool].sort(
+    () => Math.random() - 0.5,
+  );
+  return shuffled.slice(0, count);
+};
 
 export function DisordersSection() {
   const { user } = useAuth();
@@ -145,6 +216,10 @@ export function DisordersSection() {
     useState(true);
   const [breathingPhaseIndex, setBreathingPhaseIndex] =
     useState(0);
+  const [displayedMythCards, setDisplayedMythCards] =
+    useState<MythFactCard[]>(() =>
+      getRandomMythCards(6),
+    );
   const [flippedMythCards, setFlippedMythCards] =
     useState<Record<number, boolean>>({});
   const journalPromptTimerRef = useRef<number | null>(null);
@@ -309,6 +384,11 @@ export function DisordersSection() {
       ...prev,
       [index]: !prev[index],
     }));
+  };
+
+  const handleRefreshMythCards = () => {
+    setDisplayedMythCards(getRandomMythCards(6));
+    setFlippedMythCards({});
   };
 
   return (
@@ -778,7 +858,7 @@ export function DisordersSection() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
-              {mythVsFactCards.map((card, index) => {
+              {displayedMythCards.map((card, index) => {
                 const isFlipped = !!flippedMythCards[index];
 
                 return (
@@ -840,6 +920,18 @@ export function DisordersSection() {
                   </button>
                 );
               })}
+            </div>
+
+            <div className="mt-6 md:mt-8 flex justify-center">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleRefreshMythCards}
+                className="border-teal-300 text-teal-700 hover:bg-teal-50"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh Card Set
+              </Button>
             </div>
           </div>
 
