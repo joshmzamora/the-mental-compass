@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   mentalHealthDisorders,
@@ -34,7 +34,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  LogIn,
   ExternalLink,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -75,6 +74,60 @@ const disorderToCategories: Record<string, string[]> = {
   "eating-disorders": ["Support", "Wellness"],
 };
 
+const guidedJournalPrompts = [
+  "What feels heaviest for me today, and what would make it feel 10% lighter?",
+  "What thought keeps looping in my mind, and what is a kinder reframe?",
+  "When did I last feel grounded, and what helped me get there?",
+  "What support do I need right now, and who can I reach out to?",
+  "What is one small action I can take in the next hour for my wellbeing?",
+];
+
+const breathingPhases = [
+  {
+    label: "Inhale",
+    guidance: "Breathe in slowly through your nose.",
+  },
+  {
+    label: "Hold",
+    guidance: "Pause gently and keep your shoulders relaxed.",
+  },
+  {
+    label: "Exhale",
+    guidance: "Release your breath slowly through your mouth.",
+  },
+  {
+    label: "Hold",
+    guidance: "Stay still for a moment, then repeat.",
+  },
+];
+
+const mythVsFactCards = [
+  {
+    myth: "People should be able to just snap out of anxiety or depression.",
+    fact: "Mental health conditions are real medical experiences, not mindset failures. Support, therapy, and treatment make a measurable difference.",
+  },
+  {
+    myth: "Asking for help means you are weak.",
+    fact: "Reaching out is a strength move. It shows self-awareness, courage, and commitment to healing.",
+  },
+  {
+    myth: "Only people in crisis need therapy.",
+    fact: "Therapy supports prevention, self-understanding, stress management, and long-term emotional resilience.",
+  },
+  {
+    myth: "Medication changes who you are.",
+    fact: "For many people, medication helps restore balance so they can feel more like themselves and function day to day.",
+  },
+  {
+    myth: "Talking about mental health makes things worse.",
+    fact: "Safe conversations reduce shame and isolation. Naming what you feel often lowers distress and opens pathways to care.",
+  },
+  {
+    myth: "If someone is high-functioning, they are fine.",
+    fact: "People can appear successful while silently struggling. Compassion and check-ins still matter.",
+  },
+];
+
 export function DisordersSection() {
   const { user } = useAuth();
   const { updateProfile, profile } = useUserProfile();
@@ -86,6 +139,36 @@ export function DisordersSection() {
   const [loginAction, setLoginAction] = useState<
     "appointment" | "community" | "blog"
   >("appointment");
+  const [journalPromptIndex, setJournalPromptIndex] =
+    useState(0);
+  const [isPromptVisible, setIsPromptVisible] =
+    useState(true);
+  const [breathingPhaseIndex, setBreathingPhaseIndex] =
+    useState(0);
+  const [flippedMythCards, setFlippedMythCards] =
+    useState<Record<number, boolean>>({});
+  const journalPromptTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const breathingTimer = window.setInterval(() => {
+      setBreathingPhaseIndex(
+        (prevIndex) =>
+          (prevIndex + 1) % breathingPhases.length,
+      );
+    }, 4000);
+
+    return () => {
+      window.clearInterval(breathingTimer);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (journalPromptTimerRef.current !== null) {
+        window.clearTimeout(journalPromptTimerRef.current);
+      }
+    };
+  }, []);
 
   const trackDisorderView = async (
     disorderId: string,
@@ -200,6 +283,32 @@ export function DisordersSection() {
     if (disorder) {
       handleDisorderClick(disorder);
     }
+  };
+
+  const handleNextJournalPrompt = () => {
+    if (journalPromptTimerRef.current !== null) {
+      window.clearTimeout(journalPromptTimerRef.current);
+    }
+
+    setIsPromptVisible(false);
+
+    journalPromptTimerRef.current = window.setTimeout(
+      () => {
+        setJournalPromptIndex(
+          (prevIndex) =>
+            (prevIndex + 1) % guidedJournalPrompts.length,
+        );
+        setIsPromptVisible(true);
+      },
+      180,
+    );
+  };
+
+  const toggleMythCard = (index: number) => {
+    setFlippedMythCards((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
   return (
@@ -329,6 +438,409 @@ export function DisordersSection() {
     </Card>
   );
 })}
+          </div>
+
+          {/* Section 3: Interactive Coping Strategies Toolbox */}
+          <div className="mb-12 md:mb-16">
+            <Card className="relative overflow-hidden border-teal-200/80 shadow-md bg-white/95">
+              <div className="pointer-events-none absolute -top-16 right-10 h-40 w-40 rounded-full bg-teal-100/60 blur-2xl"></div>
+              <div className="pointer-events-none absolute -bottom-16 left-10 h-44 w-44 rounded-full bg-blue-100/60 blur-2xl"></div>
+
+              <CardContent className="relative p-6 md:p-8 lg:p-9">
+                <div className="mb-3 md:mb-4 text-center">
+                  <h3 className="text-xl md:text-2xl text-gray-900">
+                    Interactive Coping Toolbox
+                  </h3>
+                </div>
+                <p className="text-sm md:text-base text-gray-600 mb-5 md:mb-6 max-w-3xl mx-auto text-center leading-relaxed">
+                  Quick grounding tools designed for moments when you
+                  feel overwhelmed. Pick the strategy that fits your
+                  current headspace and follow along.
+                </p>
+
+                <Tabs
+                  defaultValue="grounding"
+                  className="w-full"
+                >
+                  <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-2 rounded-2xl border border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50 p-1.5 mb-6 shadow-sm justify-items-stretch items-stretch">
+                    <TabsTrigger
+                      value="grounding"
+                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                    >
+                      "5-4-3-2-1" Reset
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="breathing"
+                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                    >
+                      Breathing Bubble
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="journaling"
+                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                    >
+                      Guided Journaling
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent
+                    value="grounding"
+                    className="mt-0 min-h-[720px] sm:min-h-[680px] md:h-[500px] md:min-h-0 lg:h-[460px]"
+                  >
+                    <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 items-stretch">
+                      <div className="h-full bg-gradient-to-br from-teal-50 to-blue-50 rounded-2xl border border-teal-100 p-5 md:p-6">
+                        <h4 className="text-lg md:text-xl text-gray-900 mb-2">
+                          5-4-3-2-1 Sensory Check-In
+                        </h4>
+                        <p className="text-sm md:text-base text-gray-600 mb-4">
+                          Bring attention back to the present moment by
+                          naming:
+                        </p>
+                        <ul className="space-y-2.5">
+                          {[
+                            "5 things you can see",
+                            "4 things you can feel",
+                            "3 things you can hear",
+                            "2 things you can smell",
+                            "1 thing you can taste",
+                          ].map((step, index) => (
+                            <li
+                              key={step}
+                              className="flex items-start gap-2.5 text-sm md:text-base text-gray-700 bg-white/90 rounded-lg p-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm"
+                              style={{
+                                transitionDelay: `${index * 35}ms`,
+                              }}
+                            >
+                              <CheckCircle2 className="h-4 w-4 text-teal-600 mt-0.5 flex-shrink-0" />
+                              <span className="ml-1">{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="h-full bg-white rounded-2xl border border-teal-200 p-5 md:p-6">
+                        <h4 className="text-lg md:text-xl text-gray-900 mb-2">
+                          Compass Tip
+                        </h4>
+                        <p className="text-sm md:text-base text-gray-700 mb-4 leading-relaxed">
+                          Speak each item out loud and move slowly.
+                          Naming sensory details interrupts spiraling
+                          thoughts and brings your focus back to what is
+                          real right now.
+                        </p>
+                        <div className="rounded-lg bg-teal-50 border border-teal-100 p-3 md:p-4">
+                          <p className="text-sm text-teal-800">
+                            If your mind drifts, gently restart at 5.
+                            There is no wrong way to do this.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent
+                    value="breathing"
+                    className="mt-0 min-h-[720px] sm:min-h-[680px] md:h-[500px] md:min-h-0 lg:h-[460px]"
+                  >
+                    <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 items-center">
+                      <div className="relative mx-auto h-56 w-56 md:h-64 md:w-64 lg:h-72 lg:w-72">
+                        <div className="absolute inset-0 rounded-full bg-teal-200/60 blur-3xl"></div>
+                        <svg
+                          viewBox="0 0 200 200"
+                          className="relative h-full w-full"
+                          role="img"
+                          aria-label="Animated breathing bubble for box breathing rhythm"
+                        >
+                          <defs>
+                            <radialGradient
+                              id="breathingGradient"
+                              cx="50%"
+                              cy="40%"
+                              r="60%"
+                            >
+                              <stop
+                                offset="0%"
+                                stopColor="#5eead4"
+                              />
+                              <stop
+                                offset="100%"
+                                stopColor="#2563eb"
+                              />
+                            </radialGradient>
+                          </defs>
+                          <circle
+                            cx="100"
+                            cy="100"
+                            r="34"
+                            fill="url(#breathingGradient)"
+                            opacity="0.9"
+                          >
+                            <animate
+                              attributeName="r"
+                              values="34;74;74;34;34"
+                              dur="16s"
+                              keyTimes="0;0.25;0.5;0.75;1"
+                              repeatCount="indefinite"
+                            />
+                            <animate
+                              attributeName="opacity"
+                              values="0.82;1;1;0.82;0.82"
+                              dur="16s"
+                              keyTimes="0;0.25;0.5;0.75;1"
+                              repeatCount="indefinite"
+                            />
+                          </circle>
+                          <circle
+                            cx="100"
+                            cy="100"
+                            r="56"
+                            fill="none"
+                            stroke="#5eead4"
+                            strokeOpacity="0.32"
+                            strokeWidth="1.5"
+                          >
+                            <animate
+                              attributeName="r"
+                              values="56;84;84;56;56"
+                              dur="16s"
+                              keyTimes="0;0.25;0.5;0.75;1"
+                              repeatCount="indefinite"
+                            />
+                            <animate
+                              attributeName="stroke-opacity"
+                              values="0.28;0.1;0.1;0.28;0.28"
+                              dur="16s"
+                              keyTimes="0;0.25;0.5;0.75;1"
+                              repeatCount="indefinite"
+                            />
+                          </circle>
+                          <circle
+                            cx="100"
+                            cy="100"
+                            r="82"
+                            fill="none"
+                            stroke="#0f766e"
+                            strokeOpacity="0.25"
+                            strokeWidth="2"
+                            strokeDasharray="10 8"
+                          >
+                            <animateTransform
+                              attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              from="0 100 100"
+                              to="360 100 100"
+                              dur="14s"
+                              repeatCount="indefinite"
+                            />
+                          </circle>
+                          <circle
+                            cx="100"
+                            cy="20"
+                            r="6"
+                            fill="#2dd4bf"
+                          >
+                            <animateTransform
+                              attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              from="0 100 100"
+                              to="360 100 100"
+                              dur="12s"
+                              repeatCount="indefinite"
+                            />
+                          </circle>
+                        </svg>
+
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div
+                            key={`breathing-phase-${breathingPhaseIndex}`}
+                            className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-teal-800 shadow-sm animate-[pulse_0.75s_ease-out_1]"
+                          >
+                            {breathingPhases[breathingPhaseIndex].label}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="h-full bg-white rounded-2xl border border-teal-200 p-5 md:p-6">
+                        <h4 className="text-lg md:text-xl text-gray-900 mb-2">
+                          Box Breathing: 4-4-4-4
+                        </h4>
+                        <p className="text-sm md:text-base text-gray-600 mb-4">
+                          Follow the bubble rhythm to steady your
+                          nervous system.
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            "Inhale 4 sec",
+                            "Hold 4 sec",
+                            "Exhale 4 sec",
+                            "Hold 4 sec",
+                          ].map((phase) => (
+                            <div
+                              key={phase}
+                              className="rounded-lg bg-teal-50 border border-teal-100 p-3 text-sm text-teal-900"
+                            >
+                              {phase}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-4 flex items-center gap-2">
+                          {breathingPhases.map((phase, index) => (
+                            <div
+                              key={`${phase.label}-${index}`}
+                              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
+                                index === breathingPhaseIndex
+                                  ? "bg-teal-600 scale-125 shadow-[0_0_0_4px_rgba(13,148,136,0.15)]"
+                                  : "bg-teal-200"
+                              }`}
+                            ></div>
+                          ))}
+                        </div>
+                        <p className="mt-3 min-h-[40px] text-sm text-teal-800 transition-all duration-300">
+                          {breathingPhases[breathingPhaseIndex].guidance}
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent
+                    value="journaling"
+                    className="mt-0 min-h-[720px] sm:min-h-[680px] md:min-h-[500px] lg:min-h-[460px]"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-7">
+                      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6 md:p-7">
+                        <h4 className="text-lg md:text-xl text-gray-900 mb-4">
+                          Guided Journaling Prompt
+                        </h4>
+                        <p
+                          className="text-base md:text-lg text-gray-800 italic mb-7 transition-all duration-300 leading-relaxed"
+                          style={{
+                            opacity: isPromptVisible ? 1 : 0,
+                            transform: isPromptVisible
+                              ? "translateY(0px)"
+                              : "translateY(8px)",
+                          }}
+                        >
+                          "{guidedJournalPrompts[journalPromptIndex]}"
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={handleNextJournalPrompt}
+                          className="mt-1 inline-flex h-11 rounded-xl border-0 bg-gradient-to-r from-teal-600 to-blue-600 px-5 text-white shadow-md shadow-teal-600/20 hover:from-teal-700 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-600/25 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 transition-all duration-250"
+                        >
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Next Prompt
+                        </Button>
+                      </div>
+
+                      <div className="h-full bg-white rounded-2xl border border-blue-200 p-6 md:p-7">
+                        <h4 className="text-lg md:text-xl text-gray-900 mb-3">
+                          3-Minute Practice
+                        </h4>
+                        <ul className="space-y-3.5">
+                          {[
+                            "Set a 3-minute timer and write without editing.",
+                            "Focus on honesty, not perfect wording.",
+                            "End with one supportive sentence to yourself.",
+                          ].map((item) => (
+                            <li
+                              key={item}
+                              className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-gray-700"
+                            >
+                              <CheckCircle2 className="h-4 w-4 text-blue-600 mt-1 flex-shrink-0" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Section 4: Myth vs Fact */}
+          <div className="rounded-3xl border border-slate-200 bg-white/95 p-5 md:p-8 lg:p-10 shadow-md">
+            <div className="text-center mb-6 md:mb-8">
+              <div className="mb-3">
+                <h3 className="text-xl md:text-2xl text-gray-900">
+                  Myth vs Fact: Breaking Mental Health Stigma
+                </h3>
+              </div>
+              <p className="text-sm md:text-base text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Tap each card to flip it and reveal the truth. These
+                are common misconceptions our Mental Compass community
+                works to replace with compassion and evidence-based
+                understanding.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
+              {mythVsFactCards.map((card, index) => {
+                const isFlipped = !!flippedMythCards[index];
+
+                return (
+                  <button
+                    type="button"
+                    key={card.myth}
+                    onClick={() => toggleMythCard(index)}
+                    aria-pressed={isFlipped}
+                    className={`group relative text-left rounded-2xl border p-5 min-h-[240px] shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
+                      isFlipped
+                        ? "border-teal-200 bg-gradient-to-br from-teal-50 to-blue-50"
+                        : "border-rose-200 bg-gradient-to-br from-rose-50 to-orange-50"
+                    }`}
+                    style={{ transitionDelay: `${index * 25}ms` }}
+                  >
+                    <div
+                      className={`absolute top-0 left-0 h-1 rounded-t-2xl transition-all duration-300 ${
+                        isFlipped
+                          ? "w-full bg-teal-500"
+                          : "w-14 bg-rose-400"
+                      }`}
+                    ></div>
+                    <div className="flex items-center gap-2 mb-3">
+                      {isFlipped ? (
+                        <CheckCircle2 className="h-5 w-5 text-teal-600 transition-transform duration-300 group-hover:scale-110" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-rose-600 transition-transform duration-300 group-hover:scale-110" />
+                      )}
+                      <span
+                        className={`text-sm font-semibold ${
+                          isFlipped
+                            ? "text-teal-700"
+                            : "text-rose-700"
+                        }`}
+                      >
+                        {isFlipped ? "Fact" : "Myth"}
+                      </span>
+                    </div>
+
+                    <p
+                      className={`text-sm md:text-base leading-relaxed transition-all duration-300 ${
+                        isFlipped
+                          ? "text-gray-800"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {isFlipped ? card.fact : card.myth}
+                    </p>
+
+                    <p
+                      className={`text-xs mt-5 ${
+                        isFlipped
+                          ? "text-teal-700/80"
+                          : "text-rose-700/80"
+                      }`}
+                    >
+                      {isFlipped ? "Tap to show myth" : "Tap to reveal fact"}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
         </div>
