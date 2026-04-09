@@ -789,12 +789,12 @@ export function DisordersSection() {
                     className="mt-0 min-h-[720px] sm:min-h-[680px] md:min-h-[500px] lg:min-h-[460px]"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-7">
-                      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6 md:p-7">
-                        <h4 className="text-lg md:text-xl text-gray-900 mb-4">
+                      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-7 md:p-8 flex flex-col">
+                        <h4 className="text-lg md:text-xl text-gray-900">
                           Guided Journaling Prompt
                         </h4>
                         <p
-                          className="text-base md:text-lg text-gray-800 italic mb-7 transition-all duration-300 leading-relaxed"
+                          className="mt-4 text-base md:text-lg text-gray-800 italic transition-all duration-300 leading-relaxed"
                           style={{
                             opacity: isPromptVisible ? 1 : 0,
                             transform: isPromptVisible
@@ -807,7 +807,7 @@ export function DisordersSection() {
                         <Button
                           variant="outline"
                           onClick={handleNextJournalPrompt}
-                          className="mt-1 inline-flex h-11 rounded-xl border-0 bg-gradient-to-r from-teal-600 to-blue-600 px-5 text-white shadow-md shadow-teal-600/20 hover:from-teal-700 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-600/25 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 transition-all duration-250"
+                          className="mt-6 inline-flex h-11 rounded-xl border border-teal-300/90 bg-white/90 px-5 text-teal-700 shadow-sm hover:bg-teal-50 hover:border-teal-400 focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 transition-all duration-200 self-start"
                         >
                           <Sparkles className="h-4 w-4 mr-2" />
                           Next Prompt
@@ -829,7 +829,7 @@ export function DisordersSection() {
                               className="flex items-start gap-2.5 text-sm md:text-base leading-relaxed text-gray-700"
                             >
                               <CheckCircle2 className="h-4 w-4 text-blue-600 mt-1 flex-shrink-0" />
-                              <span>{item}</span>
+                              <span className="ml-1">{item}</span>
                             </li>
                           ))}
                         </ul>
