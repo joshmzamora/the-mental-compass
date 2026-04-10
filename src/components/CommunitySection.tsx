@@ -133,6 +133,284 @@ const initialChatMessages: ChatMessage[] = [
   },
 ];
 
+const DAILY_ENGAGEMENT_START = new Date("2026-04-10T00:00:00");
+const DAILY_ENGAGEMENT_END = new Date("2026-06-01T23:59:59");
+const DAILY_ENGAGEMENT_POSTS_PER_DAY = 3;
+
+type EngagementTemplate = {
+  title: string;
+  content: string;
+  tags: CommunityTag[];
+  replyPool: string[];
+};
+
+const engagementTemplates: EngagementTemplate[] = [
+  {
+    title: "Quick check-in: what's one thing helping today?",
+    content: "Doing a quick community check-in. What's one small thing that's helping you stay grounded today?",
+    tags: ["Support", "Wellness"],
+    replyPool: [
+      "A short walk helped me reset this morning.",
+      "Music in the background while I work has helped a lot.",
+      "I wrote down 3 tiny goals and that lowered my stress."
+    ]
+  },
+  {
+    title: "Anxiety spike today - anyone using short resets?",
+    content: "Had a stress spike this afternoon and used a short reset. What are your go-to 2 to 5 minute coping tools?",
+    tags: ["Anxiety", "Coping Strategies"],
+    replyPool: [
+      "Cold water on my wrists usually helps me.",
+      "Box breathing for 2 minutes is my default.",
+      "Naming 5 things I can see helps me return to the moment."
+    ]
+  },
+  {
+    title: "Friendly reminder: progress still counts on hard days",
+    content: "If today feels heavy, this is your reminder that small progress still counts. What does a gentle win look like for you today?",
+    tags: ["Recovery", "Support"],
+    replyPool: [
+      "My gentle win was replying to one important email.",
+      "I made myself lunch instead of skipping it.",
+      "I asked for help instead of isolating."
+    ]
+  },
+  {
+    title: "End-of-day decompress ideas?",
+    content: "Trying to build a better wind-down routine after long days. What helps your mind slow down at night?",
+    tags: ["Self-Care", "Wellness"],
+    replyPool: [
+      "No screens 30 minutes before bed made a big difference.",
+      "I do a short stretch and then journal for 5 minutes.",
+      "Herbal tea and low lights helps me settle."
+    ]
+  },
+  {
+    title: "Relationship boundaries check-in",
+    content: "Working on boundaries without guilt. What's one boundary phrase that feels respectful and clear for you?",
+    tags: ["Relationships", "Coping Strategies"],
+    replyPool: [
+      "I use: 'I can't commit to that right now.'",
+      "I say: 'I care, and I need some time to recharge first.'",
+      "I replaced apologies with 'thanks for understanding.'"
+    ]
+  },
+  {
+    title: "Motivation low? What's your first tiny step?",
+    content: "On low-energy days, I focus on one tiny step first. What's your version of a low-pressure start?",
+    tags: ["Depression", "Recovery"],
+    replyPool: [
+      "I open the curtains and drink water first.",
+      "I put both feet on the floor and do a 60-second reset.",
+      "I choose one two-minute task to build momentum."
+    ]
+  }
+];
+
+const engagementAuthors = [
+  "Community Pulse",
+  "Care Circle",
+  "Support Desk",
+  "Wellness Team",
+  "Check-in Crew",
+  "Growth Circle"
+];
+
+const toDayStart = (date: Date) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+const toIsoDay = (date: Date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
+  const today = toDayStart(now);
+  const campaignEnd = toDayStart(
+    new Date(Math.min(today.getTime(), DAILY_ENGAGEMENT_END.getTime())),
+  );
+
+  if (campaignEnd < DAILY_ENGAGEMENT_START) {
+    return [];
+  }
+
+  const generated: ForumPost[] = [];
+  const cursor = new Date(DAILY_ENGAGEMENT_START);
+  let dayIndex = 0;
+
+  while (cursor <= campaignEnd) {
+    const isToday = toIsoDay(cursor) === toIsoDay(today);
+
+    for (let slot = 0; slot < DAILY_ENGAGEMENT_POSTS_PER_DAY; slot++) {
+      const template =
+        engagementTemplates[
+          (dayIndex * DAILY_ENGAGEMENT_POSTS_PER_DAY + slot) %
+            engagementTemplates.length
+        ];
+
+      const author =
+        engagementAuthors[
+          (dayIndex + slot) % engagementAuthors.length
+        ];
+
+      const timestamp = new Date(cursor);
+      if (isToday) {
+        // Spread today's engagement posts so the feed feels active
+        // without looking artificially clustered "right now".
+        const todayOffsetsMinutes = [12, 165, 360];
+        const minutesAgo = todayOffsetsMinutes[slot] ?? (120 + slot * 90);
+        timestamp.setTime(now.getTime() - minutesAgo * 60000);
+      } else {
+        timestamp.setHours(
+          9 + slot * 4,
+          (dayIndex * 11 + slot * 7) % 60,
+          0,
+          0,
+        );
+      }
+
+      const replyCount = 1 + ((dayIndex + slot) % 3);
+      const likeMultiplier = 7 + ((dayIndex + slot) % 6);
+      const postId = `campaign-${toIsoDay(cursor)}-${slot + 1}`;
+
+      const responses: Response[] = Array.from(
+        { length: replyCount },
+        (_, responseIndex) => {
+          const replyTimestamp = new Date(timestamp);
+          replyTimestamp.setMinutes(
+            replyTimestamp.getMinutes() +
+              10 +
+              responseIndex * 9,
+          );
+          if (isToday && replyTimestamp > now) {
+            replyTimestamp.setTime(
+              now.getTime() - (2 + responseIndex) * 60000,
+            );
+          }
+
+          const replyContent =
+            template.replyPool[
+              (responseIndex + dayIndex + slot) %
+                template.replyPool.length
+            ];
+
+          return {
+            id: `${postId}-r${responseIndex + 1}`,
+            postId,
+            userId: `campaign-user-${slot}-${responseIndex}`,
+            author: `Member ${String.fromCharCode(
+              65 +
+                ((dayIndex + slot + responseIndex) %
+                  26),
+            )}.`,
+            content: replyContent,
+            timestamp: replyTimestamp,
+            likes: 3 + ((dayIndex + responseIndex) % 7),
+            likedBy: [],
+          };
+        },
+      );
+
+      generated.push({
+        id: postId,
+        userId: `campaign-${slot + 1}`,
+        author,
+        title: template.title,
+        content: template.content,
+        tags: template.tags,
+        replies: responses.length,
+        likes: responses.length * likeMultiplier,
+        likedBy: [],
+        timestamp,
+        responses,
+      });
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+    dayIndex += 1;
+  }
+
+  return generated;
+};
+
+const mergeUniquePosts = (
+  posts: ForumPost[],
+  generatedPosts: ForumPost[],
+) => {
+  const merged = [...generatedPosts, ...posts];
+  return merged.filter(
+    (post, index, array) =>
+      array.findIndex((candidate) => candidate.id === post.id) ===
+      index,
+  );
+};
+
+const normalizeForumTimestamps = (
+  posts: ForumPost[],
+  now: Date,
+): ForumPost[] => {
+  return posts.map((post, postIndex) => {
+    let safePostTimestamp = new Date(post.timestamp);
+
+    // Prevent future post timestamps from showing up as "Just now".
+    if (safePostTimestamp.getTime() > now.getTime()) {
+      const minutesAgo = 20 + (postIndex % 9) * 47;
+      safePostTimestamp = new Date(
+        now.getTime() - minutesAgo * 60000,
+      );
+    }
+
+    const safeResponses = post.responses.map(
+      (response, responseIndex) => {
+        const minResponseTime = new Date(
+          safePostTimestamp.getTime() +
+            (responseIndex + 1) * 6 * 60000,
+        );
+        const maxResponseTime = new Date(
+          now.getTime() - (responseIndex + 1) * 2 * 60000,
+        );
+
+        let safeResponseTimestamp = new Date(response.timestamp);
+
+        if (
+          safeResponseTimestamp.getTime() <
+          safePostTimestamp.getTime()
+        ) {
+          safeResponseTimestamp = minResponseTime;
+        }
+
+        if (
+          safeResponseTimestamp.getTime() > now.getTime()
+        ) {
+          safeResponseTimestamp = maxResponseTime;
+        }
+
+        if (
+          safeResponseTimestamp.getTime() <
+          safePostTimestamp.getTime()
+        ) {
+          safeResponseTimestamp = new Date(
+            safePostTimestamp.getTime() + 3 * 60000,
+          );
+        }
+
+        return {
+          ...response,
+          timestamp: safeResponseTimestamp,
+        };
+      },
+    );
+
+    return {
+      ...post,
+      timestamp: safePostTimestamp,
+      responses: safeResponses,
+    };
+  });
+};
+
 export function CommunitySection() {
   const { user } = useAuth();
   const { updateProfile, profile } = useUserProfile();
@@ -387,8 +665,14 @@ export function CommunitySection() {
             timestamp: new Date(r.timestamp)
           }))
         }));
-        setForumPosts(posts);
-        checkForNewNotifications(posts);
+        const campaignPosts = generateDailyEngagementPosts(new Date());
+        const combinedPosts = mergeUniquePosts(posts, campaignPosts);
+        const normalizedPosts = normalizeForumTimestamps(
+          combinedPosts,
+          new Date(),
+        );
+        setForumPosts(normalizedPosts);
+        checkForNewNotifications(normalizedPosts);
       } else {
         // Use mock data if backend not available
         loadMockPosts();
@@ -2195,8 +2479,14 @@ export function CommunitySection() {
         ]
       }
     ];
-    setForumPosts(mockPosts);
-    checkForNewNotifications(mockPosts);
+    const campaignPosts = generateDailyEngagementPosts(new Date());
+    const combinedPosts = mergeUniquePosts(mockPosts, campaignPosts);
+    const normalizedPosts = normalizeForumTimestamps(
+      combinedPosts,
+      new Date(),
+    );
+    setForumPosts(normalizedPosts);
+    checkForNewNotifications(normalizedPosts);
   };
 
   const handleSendMessage = async () => {
