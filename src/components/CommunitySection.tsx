@@ -1283,6 +1283,916 @@ export function CommunitySection() {
             likedBy: []
           }
         ]
+      },
+      {
+        id: "16",
+        userId: "mock40",
+        author: "Lena P.",
+        title: "Anyone else doing a 5-minute reset between tasks?",
+        content: "Started taking 5-minute mental resets between work tasks this week and my anxiety is noticeably lower. Curious if anyone has a favorite mini reset routine.",
+        tags: ["Anxiety", "Coping Strategies"],
+        replies: 2,
+        likes: 18,
+        likedBy: [],
+        timestamp: new Date("2026-04-10T17:40:00"),
+        responses: [
+          {
+            id: "r16-1",
+            postId: "16",
+            userId: "mock41",
+            author: "Evan C.",
+            content: "I do 10 deep breaths + water break. Super simple but it works.",
+            timestamp: new Date("2026-04-10T17:55:00"),
+            likes: 9,
+            likedBy: []
+          },
+          {
+            id: "r16-2",
+            postId: "16",
+            userId: "mock42",
+            author: "Ruth A.",
+            content: "Same. I also step outside for sunlight for 3 minutes when I can.",
+            timestamp: new Date("2026-04-10T18:05:00"),
+            likes: 7,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "17",
+        userId: "mock43",
+        author: "Miles T.",
+        title: "Today was rough, but I still showed up",
+        content: "Not a huge win, but I made it through a hard day without isolating. Posting this for anyone else having one of those days.",
+        tags: ["Support", "Recovery"],
+        replies: 1,
+        likes: 10,
+        likedBy: [],
+        timestamp: new Date("2026-04-10T16:05:00"),
+        responses: [
+          {
+            id: "r17-1",
+            postId: "17",
+            userId: "mock44",
+            author: "Dana W.",
+            content: "That is a huge win. Proud of you for sharing it.",
+            timestamp: new Date("2026-04-10T16:20:00"),
+            likes: 6,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "18",
+        userId: "mock45",
+        author: "Nora K.",
+        title: "Sleep has been my biggest mood trigger lately",
+        content: "If I sleep badly for 2 nights, my mood tanks. Anyone have realistic sleep tips that actually stick?",
+        tags: ["Wellness", "Self-Care"],
+        replies: 2,
+        likes: 22,
+        likedBy: [],
+        timestamp: new Date("2026-04-09T22:25:00"),
+        responses: [
+          {
+            id: "r18-1",
+            postId: "18",
+            userId: "mock46",
+            author: "Paula S.",
+            content: "Phone out of room helped me more than anything else.",
+            timestamp: new Date("2026-04-09T22:45:00"),
+            likes: 8,
+            likedBy: []
+          },
+          {
+            id: "r18-2",
+            postId: "18",
+            userId: "mock47",
+            author: "Greg H.",
+            content: "Consistent wake time changed everything for me.",
+            timestamp: new Date("2026-04-09T23:00:00"),
+            likes: 7,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "19",
+        userId: "mock48",
+        author: "Ari J.",
+        title: "How do you handle Sunday anxiety?",
+        content: "Every Sunday evening I get that pit-in-stomach feeling about Monday. Anyone have a routine that softens it?",
+        tags: ["Anxiety", "Support"],
+        replies: 3,
+        likes: 27,
+        likedBy: [],
+        timestamp: new Date("2026-04-09T18:10:00"),
+        responses: [
+          {
+            id: "r19-1",
+            postId: "19",
+            userId: "mock49",
+            author: "Iris M.",
+            content: "I prep clothes + lunch on Sunday. Reduces the panic a lot.",
+            timestamp: new Date("2026-04-09T18:25:00"),
+            likes: 9,
+            likedBy: []
+          },
+          {
+            id: "r19-2",
+            postId: "19",
+            userId: "mock50",
+            author: "Jamal D.",
+            content: "I do a short walk and no email after 7pm.",
+            timestamp: new Date("2026-04-09T18:40:00"),
+            likes: 8,
+            likedBy: []
+          },
+          {
+            id: "r19-3",
+            postId: "19",
+            userId: "mock51",
+            author: "Kate L.",
+            content: "Planning one thing I look forward to Monday helps me.",
+            timestamp: new Date("2026-04-09T18:55:00"),
+            likes: 7,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "20",
+        userId: "mock52",
+        author: "Theo R.",
+        title: "Checking in: hydration actually helps my focus",
+        content: "I know it sounds basic, but drinking enough water this week helped my ADHD focus way more than expected.",
+        tags: ["ADHD", "Wellness"],
+        replies: 1,
+        likes: 11,
+        likedBy: [],
+        timestamp: new Date("2026-04-08T20:30:00"),
+        responses: [
+          {
+            id: "r20-1",
+            postId: "20",
+            userId: "mock53",
+            author: "Mina Q.",
+            content: "Not basic at all. Same for me, especially in the afternoon.",
+            timestamp: new Date("2026-04-08T20:50:00"),
+            likes: 6,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "21",
+        userId: "mock54",
+        author: "Ella N.",
+        title: "First panic attack in months - feeling discouraged",
+        content: "Had a panic attack today after months of progress. I know setbacks happen, but it still feels defeating.",
+        tags: ["Anxiety", "Recovery"],
+        replies: 2,
+        likes: 20,
+        likedBy: [],
+        timestamp: new Date("2026-04-08T14:10:00"),
+        responses: [
+          {
+            id: "r21-1",
+            postId: "21",
+            userId: "mock55",
+            author: "Samir B.",
+            content: "Setbacks are part of recovery, not proof you failed.",
+            timestamp: new Date("2026-04-08T14:35:00"),
+            likes: 8,
+            likedBy: []
+          },
+          {
+            id: "r21-2",
+            postId: "21",
+            userId: "mock56",
+            author: "Jules F.",
+            content: "You still kept all the progress you built. One day doesn't erase it.",
+            timestamp: new Date("2026-04-08T14:55:00"),
+            likes: 7,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "22",
+        userId: "mock57",
+        author: "Rina V.",
+        title: "Boundary scripts that worked for me",
+        content: "Sharing two short boundary scripts that helped me with family stress. Happy to post them if anyone wants.",
+        tags: ["Relationships", "Coping Strategies"],
+        replies: 1,
+        likes: 8,
+        likedBy: [],
+        timestamp: new Date("2026-04-07T19:20:00"),
+        responses: [
+          {
+            id: "r22-1",
+            postId: "22",
+            userId: "mock58",
+            author: "Corey P.",
+            content: "Please share. I freeze in those conversations every time.",
+            timestamp: new Date("2026-04-07T19:40:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "23",
+        userId: "mock59",
+        author: "Felix W.",
+        title: "What helps with post-therapy emotional crash?",
+        content: "After sessions I feel raw for a few hours. Does anyone do something specific right after therapy to regulate?",
+        tags: ["Support", "Self-Care"],
+        replies: 2,
+        likes: 24,
+        likedBy: [],
+        timestamp: new Date("2026-04-06T15:30:00"),
+        responses: [
+          {
+            id: "r23-1",
+            postId: "23",
+            userId: "mock60",
+            author: "Nadia T.",
+            content: "I schedule a no-meeting hour and take a slow walk.",
+            timestamp: new Date("2026-04-06T15:50:00"),
+            likes: 7,
+            likedBy: []
+          },
+          {
+            id: "r23-2",
+            postId: "23",
+            userId: "mock61",
+            author: "Vik R.",
+            content: "Snack + journal dump for 10 minutes helps me reset.",
+            timestamp: new Date("2026-04-06T16:05:00"),
+            likes: 6,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "24",
+        userId: "mock72",
+        author: "Harper Z.",
+        title: "Social battery at zero this week",
+        content: "Anyone else hit a wall this week? I like people but my social battery is completely drained.",
+        tags: ["Support", "Wellness"],
+        replies: 1,
+        likes: 12,
+        likedBy: [],
+        timestamp: new Date("2026-04-05T21:10:00"),
+        responses: [
+          {
+            id: "r24-1",
+            postId: "24",
+            userId: "mock73",
+            author: "Noel G.",
+            content: "Yep, same. I gave myself a no-plans weekend and it helped.",
+            timestamp: new Date("2026-04-05T21:30:00"),
+            likes: 6,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "25",
+        userId: "mock74",
+        author: "Bianca C.",
+        title: "Quick grounding list I keep in my notes app",
+        content: "I made a short list for panic moments: cold water, feet on floor, name 5 colors, slow exhale. Sharing in case it helps.",
+        tags: ["Anxiety", "Coping Strategies"],
+        replies: 2,
+        likes: 14,
+        likedBy: [],
+        timestamp: new Date("2026-04-03T13:45:00"),
+        responses: [
+          {
+            id: "r25-1",
+            postId: "25",
+            userId: "mock75",
+            author: "Tessa M.",
+            content: "Saving this. Thank you for posting something practical.",
+            timestamp: new Date("2026-04-03T14:05:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r25-2",
+            postId: "25",
+            userId: "mock76",
+            author: "Leon S.",
+            content: "The cold water one helps me every time.",
+            timestamp: new Date("2026-04-03T14:25:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "26",
+        userId: "mock77",
+        author: "Mara D.",
+        title: "Anyone tracking moods with a simple 1-10 scale?",
+        content: "Trying to make mood tracking less overwhelming. Is a daily 1-10 check-in enough to spot patterns?",
+        tags: ["Bipolar", "Wellness"],
+        replies: 1,
+        likes: 9,
+        likedBy: [],
+        timestamp: new Date("2026-03-30T09:20:00"),
+        responses: [
+          {
+            id: "r26-1",
+            postId: "26",
+            userId: "mock78",
+            author: "Priyank A.",
+            content: "That worked for me. Consistency mattered more than detail.",
+            timestamp: new Date("2026-03-30T09:45:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "27",
+        userId: "mock79",
+        author: "Cara B.",
+        title: "How do you stop doomscrolling at night?",
+        content: "My sleep is wrecked because I keep scrolling bad news before bed. What actually helped you break that cycle?",
+        tags: ["Wellness", "Self-Care"],
+        replies: 3,
+        likes: 30,
+        likedBy: [],
+        timestamp: new Date("2026-03-25T23:10:00"),
+        responses: [
+          {
+            id: "r27-1",
+            postId: "27",
+            userId: "mock80",
+            author: "Jon P.",
+            content: "Charging my phone in another room was the game changer.",
+            timestamp: new Date("2026-03-25T23:30:00"),
+            likes: 7,
+            likedBy: []
+          },
+          {
+            id: "r27-2",
+            postId: "27",
+            userId: "mock81",
+            author: "Remy C.",
+            content: "I set app limits and replaced it with a podcast.",
+            timestamp: new Date("2026-03-25T23:45:00"),
+            likes: 6,
+            likedBy: []
+          },
+          {
+            id: "r27-3",
+            postId: "27",
+            userId: "mock82",
+            author: "Ava N.",
+            content: "I keep a physical book by my bed to make the switch easier.",
+            timestamp: new Date("2026-03-26T00:00:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "28",
+        userId: "mock83",
+        author: "Dario M.",
+        title: "Tiny victory: asked for help at work",
+        content: "Normally I hide when overwhelmed, but today I asked my manager for help and it actually went well.",
+        tags: ["Recovery", "Support"],
+        replies: 1,
+        likes: 7,
+        likedBy: [],
+        timestamp: new Date("2026-03-20T11:10:00"),
+        responses: [
+          {
+            id: "r28-1",
+            postId: "28",
+            userId: "mock84",
+            author: "Nina G.",
+            content: "Love this. Asking early prevents burnout spirals.",
+            timestamp: new Date("2026-03-20T11:30:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "29",
+        userId: "mock85",
+        author: "Quinn H.",
+        title: "Any gentle routines for high-stress mornings?",
+        content: "Mornings feel chaotic lately. Looking for a short routine that calms my brain before work.",
+        tags: ["Anxiety", "Self-Care"],
+        replies: 2,
+        likes: 16,
+        likedBy: [],
+        timestamp: new Date("2026-03-12T08:00:00"),
+        responses: [
+          {
+            id: "r29-1",
+            postId: "29",
+            userId: "mock86",
+            author: "Eli N.",
+            content: "No phone for first 20 minutes + quick stretch helped me.",
+            timestamp: new Date("2026-03-12T08:20:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r29-2",
+            postId: "29",
+            userId: "mock87",
+            author: "Pia L.",
+            content: "I do tea, sunlight, then write one intention for the day.",
+            timestamp: new Date("2026-03-12T08:35:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "30",
+        userId: "mock88",
+        author: "Soren Y.",
+        title: "Reminder: resting is productive too",
+        content: "I've been treating rest like failure and it burned me out. Relearning that rest is part of recovery.",
+        tags: ["Recovery", "Wellness"],
+        replies: 1,
+        likes: 11,
+        likedBy: [],
+        timestamp: new Date("2026-03-04T20:15:00"),
+        responses: [
+          {
+            id: "r30-1",
+            postId: "30",
+            userId: "mock89",
+            author: "Kira D.",
+            content: "Needed this reminder today, thank you.",
+            timestamp: new Date("2026-03-04T20:40:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "31",
+        userId: "mock90",
+        author: "Yara F.",
+        title: "Therapy homework actually helped my week",
+        content: "I usually skip homework, but I did it this week and felt way less reactive in conflict.",
+        tags: ["Support", "Coping Strategies"],
+        replies: 2,
+        likes: 24,
+        likedBy: [],
+        timestamp: new Date("2026-02-24T18:35:00"),
+        responses: [
+          {
+            id: "r31-1",
+            postId: "31",
+            userId: "mock91",
+            author: "Milo P.",
+            content: "Same! The skills feel awkward until they suddenly work.",
+            timestamp: new Date("2026-02-24T18:55:00"),
+            likes: 6,
+            likedBy: []
+          },
+          {
+            id: "r31-2",
+            postId: "31",
+            userId: "mock92",
+            author: "Jia K.",
+            content: "What homework was it? Looking for ideas to try.",
+            timestamp: new Date("2026-02-24T19:10:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "32",
+        userId: "mock93",
+        author: "Noa E.",
+        title: "How do you recover after social overwhelm?",
+        content: "After long social events I feel wired and exhausted. Would love your decompression routines.",
+        tags: ["Social Anxiety", "Self-Care"],
+        replies: 1,
+        likes: 8,
+        likedBy: [],
+        timestamp: new Date("2026-02-15T22:10:00"),
+        responses: [
+          {
+            id: "r32-1",
+            postId: "32",
+            userId: "mock94",
+            author: "Blake M.",
+            content: "Quiet shower + dim lights + no notifications for an hour.",
+            timestamp: new Date("2026-02-15T22:35:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "33",
+        userId: "mock95",
+        author: "Rae S.",
+        title: "Does anyone else get brain fog with anxiety?",
+        content: "On high-anxiety days I struggle to remember basic things. It makes me feel worse and behind.",
+        tags: ["Anxiety", "Support"],
+        replies: 2,
+        likes: 20,
+        likedBy: [],
+        timestamp: new Date("2026-02-07T10:25:00"),
+        responses: [
+          {
+            id: "r33-1",
+            postId: "33",
+            userId: "mock96",
+            author: "Omar T.",
+            content: "Definitely. I switch to tiny task lists on those days.",
+            timestamp: new Date("2026-02-07T10:45:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r33-2",
+            postId: "33",
+            userId: "mock97",
+            author: "Sky P.",
+            content: "You're not alone. My therapist says it's nervous-system overload.",
+            timestamp: new Date("2026-02-07T11:00:00"),
+            likes: 5,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "34",
+        userId: "mock98",
+        author: "Tori J.",
+        title: "Post-breakup anxiety check-in",
+        content: "Breakup happened last month and my anxiety is all over the place. Any grounded ways to get through evenings?",
+        tags: ["Relationships", "Support"],
+        replies: 1,
+        likes: 12,
+        likedBy: [],
+        timestamp: new Date("2026-01-31T19:05:00"),
+        responses: [
+          {
+            id: "r34-1",
+            postId: "34",
+            userId: "mock99",
+            author: "Leo B.",
+            content: "Evening walks and voice notes to myself helped a lot.",
+            timestamp: new Date("2026-01-31T19:20:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "35",
+        userId: "mock100",
+        author: "Ivy D.",
+        title: "Small win: made my first psychiatrist appointment",
+        content: "Finally booked it after putting it off for months. Nervous but relieved.",
+        tags: ["Support", "Recovery"],
+        replies: 2,
+        likes: 14,
+        likedBy: [],
+        timestamp: new Date("2026-01-20T13:40:00"),
+        responses: [
+          {
+            id: "r35-1",
+            postId: "35",
+            userId: "mock101",
+            author: "Maddie V.",
+            content: "Huge step. Proud of you.",
+            timestamp: new Date("2026-01-20T14:00:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r35-2",
+            postId: "35",
+            userId: "mock102",
+            author: "Arun K.",
+            content: "Bring a few notes about symptoms. It helps a lot.",
+            timestamp: new Date("2026-01-20T14:20:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "36",
+        userId: "mock103",
+        author: "Gia M.",
+        title: "Working on not apologizing for every boundary",
+        content: "Trying to stop saying sorry every time I set a boundary. Harder than I expected.",
+        tags: ["Relationships", "Recovery"],
+        replies: 1,
+        likes: 9,
+        likedBy: [],
+        timestamp: new Date("2026-01-10T12:10:00"),
+        responses: [
+          {
+            id: "r36-1",
+            postId: "36",
+            userId: "mock104",
+            author: "Carmen L.",
+            content: "I replaced sorry with 'thanks for understanding.' It helped a lot.",
+            timestamp: new Date("2026-01-10T12:35:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "37",
+        userId: "mock105",
+        author: "Ash R.",
+        title: "What songs calm your nervous system?",
+        content: "Building a calming playlist for anxious nights. Drop your go-to tracks.",
+        tags: ["Wellness", "Support"],
+        replies: 3,
+        likes: 33,
+        likedBy: [],
+        timestamp: new Date("2025-12-28T21:40:00"),
+        responses: [
+          {
+            id: "r37-1",
+            postId: "37",
+            userId: "mock106",
+            author: "Faye N.",
+            content: "Ambient piano + rain sounds every time.",
+            timestamp: new Date("2025-12-28T22:00:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r37-2",
+            postId: "37",
+            userId: "mock107",
+            author: "Ben T.",
+            content: "Lo-fi beats, no lyrics. Helps my brain settle.",
+            timestamp: new Date("2025-12-28T22:15:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r37-3",
+            postId: "37",
+            userId: "mock108",
+            author: "Rosa K.",
+            content: "I keep one playlist just for panic recovery and it helps a lot.",
+            timestamp: new Date("2025-12-28T22:30:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "38",
+        userId: "mock109",
+        author: "Neel P.",
+        title: "Holiday season loneliness check-in",
+        content: "The holidays are usually hard for me emotionally. Posting so anyone else feeling alone knows they are not the only one.",
+        tags: ["Support", "Depression"],
+        replies: 2,
+        likes: 16,
+        likedBy: [],
+        timestamp: new Date("2025-12-15T18:20:00"),
+        responses: [
+          {
+            id: "r38-1",
+            postId: "38",
+            userId: "mock110",
+            author: "Sia D.",
+            content: "Thanks for posting this. The holidays are tough for me too.",
+            timestamp: new Date("2025-12-15T18:45:00"),
+            likes: 4,
+            likedBy: []
+          },
+          {
+            id: "r38-2",
+            postId: "38",
+            userId: "mock111",
+            author: "Ty W.",
+            content: "You’re not alone. Community threads helped me last year.",
+            timestamp: new Date("2025-12-15T19:00:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "39",
+        userId: "mock112",
+        author: "Parker H.",
+        title: "Anyone using body-doubling for focus?",
+        content: "Tried body-doubling on video call for chores and it surprisingly worked. Anyone else do this?",
+        tags: ["ADHD", "Coping Strategies"],
+        replies: 1,
+        likes: 10,
+        likedBy: [],
+        timestamp: new Date("2025-11-30T10:30:00"),
+        responses: [
+          {
+            id: "r39-1",
+            postId: "39",
+            userId: "mock113",
+            author: "Kian M.",
+            content: "Yes! It's one of the few things that consistently helps me start tasks.",
+            timestamp: new Date("2025-11-30T10:50:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "40",
+        userId: "mock114",
+        author: "Luca S.",
+        title: "Grounding tricks for crowded stores?",
+        content: "Crowded stores spike my anxiety fast. Looking for quick grounding tips I can use discreetly.",
+        tags: ["Anxiety", "Coping Strategies"],
+        replies: 2,
+        likes: 18,
+        likedBy: [],
+        timestamp: new Date("2025-11-10T15:40:00"),
+        responses: [
+          {
+            id: "r40-1",
+            postId: "40",
+            userId: "mock115",
+            author: "Mika T.",
+            content: "One earbud with calm music + slow counting helps me.",
+            timestamp: new Date("2025-11-10T16:00:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r40-2",
+            postId: "40",
+            userId: "mock116",
+            author: "Haley R.",
+            content: "I hold something cold in my hand and focus on the sensation.",
+            timestamp: new Date("2025-11-10T16:15:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "41",
+        userId: "mock117",
+        author: "Aria P.",
+        title: "Sharing a script for saying no without guilt",
+        content: "Script that helped me: 'I can’t commit to that right now, but thank you for thinking of me.'",
+        tags: ["Relationships", "Self-Care"],
+        replies: 1,
+        likes: 7,
+        likedBy: [],
+        timestamp: new Date("2025-10-28T11:10:00"),
+        responses: [
+          {
+            id: "r41-1",
+            postId: "41",
+            userId: "mock118",
+            author: "Dean L.",
+            content: "Bookmarking this. I always over-explain.",
+            timestamp: new Date("2025-10-28T11:30:00"),
+            likes: 3,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "42",
+        userId: "mock119",
+        author: "Zoe A.",
+        title: "When motivation is low, what is your first tiny step?",
+        content: "Mine is 'stand up and drink water.' Curious what your first tiny step is.",
+        tags: ["Depression", "Recovery"],
+        replies: 2,
+        likes: 22,
+        likedBy: [],
+        timestamp: new Date("2025-10-03T09:55:00"),
+        responses: [
+          {
+            id: "r42-1",
+            postId: "42",
+            userId: "mock120",
+            author: "Reed K.",
+            content: "Open the curtains. That one action usually starts momentum.",
+            timestamp: new Date("2025-10-03T10:15:00"),
+            likes: 4,
+            likedBy: []
+          },
+          {
+            id: "r42-2",
+            postId: "42",
+            userId: "mock121",
+            author: "Cam P.",
+            content: "Put both feet on floor and count to 20. Sounds silly but works.",
+            timestamp: new Date("2025-10-03T10:25:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "43",
+        userId: "mock122",
+        author: "Rory J.",
+        title: "PTSD trigger day - trying to stay grounded",
+        content: "Having a trigger-heavy day and doing grounding on repeat. Posting to stay connected instead of shutting down.",
+        tags: ["PTSD", "Support"],
+        replies: 1,
+        likes: 12,
+        likedBy: [],
+        timestamp: new Date("2025-09-07T17:20:00"),
+        responses: [
+          {
+            id: "r43-1",
+            postId: "43",
+            userId: "mock123",
+            author: "Megan R.",
+            content: "You’re doing exactly the right thing by reaching out.",
+            timestamp: new Date("2025-09-07T17:40:00"),
+            likes: 3,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "44",
+        userId: "mock124",
+        author: "Talia N.",
+        title: "Meal consistency check-in for recovery",
+        content: "Trying to keep meals consistent this week and not skip when stressed. Anyone want to do a gentle accountability thread?",
+        tags: ["Eating Disorders", "Recovery"],
+        replies: 2,
+        likes: 20,
+        likedBy: [],
+        timestamp: new Date("2025-07-22T12:25:00"),
+        responses: [
+          {
+            id: "r44-1",
+            postId: "44",
+            userId: "mock125",
+            author: "Irene C.",
+            content: "I’m in. Consistency is hard but this sounds helpful.",
+            timestamp: new Date("2025-07-22T12:45:00"),
+            likes: 4,
+            likedBy: []
+          },
+          {
+            id: "r44-2",
+            postId: "44",
+            userId: "mock126",
+            author: "Gabe H.",
+            content: "Count me in too. We can keep it low pressure.",
+            timestamp: new Date("2025-07-22T13:00:00"),
+            likes: 4,
+            likedBy: []
+          }
+        ]
+      },
+      {
+        id: "45",
+        userId: "mock127",
+        author: "Nia B.",
+        title: "New here and trying to rebuild routines",
+        content: "Hi all, first post. I’m trying to rebuild routines after a long rough stretch. Any advice for starting small and staying consistent?",
+        tags: ["Support", "Wellness"],
+        replies: 1,
+        likes: 8,
+        likedBy: [],
+        timestamp: new Date("2025-06-10T09:00:00"),
+        responses: [
+          {
+            id: "r45-1",
+            postId: "45",
+            userId: "mock128",
+            author: "Owen P.",
+            content: "Welcome. Start with one anchor habit and build from there.",
+            timestamp: new Date("2025-06-10T09:25:00"),
+            likes: 3,
+            likedBy: []
+          }
+        ]
       }
     ];
     setForumPosts(mockPosts);
