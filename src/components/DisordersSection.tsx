@@ -564,22 +564,22 @@ export function DisordersSection() {
                   defaultValue="grounding"
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-2 rounded-2xl border border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50 p-1.5 mb-6 shadow-sm justify-items-stretch items-stretch">
+                  <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto gap-1.5 rounded-2xl border-2 border-teal-400 !bg-teal-100 p-1.5 mb-6 shadow-[0_10px_24px_rgba(13,148,136,0.2)] ring-1 ring-teal-300/70 justify-items-stretch items-stretch">
                     <TabsTrigger
                       value="grounding"
-                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                      className="w-full justify-self-stretch rounded-xl text-slate-800 py-3 px-6 text-base font-semibold transition-all duration-200 hover:text-teal-800 data-[state=active]:text-teal-800 data-[state=active]:shadow-sm data-[state=active]:ring-2 data-[state=active]:ring-teal-300"
                     >
                       "5-4-3-2-1" Reset
                     </TabsTrigger>
                     <TabsTrigger
                       value="breathing"
-                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                      className="w-full justify-self-stretch rounded-xl text-slate-800 py-3 px-6 text-base font-semibold transition-all duration-200 hover:text-teal-800 data-[state=active]:text-teal-800 data-[state=active]:shadow-sm data-[state=active]:ring-2 data-[state=active]:ring-teal-300"
                     >
                       Breathing Bubble
                     </TabsTrigger>
                     <TabsTrigger
                       value="journaling"
-                      className="w-full justify-self-stretch rounded-xl text-slate-700 py-3.5 px-6 text-base transition-all duration-300 hover:text-teal-700 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-teal-200"
+                      className="w-full justify-self-stretch rounded-xl text-slate-800 py-3 px-6 text-base font-semibold transition-all duration-200 hover:text-teal-800 data-[state=active]:text-teal-800 data-[state=active]:shadow-sm data-[state=active]:ring-2 data-[state=active]:ring-teal-300"
                     >
                       Guided Journaling
                     </TabsTrigger>

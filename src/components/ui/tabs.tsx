@@ -83,7 +83,7 @@ function TabsTrigger({
       {isActive && (
         <motion.div
             layoutId="active-tab-indicator"
-            className="absolute inset-0 bg-white dark:bg-gray-700 rounded-xl shadow-md border border-gray-100 dark:border-gray-600 z-10"
+            className="absolute inset-0 bg-teal-100/70 dark:bg-teal-900/40 rounded-xl shadow-md border border-teal-200/80 dark:border-teal-700/60 z-10"
             transition={{
               type: "spring",
               stiffness: 400,
@@ -109,4 +109,3 @@ function TabsContent({
 }
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
-
