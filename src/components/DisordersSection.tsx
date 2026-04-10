@@ -375,6 +375,12 @@ export function DisordersSection() {
     disorderOffset + DISORDERS_PAGE_SIZE,
     filteredDisorders.length,
   );
+  const searchFillerCards = hasActiveSearch
+    ? Math.max(
+        0,
+        DISORDERS_PAGE_SIZE - visibleDisorders.length,
+      )
+    : 0;
 
   useEffect(() => {
     const cycleStart = performance.now();
@@ -681,7 +687,7 @@ export function DisordersSection() {
 
           {/* Disorders Grid */}
           <div className="mb-8 md:mb-12 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-4 lg:items-start">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {visibleDisorders.map((disorder) => {
                 const isRecommended =
                   user &&
@@ -748,6 +754,41 @@ export function DisordersSection() {
                   </Card>
                 );
               })}
+              {Array.from({ length: searchFillerCards }).map(
+                (_, index) => (
+                  <Card
+                    key={`disorder-search-filler-${index}`}
+                    aria-hidden="true"
+                    className="overflow-hidden border border-dashed border-gray-100 bg-white shadow-sm pointer-events-none"
+                  >
+                    <div className="h-40 sm:h-48 bg-white" />
+                    <CardContent className="p-4">
+                      <div className="h-4 w-2/3 bg-gray-50 rounded mb-3" />
+                      <div className="h-3 w-full bg-gray-50 rounded mb-2" />
+                      <div className="h-3 w-5/6 bg-gray-50 rounded mb-4" />
+                      <div className="h-8 w-full bg-gray-50 rounded" />
+                    </CardContent>
+                  </Card>
+                ),
+              )}
+
+              {filteredDisorders.length === 0 && hasActiveSearch && (
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                  <Card className="w-full max-w-md border-gray-200 bg-white/98 shadow-lg pointer-events-auto">
+                    <CardContent className="p-6 text-center">
+                      <p className="text-gray-700 mb-3">
+                        No disorders matched your search.
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={() => setDisorderSearchTerm("")}
+                      >
+                        Clear Search
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </div>
 
             {hasDisorderPagination && (
@@ -775,22 +816,6 @@ export function DisordersSection() {
               </div>
             )}
           </div>
-
-          {filteredDisorders.length === 0 && (
-            <Card className="mb-8 md:mb-12 border-dashed border-gray-300">
-              <CardContent className="p-6 text-center">
-                <p className="text-gray-700 mb-3">
-                  No disorders matched your search.
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => setDisorderSearchTerm("")}
-                >
-                  Clear Search
-                </Button>
-              </CardContent>
-            </Card>
-          )}
 
           <div className="mb-8 md:mb-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <Badge
