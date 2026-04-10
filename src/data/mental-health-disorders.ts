@@ -158,5 +158,293 @@ export const mentalHealthDisorders: MentalHealthDisorder[] = [
       "Academy for Eating Disorders",
       "National Association of Anorexia Nervosa and Associated Disorders (ANAD)"
     ]
+  },
+  {
+    id: "adhd",
+    name: "Attention-Deficit/Hyperactivity Disorder (ADHD)",
+    description: "ADHD affects attention, impulse control, and activity levels. It can impact school, work, relationships, and day-to-day organization.",
+    symptoms: [
+      "Trouble sustaining attention",
+      "Frequent distractibility",
+      "Difficulty with planning and organization",
+      "Impulsivity or interrupting others",
+      "Restlessness or feeling internally driven"
+    ],
+    treatments: [
+      "Behavioral therapy and skills coaching",
+      "Medication (stimulant or non-stimulant options)",
+      "Executive functioning supports",
+      "School or workplace accommodations",
+      "Sleep and routine optimization"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America",
+      "National Alliance on Mental Illness (NAMI)"
+    ]
+  },
+  {
+    id: "social-anxiety",
+    name: "Social Anxiety Disorder",
+    description: "Social anxiety disorder causes intense fear of social situations where a person might be judged, embarrassed, or rejected.",
+    symptoms: [
+      "Fear of being watched or judged",
+      "Avoidance of social situations",
+      "Physical anxiety symptoms in social settings",
+      "Worry before events or conversations",
+      "Difficulty speaking up in groups"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy (CBT)",
+      "Exposure-based therapy",
+      "Social skills practice",
+      "Medication when appropriate",
+      "Support groups"
+    ],
+    resources: [
+      "Anxiety and Depression Association of America (ADAA)",
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "panic-disorder",
+    name: "Panic Disorder",
+    description: "Panic disorder involves recurring panic attacks and ongoing concern about having additional attacks or their consequences.",
+    symptoms: [
+      "Sudden episodes of intense fear",
+      "Racing heart, shortness of breath, or chest discomfort",
+      "Fear of losing control during attacks",
+      "Avoidance of places linked to panic",
+      "Persistent anxiety about future attacks"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy (CBT)",
+      "Interoceptive and situational exposure",
+      "Medication options such as SSRIs",
+      "Breathing and grounding strategies",
+      "Psychoeducation and relapse prevention"
+    ],
+    resources: [
+      "Anxiety and Depression Association of America (ADAA)",
+      "National Institute of Mental Health (NIMH)",
+      "National Alliance on Mental Illness (NAMI)"
+    ]
+  },
+  {
+    id: "gad",
+    name: "Generalized Anxiety Disorder (GAD)",
+    description: "GAD is marked by ongoing, hard-to-control worry across multiple life areas such as health, work, family, and daily responsibilities.",
+    symptoms: [
+      "Persistent excessive worry",
+      "Muscle tension and fatigue",
+      "Irritability",
+      "Difficulty concentrating",
+      "Sleep problems"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy (CBT)",
+      "Acceptance and commitment approaches",
+      "Medication when indicated",
+      "Stress management routines",
+      "Mindfulness-based practices"
+    ],
+    resources: [
+      "Anxiety and Depression Association of America (ADAA)",
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "schizophrenia",
+    name: "Schizophrenia Spectrum Disorders",
+    description: "Schizophrenia spectrum disorders can affect perception, thinking, emotion, and behavior, often requiring long-term coordinated care.",
+    symptoms: [
+      "Hallucinations or delusions",
+      "Disorganized thinking or speech",
+      "Reduced emotional expression",
+      "Social withdrawal",
+      "Difficulty with daily functioning"
+    ],
+    treatments: [
+      "Antipsychotic medication",
+      "Coordinated specialty care",
+      "Psychosocial rehabilitation",
+      "Family education and support",
+      "Supported employment and housing services"
+    ],
+    resources: [
+      "National Alliance on Mental Illness (NAMI)",
+      "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+      "National Institute of Mental Health (NIMH)"
+    ]
+  },
+  {
+    id: "bpd",
+    name: "Borderline Personality Disorder (BPD)",
+    description: "BPD involves intense emotions, fear of abandonment, relationship instability, and challenges with self-image and impulse control.",
+    symptoms: [
+      "Intense mood shifts",
+      "Fear of abandonment",
+      "Unstable interpersonal relationships",
+      "Impulsive behaviors",
+      "Chronic feelings of emptiness"
+    ],
+    treatments: [
+      "Dialectical Behavior Therapy (DBT)",
+      "Mentalization-based therapy",
+      "Schema-focused therapy",
+      "Medication for co-occurring symptoms",
+      "Skills groups and crisis planning"
+    ],
+    resources: [
+      "National Alliance on Mental Illness (NAMI)",
+      "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "substance-use-disorder",
+    name: "Substance Use Disorder",
+    description: "Substance use disorder is a treatable condition where recurring substance use causes impairment, distress, and loss of control.",
+    symptoms: [
+      "Using more than intended",
+      "Difficulty cutting down despite efforts",
+      "Cravings and withdrawal symptoms",
+      "Neglecting responsibilities",
+      "Continued use despite negative consequences"
+    ],
+    treatments: [
+      "Motivational interviewing and counseling",
+      "Medication-assisted treatment when appropriate",
+      "Outpatient or residential programs",
+      "Peer recovery and support groups",
+      "Relapse prevention planning"
+    ],
+    resources: [
+      "Substance Abuse and Mental Health Services Administration (SAMHSA)",
+      "National Alliance on Mental Illness (NAMI)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "seasonal-affective-disorder",
+    name: "Seasonal Affective Disorder (SAD)",
+    description: "SAD is a depression pattern linked to seasonal light changes, often emerging during fall and winter months.",
+    symptoms: [
+      "Low mood during specific seasons",
+      "Low energy and oversleeping",
+      "Increased appetite or carbohydrate cravings",
+      "Reduced motivation",
+      "Social withdrawal"
+    ],
+    treatments: [
+      "Light therapy",
+      "Psychotherapy",
+      "Medication options",
+      "Physical activity",
+      "Daily routine and sleep regulation"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Depression and Bipolar Support Alliance (DBSA)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "pmdd",
+    name: "Premenstrual Dysphoric Disorder (PMDD)",
+    description: "PMDD is a severe mood disorder tied to the menstrual cycle, causing significant emotional and physical symptoms before menstruation.",
+    symptoms: [
+      "Marked irritability or mood swings premenstrually",
+      "Depressed mood or anxiety in luteal phase",
+      "Fatigue and concentration difficulties",
+      "Sleep and appetite changes",
+      "Symptoms that improve after menstruation begins"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy (CBT)",
+      "SSRIs (continuous or luteal-phase dosing)",
+      "Hormonal treatment options",
+      "Exercise and stress-reduction plans",
+      "Cycle symptom tracking"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America",
+      "National Alliance on Mental Illness (NAMI)"
+    ]
+  },
+  {
+    id: "autism",
+    name: "Autism Spectrum Disorder (ASD)",
+    description: "Autism is a neurodevelopmental condition that affects social communication and behavior patterns, with diverse strengths and support needs.",
+    symptoms: [
+      "Differences in social communication",
+      "Repetitive behaviors or focused interests",
+      "Sensory sensitivities",
+      "Need for predictable routines",
+      "Challenges with transitions"
+    ],
+    treatments: [
+      "Strengths-based behavioral supports",
+      "Speech, occupational, or social skills therapies",
+      "School and workplace accommodations",
+      "Family education and coaching",
+      "Co-occurring mental health care"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America",
+      "Substance Abuse and Mental Health Services Administration (SAMHSA)"
+    ]
+  },
+  {
+    id: "dissociative-disorders",
+    name: "Dissociative Disorders",
+    description: "Dissociative disorders involve disruptions in memory, identity, or awareness, often related to overwhelming stress or trauma history.",
+    symptoms: [
+      "Feeling detached from self or surroundings",
+      "Memory gaps for personal events",
+      "Identity confusion",
+      "Emotional numbness",
+      "Functional impairment during dissociative episodes"
+    ],
+    treatments: [
+      "Trauma-informed psychotherapy",
+      "Grounding and stabilization techniques",
+      "Skills for emotion regulation",
+      "Medication for co-occurring symptoms",
+      "Safety and support planning"
+    ],
+    resources: [
+      "National Alliance on Mental Illness (NAMI)",
+      "National Institute of Mental Health (NIMH)",
+      "Sidran Institute"
+    ]
+  },
+  {
+    id: "insomnia-disorder",
+    name: "Insomnia Disorder",
+    description: "Insomnia disorder includes persistent trouble falling asleep, staying asleep, or waking too early, with daytime impact on mood and functioning.",
+    symptoms: [
+      "Difficulty initiating sleep",
+      "Frequent nighttime awakenings",
+      "Early morning waking",
+      "Daytime fatigue",
+      "Irritability and concentration difficulties"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy for Insomnia (CBT-I)",
+      "Sleep hygiene and stimulus control",
+      "Relaxation and stress reduction techniques",
+      "Short-term medication when needed",
+      "Treatment of co-occurring mental health conditions"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Mental Health America",
+      "Substance Abuse and Mental Health Services Administration (SAMHSA)"
+    ]
   }
 ];

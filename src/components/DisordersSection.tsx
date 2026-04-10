@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   mentalHealthDisorders,
@@ -33,9 +33,12 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
+  ArrowUp,
+  ArrowDown,
   Sparkles,
   ExternalLink,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
@@ -53,7 +56,32 @@ const disorderImages: Record<string, string> = {
   ocd: "https://images.unsplash.com/photo-1760375474561-026717f7b79d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHRlYWwlMjB0cmFucXVpbHxlbnwxfHx8fDE3NjIyNjQ3Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
   "eating-disorders":
     "https://images.unsplash.com/photo-1594165681163-1b85559cf250?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHBpbmslMjBzb2Z0fGVufDF8fHx8MTc2MjI2NDcyOHww&ixlib=rb-4.1.0&q=80&w=1080",
+  adhd:
+    "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "social-anxiety":
+    "https://images.unsplash.com/photo-1513151233558-d860c5398176?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "panic-disorder":
+    "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  gad: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  schizophrenia:
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  bpd: "https://images.unsplash.com/photo-1493244040629-496f6d136cc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "substance-use-disorder":
+    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "seasonal-affective-disorder":
+    "https://images.unsplash.com/photo-1455156218388-5e61b526818b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  pmdd:
+    "https://images.unsplash.com/photo-1494783367193-149034c05e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  autism:
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "dissociative-disorders":
+    "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  "insomnia-disorder":
+    "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
 };
+
+const defaultDisorderImage =
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080";
 
 // Mapping of disorders to therapist specialties
 const disorderToSpecialties: Record<string, string[]> = {
@@ -63,6 +91,18 @@ const disorderToSpecialties: Record<string, string[]> = {
   ptsd: ["PTSD", "Trauma"],
   ocd: ["OCD", "Anxiety"],
   "eating-disorders": ["Eating Disorders"],
+  adhd: ["ADHD", "Anxiety"],
+  "social-anxiety": ["Anxiety", "Social Anxiety"],
+  "panic-disorder": ["Anxiety", "Panic"],
+  gad: ["Anxiety", "Stress Management"],
+  schizophrenia: ["Psychosis", "Severe Mental Illness"],
+  bpd: ["Personality Disorders", "Trauma"],
+  "substance-use-disorder": ["Addiction", "Substance Use"],
+  "seasonal-affective-disorder": ["Depression"],
+  pmdd: ["Depression", "Mood Disorders"],
+  autism: ["Neurodiversity", "ADHD"],
+  "dissociative-disorders": ["Trauma", "PTSD"],
+  "insomnia-disorder": ["Sleep Disorders", "Anxiety"],
 };
 
 // Mapping of disorders to blog categories
@@ -73,7 +113,21 @@ const disorderToCategories: Record<string, string[]> = {
   ptsd: ["Support", "Education"],
   ocd: ["Coping Strategies", "Education"],
   "eating-disorders": ["Support", "Wellness"],
+  adhd: ["Education", "Coping Strategies"],
+  "social-anxiety": ["Coping Strategies", "Education"],
+  "panic-disorder": ["Coping Strategies", "Support"],
+  gad: ["Coping Strategies", "Education"],
+  schizophrenia: ["Support", "Education"],
+  bpd: ["Support", "Education"],
+  "substance-use-disorder": ["Support", "Education"],
+  "seasonal-affective-disorder": ["Wellness", "Support"],
+  pmdd: ["Education", "Support"],
+  autism: ["Education", "Support"],
+  "dissociative-disorders": ["Education", "Support"],
+  "insomnia-disorder": ["Wellness", "Coping Strategies"],
 };
+
+const DISORDERS_PAGE_SIZE = 6;
 
 const guidedJournalPrompts = [
   "What feels heaviest for me today, and what would make it feel 10% lighter?",
@@ -222,7 +276,50 @@ export function DisordersSection() {
     );
   const [flippedMythCards, setFlippedMythCards] =
     useState<Record<number, boolean>>({});
+  const [disorderOffset, setDisorderOffset] = useState(0);
+  const [disorderSearchTerm, setDisorderSearchTerm] =
+    useState("");
   const journalPromptTimerRef = useRef<number | null>(null);
+
+  const normalizedDisorderQuery =
+    disorderSearchTerm.trim().toLowerCase();
+
+  const filteredDisorders = useMemo(() => {
+    if (!normalizedDisorderQuery) {
+      return mentalHealthDisorders;
+    }
+
+    return mentalHealthDisorders.filter((disorder) => {
+      const searchBlob = [
+        disorder.name,
+        disorder.description,
+        ...disorder.symptoms,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchBlob.includes(normalizedDisorderQuery);
+    });
+  }, [normalizedDisorderQuery]);
+
+  const hasDisorderPagination =
+    filteredDisorders.length > DISORDERS_PAGE_SIZE;
+  const maxDisorderOffset = Math.max(
+    0,
+    filteredDisorders.length - DISORDERS_PAGE_SIZE,
+  );
+  const visibleDisorders = filteredDisorders.slice(
+    disorderOffset,
+    disorderOffset + DISORDERS_PAGE_SIZE,
+  );
+  const visibleDisordersStart = Math.min(
+    disorderOffset + 1,
+    filteredDisorders.length,
+  );
+  const visibleDisordersEnd = Math.min(
+    disorderOffset + DISORDERS_PAGE_SIZE,
+    filteredDisorders.length,
+  );
 
   useEffect(() => {
     const cycleStart = performance.now();
@@ -257,6 +354,16 @@ export function DisordersSection() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setDisorderOffset(0);
+  }, [normalizedDisorderQuery]);
+
+  useEffect(() => {
+    if (disorderOffset > maxDisorderOffset) {
+      setDisorderOffset(maxDisorderOffset);
+    }
+  }, [disorderOffset, maxDisorderOffset]);
 
   const trackDisorderView = async (
     disorderId: string,
@@ -404,6 +511,21 @@ export function DisordersSection() {
     setFlippedMythCards({});
   };
 
+  const handleNextDisorders = () => {
+    setDisorderOffset((prevOffset) =>
+      Math.min(
+        prevOffset + DISORDERS_PAGE_SIZE,
+        maxDisorderOffset,
+      ),
+    );
+  };
+
+  const handlePreviousDisorders = () => {
+    setDisorderOffset((prevOffset) =>
+      Math.max(prevOffset - DISORDERS_PAGE_SIZE, 0),
+    );
+  };
+
   const isExpandingPhase = breathingPhaseIndex === 0;
   const isShrinkingPhase = breathingPhaseIndex === 2;
   const isLargeBubble =
@@ -477,69 +599,147 @@ export function DisordersSection() {
             </Card>
           )}
 
-          {/* Disorders Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-            {mentalHealthDisorders.map((disorder) => {
-  const isRecommended = 
-    user && 
-    profile?.compassBearing && 
-    (disorder.id === profile.compassBearing.primaryStruggle.toLowerCase() || 
-     disorder.name.toLowerCase().includes(profile.compassBearing.primaryStruggle.toLowerCase()));
-
-  return (
-    <Card
-      key={disorder.id}
-      className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col gap-0"
-      onClick={() => handleDisorderClick(disorder)}
-    >
-      <div className="relative h-40 sm:h-48 overflow-hidden flex-shrink-0">
-        <ImageWithFallback
-          src={disorderImages[disorder.id]}
-          alt={disorder.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        {/* Darker gradient for better text contrast on tablets/desktop */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        
-        {isRecommended && (
-          <div className="absolute top-3 right-3">
-            <Badge className="bg-teal-600 shadow-lg">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Recommended
-            </Badge>
+          <div className="relative mb-4 md:mb-6">
+            <Search className="h-4 w-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              value={disorderSearchTerm}
+              onChange={(event) =>
+                setDisorderSearchTerm(event.target.value)
+              }
+              placeholder="Search disorders by name, symptoms, or description..."
+              className="w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            />
           </div>
-        )}
 
-        {/* Desktop-only Title Overlay (Hidden on mobile) */}
-        <div className="absolute bottom-3 left-3 right-3 hidden sm:block">
-          <h3 className="text-white text-xl font-bold leading-tight">
-            {disorder.name}
-          </h3>
-        </div>
-      </div>
+          {/* Disorders Grid */}
+          <div className="mb-8 md:mb-12 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-4 lg:items-start">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {visibleDisorders.map((disorder) => {
+                const isRecommended =
+                  user &&
+                  profile?.compassBearing &&
+                  (disorder.id ===
+                    profile.compassBearing.primaryStruggle.toLowerCase() ||
+                    disorder.name
+                      .toLowerCase()
+                      .includes(
+                        profile.compassBearing.primaryStruggle.toLowerCase(),
+                      ));
 
-      <CardContent className="p-4 flex flex-col flex-1">
-        {/* Mobile-only Title (Visible only on small screens) */}
-        <h3 className="text-gray-900 font-bold text-lg mb-2 sm:hidden">
-          {disorder.name}
-        </h3>
-        
-        <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
-          {disorder.description}
-        </p>
-        
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full group-hover:bg-teal-600 group-hover:text-white group-hover:border-teal-600 transition-colors text-sm"
-        >
-          Learn More
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </CardContent>
-    </Card>
-  );
-})}
+                return (
+                  <Card
+                    key={disorder.id}
+                    className="group cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col gap-0"
+                    onClick={() => handleDisorderClick(disorder)}
+                  >
+                    <div className="relative h-40 sm:h-48 overflow-hidden flex-shrink-0">
+                      <ImageWithFallback
+                        src={
+                          disorderImages[disorder.id] ||
+                          defaultDisorderImage
+                        }
+                        alt={disorder.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                      {isRecommended && (
+                        <div className="absolute top-3 right-3">
+                          <Badge className="bg-teal-600 shadow-lg">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            Recommended
+                          </Badge>
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-3 left-3 right-3 hidden sm:block">
+                        <h3 className="text-white text-xl font-bold leading-tight">
+                          {disorder.name}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-4 flex flex-col flex-1">
+                      <h3 className="text-gray-900 font-bold text-lg mb-2 sm:hidden">
+                        {disorder.name}
+                      </h3>
+
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
+                        {disorder.description}
+                      </p>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full group-hover:bg-teal-600 group-hover:text-white group-hover:border-teal-600 transition-colors text-sm"
+                      >
+                        Learn More
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {hasDisorderPagination && (
+              <div className="hidden lg:flex lg:flex-col gap-2 sticky top-24">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handlePreviousDisorders}
+                  disabled={disorderOffset === 0}
+                  className="h-12 w-12 rounded-full border-teal-500 text-teal-700 hover:bg-teal-50"
+                  aria-label="Previous 6 disorders"
+                >
+                  <ArrowUp className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleNextDisorders}
+                  disabled={disorderOffset >= maxDisorderOffset}
+                  className="h-12 w-12 rounded-full border-teal-500 text-teal-700 hover:bg-teal-50"
+                  aria-label="Next 6 disorders"
+                >
+                  <ArrowDown className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div className="mb-8 md:mb-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <Badge
+              variant="secondary"
+              className="w-fit bg-teal-100 text-teal-800"
+            >
+              {filteredDisorders.length === 0
+                ? "No matches"
+                : `Showing ${visibleDisordersStart}-${visibleDisordersEnd} of ${filteredDisorders.length}`}
+            </Badge>
+
+            {hasDisorderPagination && (
+              <div className="flex items-center gap-2 lg:hidden">
+                <Button
+                  variant="outline"
+                  onClick={handlePreviousDisorders}
+                  disabled={disorderOffset === 0}
+                  className="border-teal-500 text-teal-700 hover:bg-teal-50"
+                >
+                  <ArrowUp className="h-4 w-4 mr-2" />
+                  Previous 6
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleNextDisorders}
+                  disabled={disorderOffset >= maxDisorderOffset}
+                  className="border-teal-500 text-teal-700 hover:bg-teal-50"
+                >
+                  Next 6
+                  <ArrowDown className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Section 3: Interactive Coping Strategies Toolbox */}
