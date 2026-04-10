@@ -9,6 +9,7 @@ import { blogPosts } from "../data/blog-posts";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
+import { Input } from "./ui/input";
 import { CompassDecoration } from "./CompassDecoration";
 import {
   Dialog,
@@ -39,6 +40,7 @@ import {
   ExternalLink,
   RefreshCw,
   Search,
+  X,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
@@ -283,24 +285,78 @@ export function DisordersSection() {
 
   const normalizedDisorderQuery =
     disorderSearchTerm.trim().toLowerCase();
+  const queryTerms = normalizedDisorderQuery
+    .split(/\s+/)
+    .filter(Boolean);
 
   const filteredDisorders = useMemo(() => {
-    if (!normalizedDisorderQuery) {
+    if (queryTerms.length === 0) {
       return mentalHealthDisorders;
     }
 
-    return mentalHealthDisorders.filter((disorder) => {
-      const searchBlob = [
-        disorder.name,
-        disorder.description,
-        ...disorder.symptoms,
-      ]
-        .join(" ")
-        .toLowerCase();
+    const matches = mentalHealthDisorders
+      .map((disorder) => {
+        const name = disorder.name.toLowerCase();
+        const description =
+          disorder.description.toLowerCase();
+        const symptoms = disorder.symptoms
+          .join(" ")
+          .toLowerCase();
+        const treatments = disorder.treatments
+          .join(" ")
+          .toLowerCase();
+        const id = disorder.id.toLowerCase();
 
-      return searchBlob.includes(normalizedDisorderQuery);
-    });
-  }, [normalizedDisorderQuery]);
+        const combinedText = [
+          name,
+          description,
+          symptoms,
+          treatments,
+          id,
+        ].join(" ");
+
+        const allTermsMatch = queryTerms.every((term) =>
+          combinedText.includes(term),
+        );
+
+        if (!allTermsMatch) {
+          return null;
+        }
+
+        let relevanceScore = 0;
+        queryTerms.forEach((term) => {
+          if (name.startsWith(term)) relevanceScore += 7;
+          if (name.includes(term)) relevanceScore += 5;
+          if (id.includes(term)) relevanceScore += 4;
+          if (symptoms.includes(term)) relevanceScore += 3;
+          if (description.includes(term))
+            relevanceScore += 2;
+          if (treatments.includes(term))
+            relevanceScore += 1;
+        });
+
+        return { disorder, relevanceScore };
+      })
+      .filter(
+        (
+          item,
+        ): item is {
+          disorder: MentalHealthDisorder;
+          relevanceScore: number;
+        } => item !== null,
+      )
+      .sort((a, b) => {
+        if (b.relevanceScore !== a.relevanceScore) {
+          return b.relevanceScore - a.relevanceScore;
+        }
+        return a.disorder.name.localeCompare(b.disorder.name);
+      })
+      .map((item) => item.disorder);
+
+    return matches;
+  }, [queryTerms]);
+
+  const hasActiveSearch = queryTerms.length > 0;
 
   const hasDisorderPagination =
     filteredDisorders.length > DISORDERS_PAGE_SIZE;
@@ -599,16 +655,29 @@ export function DisordersSection() {
             </Card>
           )}
 
-          <div className="relative mb-4 md:mb-6">
-            <Search className="h-4 w-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              value={disorderSearchTerm}
-              onChange={(event) =>
-                setDisorderSearchTerm(event.target.value)
-              }
-              placeholder="Search disorders by name, symptoms, or description..."
-              className="w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-            />
+          <div className="mb-4 md:mb-6 rounded-xl border border-gray-200 bg-white shadow-sm p-3 sm:p-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search disorders..."
+                value={disorderSearchTerm}
+                onChange={(event) =>
+                  setDisorderSearchTerm(event.target.value)
+                }
+                className="pl-9 pr-10 sm:pl-10 text-sm sm:text-base"
+              />
+              {disorderSearchTerm.trim() && (
+                <button
+                  type="button"
+                  onClick={() => setDisorderSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Clear disorder search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Disorders Grid */}
@@ -708,6 +777,22 @@ export function DisordersSection() {
             )}
           </div>
 
+          {filteredDisorders.length === 0 && (
+            <Card className="mb-8 md:mb-12 border-dashed border-gray-300">
+              <CardContent className="p-6 text-center">
+                <p className="text-gray-700 mb-3">
+                  No disorders matched your search.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setDisorderSearchTerm("")}
+                >
+                  Clear Search
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="mb-8 md:mb-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <Badge
               variant="secondary"
@@ -715,7 +800,9 @@ export function DisordersSection() {
             >
               {filteredDisorders.length === 0
                 ? "No matches"
-                : `Showing ${visibleDisordersStart}-${visibleDisordersEnd} of ${filteredDisorders.length}`}
+                : hasActiveSearch
+                  ? `Showing ${visibleDisordersStart}-${visibleDisordersEnd} of ${filteredDisorders.length} results`
+                  : `Showing ${visibleDisordersStart}-${visibleDisordersEnd} of ${filteredDisorders.length}`}
             </Badge>
 
             {hasDisorderPagination && (
