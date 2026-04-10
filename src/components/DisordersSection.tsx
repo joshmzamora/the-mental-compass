@@ -34,8 +34,7 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
-  ArrowUp,
-  ArrowDown,
+  ArrowLeft,
   Sparkles,
   ExternalLink,
   RefreshCw,
@@ -761,7 +760,7 @@ export function DisordersSection() {
                   className="h-12 w-12 rounded-full border-teal-500 text-teal-700 hover:bg-teal-50"
                   aria-label="Previous 6 disorders"
                 >
-                  <ArrowUp className="h-5 w-5" />
+                  <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <Button
                   variant="outline"
@@ -771,7 +770,7 @@ export function DisordersSection() {
                   className="h-12 w-12 rounded-full border-teal-500 text-teal-700 hover:bg-teal-50"
                   aria-label="Next 6 disorders"
                 >
-                  <ArrowDown className="h-5 w-5" />
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </div>
             )}
@@ -813,8 +812,8 @@ export function DisordersSection() {
                   disabled={disorderOffset === 0}
                   className="border-teal-500 text-teal-700 hover:bg-teal-50"
                 >
-                  <ArrowUp className="h-4 w-4 mr-2" />
-                  Previous 6
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Previous
                 </Button>
                 <Button
                   variant="outline"
@@ -822,8 +821,8 @@ export function DisordersSection() {
                   disabled={disorderOffset >= maxDisorderOffset}
                   className="border-teal-500 text-teal-700 hover:bg-teal-50"
                 >
-                  Next 6
-                  <ArrowDown className="h-4 w-4 ml-2" />
+                  Next
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
             )}
