@@ -133,6 +133,29 @@ const initialChatMessages: ChatMessage[] = [
   },
 ];
 
+const simulatedChatProfiles = [
+  { author: "Avery", avatar: "A" },
+  { author: "Nina", avatar: "N" },
+  { author: "Marcus", avatar: "M" },
+  { author: "Leah", avatar: "L" },
+  { author: "Owen", avatar: "O" },
+  { author: "Sofia", avatar: "S" },
+  { author: "Eli", avatar: "E" },
+];
+
+const simulatedChatLinePool = [
+  "Quick check-in: drinking water and taking a breath helped me reset.",
+  "Anyone have a go-to 2 minute grounding exercise?",
+  "Small win: I asked for support instead of isolating.",
+  "I took a short walk and my anxiety dropped from an 8 to a 5.",
+  "Reminder for anyone reading this: progress counts even on heavy days.",
+  "What helps you unwind after therapy sessions?",
+  "I’m trying a no-phone bedtime routine this week.",
+  "Sending support to anyone feeling overwhelmed tonight.",
+  "My stress was high earlier, but breathing + journaling helped.",
+  "Does anyone else do tiny task lists on low-energy days?",
+];
+
 const DAILY_ENGAGEMENT_START = new Date("2026-04-10T00:00:00");
 const DAILY_ENGAGEMENT_END = new Date("2026-06-01T23:59:59");
 const DAILY_ENGAGEMENT_POSTS_PER_DAY = 3;
@@ -419,6 +442,7 @@ export function CommunitySection() {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [realTimeChatMessages, setRealTimeChatMessages] = useState<ChatMessage[]>([]);
+  const [simulatedChatMessages, setSimulatedChatMessages] = useState<ChatMessage[]>([]);
   const [chatLoading, setChatLoading] = useState(true);
   const [chatDatabaseConfigured, setChatDatabaseConfigured] = useState(true);
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
@@ -449,6 +473,7 @@ export function CommunitySection() {
   const [isFeaturedMinimized, setIsFeaturedMinimized] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const latestRealChatTimestampRef = useRef(0);
 
   const isSearching = !!(searchQuery.trim() || selectedTags.length > 0 || dateRangeFilter !== "all");
 
@@ -532,6 +557,114 @@ export function CommunitySection() {
     }
   }, []);
 
+  useEffect(() => {
+    if (realTimeChatMessages.length === 0) return;
+    const latestRealTimestamp = realTimeChatMessages.reduce(
+      (latest, msg) => Math.max(latest, new Date(msg.created_at).getTime()),
+      0,
+    );
+    latestRealChatTimestampRef.current = latestRealTimestamp;
+  }, [realTimeChatMessages]);
+
+  useEffect(() => {
+    const now = Date.now();
+    const seedCount = 6;
+
+    const seededMessages: ChatMessage[] = Array.from(
+      { length: seedCount },
+      (_, index) => {
+        const profile =
+          simulatedChatProfiles[
+            index % simulatedChatProfiles.length
+          ];
+        const content =
+          simulatedChatLinePool[
+            index % simulatedChatLinePool.length
+          ];
+        const minutesAgo = 95 - index * 14;
+        const createdAt = new Date(
+          now - minutesAgo * 60000,
+        ).toISOString();
+
+        return {
+          id: `sim-seed-${index}-${now}`,
+          user_id: `sim-user-${index}`,
+          author: profile.author,
+          content,
+          created_at: createdAt,
+          avatar: profile.avatar,
+        };
+      },
+    );
+
+    setSimulatedChatMessages(seededMessages);
+  }, []);
+
+  useEffect(() => {
+    const pushSimulatedMessage = () => {
+      const now = Date.now();
+
+      setSimulatedChatMessages((previous) => {
+        const latestSimulatedTimestamp = previous.reduce(
+          (latest, msg) =>
+            Math.max(
+              latest,
+              new Date(msg.created_at).getTime(),
+            ),
+          0,
+        );
+
+        const latestKnownTimestamp = Math.max(
+          latestRealChatTimestampRef.current,
+          latestSimulatedTimestamp,
+        );
+
+        // Keep message cadence believable and avoid rapid "just now" clustering.
+        if (
+          latestKnownTimestamp > 0 &&
+          now - latestKnownTimestamp < 140000
+        ) {
+          return previous;
+        }
+
+        const nextIndex = previous.length;
+        const profile =
+          simulatedChatProfiles[
+            nextIndex % simulatedChatProfiles.length
+          ];
+        const content =
+          simulatedChatLinePool[
+            (nextIndex * 3) % simulatedChatLinePool.length
+          ];
+
+        const nextMessage: ChatMessage = {
+          id: `sim-live-${now}-${nextIndex}`,
+          user_id: `sim-live-user-${nextIndex % 12}`,
+          author: profile.author,
+          content,
+          created_at: new Date(now).toISOString(),
+          avatar: profile.avatar,
+        };
+
+        return [...previous, nextMessage].slice(-40);
+      });
+    };
+
+    const firstMessageDelay = window.setTimeout(
+      pushSimulatedMessage,
+      55000,
+    );
+    const interval = window.setInterval(
+      pushSimulatedMessage,
+      175000,
+    );
+
+    return () => {
+      window.clearTimeout(firstMessageDelay);
+      window.clearInterval(interval);
+    };
+  }, []);
+
   // Save local messages to localStorage whenever they change
   useEffect(() => {
     const localMessages = realTimeChatMessages.filter(msg => msg.id.startsWith('local-'));
@@ -540,12 +673,19 @@ export function CommunitySection() {
     }
   }, [realTimeChatMessages]);
 
-  // Combine starter messages with real-time messages
+  // Combine starter, real-time, and simulated activity messages
   useEffect(() => {
-    // Show starter messages first, then real user messages
-    const combinedMessages = [...initialChatMessages, ...realTimeChatMessages];
+    const combinedMessages = [
+      ...initialChatMessages,
+      ...realTimeChatMessages,
+      ...simulatedChatMessages,
+    ].sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() -
+        new Date(b.created_at).getTime(),
+    );
     setChatMessages(combinedMessages);
-  }, [realTimeChatMessages]);
+  }, [realTimeChatMessages, simulatedChatMessages]);
 
   // Auto-scroll chat to bottom only on initial load
   useEffect(() => {
@@ -3416,7 +3556,7 @@ export function CommunitySection() {
             </TabsContent>
 
             {/* Chat Tab */}
-            <TabsContent value="chat" className="space-y-4 outline-none">
+            <TabsContent value="chat" className="space-y-4 outline-none pb-8 sm:pb-12">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -3441,7 +3581,7 @@ export function CommunitySection() {
                   </CardContent>
                 </Card>
 
-                <Card className="h-[600px] flex flex-col shadow-lg">
+                <Card className="h-[min(68vh,620px)] min-h-[430px] flex flex-col shadow-lg mb-6 sm:mb-10">
                   <CardHeader className="border-b">
                     <div className="flex items-center justify-between">
                       <div>
