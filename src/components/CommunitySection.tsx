@@ -481,10 +481,10 @@ export function CommunitySection() {
         title: "New to the community and looking for support",
         content: "Hi everyone, I just joined The Mental Compass today. I've been dealing with some rough patches recently and decided it's time to reach out. Really glad to find a community like this.",
         tags: ["Support", "Wellness"],
-        replies: 1,
-        likes: 12,
+        replies: 4,
+        likes: 28,
         likedBy: [],
-        timestamp: new Date("2026-04-05T08:15:00"),
+        timestamp: new Date("2026-04-10T08:15:00"),
         responses: [
           {
             id: "r-new-1-1",
@@ -492,8 +492,38 @@ export function CommunitySection() {
             userId: "mock2",
             author: "Mike T.",
             content: "Welcome, Alex! Taking the first step to reach out is huge. You're in a safe place here.",
-            timestamp: new Date("2026-04-05T09:30:00"),
+            timestamp: new Date("2026-04-10T09:30:00"),
             likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r-new-1-2",
+            postId: "new-1",
+            userId: "mock18",
+            author: "Nora P.",
+            content: "Glad you're here. A lot of us started exactly where you are, and it does get easier with support.",
+            timestamp: new Date("2026-04-10T10:05:00"),
+            likes: 4,
+            likedBy: []
+          },
+          {
+            id: "r-new-1-3",
+            postId: "new-1",
+            userId: "mock19",
+            author: "Daniel K.",
+            content: "If it helps, I keep a tiny daily check-in note on my phone. It made a big difference for me over time.",
+            timestamp: new Date("2026-04-10T10:40:00"),
+            likes: 3,
+            likedBy: []
+          },
+          {
+            id: "r-new-1-4",
+            postId: "new-1",
+            userId: "mock20",
+            author: "Aisha L.",
+            content: "Sending support. You are not alone in this.",
+            timestamp: new Date("2026-04-10T11:20:00"),
+            likes: 2,
             likedBy: []
           }
         ]
@@ -505,10 +535,10 @@ export function CommunitySection() {
         title: "Managing spring triggers",
         content: "Does anyone else find their anxiety spikes when the seasons change? The transition to spring always makes me feel off-balance and overwhelmed. Any tips for managing seasonal transitions?",
         tags: ["Anxiety", "Coping Strategies"],
-        replies: 2,
-        likes: 34,
+        replies: 5,
+        likes: 40,
         likedBy: [],
-        timestamp: new Date("2026-04-04T14:20:00"),
+        timestamp: new Date("2026-04-09T14:20:00"),
         responses: [
           {
             id: "r-new-2-1",
@@ -516,7 +546,7 @@ export function CommunitySection() {
             userId: "mock8",
             author: "Emma L.",
             content: "Absolutely. The change in daylight and routine always throws me off. Sticking to a strict sleep schedule helps me a lot.",
-            timestamp: new Date("2026-04-04T16:10:00"),
+            timestamp: new Date("2026-04-09T16:10:00"),
             likes: 14,
             likedBy: []
           },
@@ -526,8 +556,38 @@ export function CommunitySection() {
             userId: "mock9",
             author: "Rachel W.",
             content: "I totally get this. I try to spend 15 minutes outside every morning just to let my body adjust gradually to the new season's light.",
-            timestamp: new Date("2026-04-04T18:45:00"),
+            timestamp: new Date("2026-04-09T18:45:00"),
             likes: 8,
+            likedBy: []
+          },
+          {
+            id: "r-new-2-3",
+            postId: "new-2",
+            userId: "mock13",
+            author: "Leah G.",
+            content: "Layering helped me a lot this season. I also set a gentle morning routine and avoid caffeine on high-anxiety days.",
+            timestamp: new Date("2026-04-09T19:30:00"),
+            likes: 6,
+            likedBy: []
+          },
+          {
+            id: "r-new-2-4",
+            postId: "new-2",
+            userId: "mock14",
+            author: "Chris H.",
+            content: "Same here. I track weather shifts and schedule a shorter to-do list those days.",
+            timestamp: new Date("2026-04-09T20:00:00"),
+            likes: 5,
+            likedBy: []
+          },
+          {
+            id: "r-new-2-5",
+            postId: "new-2",
+            userId: "mock15",
+            author: "Priya N.",
+            content: "Light walks at lunch and consistent bedtime helped reduce that spring spike for me.",
+            timestamp: new Date("2026-04-09T20:40:00"),
+            likes: 4,
             likedBy: []
           }
         ]
@@ -539,10 +599,10 @@ export function CommunitySection() {
         title: "Journaling has completely changed my mindset",
         content: "I wanted to share a win. About a month ago, I started writing down three things I'm grateful for every night. It felt silly at first, but it's genuinely shifted how I view my days. Highly recommend giving it a try.",
         tags: ["Wellness", "Self-Care", "Recovery"],
-        replies: 1,
-        likes: 89,
+        replies: 4,
+        likes: 36,
         likedBy: [],
-        timestamp: new Date("2026-03-22T20:00:00"),
+        timestamp: new Date("2026-04-08T20:00:00"),
         responses: [
           {
             id: "r-new-3-1",
@@ -550,8 +610,38 @@ export function CommunitySection() {
             userId: "mock4",
             author: "Maya P.",
             content: "This is so inspiring! I've been trying to get into journaling. Thank you for sharing your positive experience.",
-            timestamp: new Date("2026-03-23T09:15:00"),
+            timestamp: new Date("2026-04-08T09:15:00"),
             likes: 21,
+            likedBy: []
+          },
+          {
+            id: "r-new-3-2",
+            postId: "new-3",
+            userId: "mock16",
+            author: "Ben O.",
+            content: "I started with one line a day. It felt manageable and eventually became part of my routine.",
+            timestamp: new Date("2026-04-08T11:35:00"),
+            likes: 11,
+            likedBy: []
+          },
+          {
+            id: "r-new-3-3",
+            postId: "new-3",
+            userId: "mock17",
+            author: "Tara M.",
+            content: "Prompts helped me a lot. I keep a small list for days when I do not know what to write.",
+            timestamp: new Date("2026-04-08T14:10:00"),
+            likes: 9,
+            likedBy: []
+          },
+          {
+            id: "r-new-3-4",
+            postId: "new-3",
+            userId: "mock21",
+            author: "Jules R.",
+            content: "Love this win. Tiny habits really add up.",
+            timestamp: new Date("2026-04-08T16:00:00"),
+            likes: 7,
             likedBy: []
           }
         ]
@@ -563,10 +653,10 @@ export function CommunitySection() {
         title: "Navigating relationship boundaries with a partner",
         content: "How do you explain your mental health boundaries to a partner who doesn't fully understand? I need alone time to recharge, but they take it personally. I love them but the guilt is exhausting.",
         tags: ["Relationships", "Support"],
-        replies: 2,
-        likes: 67,
+        replies: 4,
+        likes: 40,
         likedBy: [],
-        timestamp: new Date("2026-02-15T11:30:00"),
+        timestamp: new Date("2026-04-07T11:30:00"),
         responses: [
           {
             id: "r-new-4-1",
@@ -574,7 +664,7 @@ export function CommunitySection() {
             userId: "mock11",
             author: "Nina S.",
             content: "Communication is key. Try emphasizing that your need for space is about *your* well-being, not a reflection of how you feel about them.",
-            timestamp: new Date("2026-02-15T13:20:00"),
+            timestamp: new Date("2026-04-07T13:20:00"),
             likes: 31,
             likedBy: []
           },
@@ -584,8 +674,28 @@ export function CommunitySection() {
             userId: "mock12",
             author: "Tom B.",
             content: "I use the 'battery' analogy. I tell my partner my social battery is low and needs to charge. It makes it less personal and more about energy levels.",
-            timestamp: new Date("2026-02-15T15:05:00"),
+            timestamp: new Date("2026-04-07T15:05:00"),
             likes: 45,
+            likedBy: []
+          },
+          {
+            id: "r-new-4-3",
+            postId: "new-4",
+            userId: "mock22",
+            author: "Hannah V.",
+            content: "I scripted a short sentence I could repeat kindly. It reduced conflict a lot in my relationship.",
+            timestamp: new Date("2026-04-07T16:30:00"),
+            likes: 13,
+            likedBy: []
+          },
+          {
+            id: "r-new-4-4",
+            postId: "new-4",
+            userId: "mock23",
+            author: "Kyle D.",
+            content: "We now schedule recharge time in advance so it feels planned, not personal.",
+            timestamp: new Date("2026-04-07T17:20:00"),
+            likes: 10,
             likedBy: []
           }
         ]
@@ -597,10 +707,10 @@ export function CommunitySection() {
         title: "Finding motivation on the bad days",
         content: "Some days, getting out of bed feels like climbing a mountain. For anyone else struggling today, please remember that surviving is enough. Be kind to yourselves.",
         tags: ["Depression", "Support"],
-        replies: 1,
-        likes: 134,
+        replies: 5,
+        likes: 55,
         likedBy: [],
-        timestamp: new Date("2026-01-28T08:45:00"),
+        timestamp: new Date("2026-04-06T08:45:00"),
         responses: [
           {
             id: "r-new-5-1",
@@ -608,8 +718,48 @@ export function CommunitySection() {
             userId: "mock26",
             author: "Riley C.",
             content: "Needed to hear this today. Thank you. Sometimes just making a cup of tea is an achievement.",
-            timestamp: new Date("2026-01-28T10:10:00"),
+            timestamp: new Date("2026-04-06T10:10:00"),
             likes: 56,
+            likedBy: []
+          },
+          {
+            id: "r-new-5-2",
+            postId: "new-5",
+            userId: "mock24",
+            author: "Mina E.",
+            content: "Thank you for this reminder. I call these my low-energy days and lower expectations on purpose.",
+            timestamp: new Date("2026-04-06T11:05:00"),
+            likes: 22,
+            likedBy: []
+          },
+          {
+            id: "r-new-5-3",
+            postId: "new-5",
+            userId: "mock25",
+            author: "Ivan S.",
+            content: "My therapist suggested a two-item goal list. It helps me avoid feeling overwhelmed.",
+            timestamp: new Date("2026-04-06T12:40:00"),
+            likes: 19,
+            likedBy: []
+          },
+          {
+            id: "r-new-5-4",
+            postId: "new-5",
+            userId: "mock27",
+            author: "Zara W.",
+            content: "This thread helped me feel less alone today. Appreciate everyone sharing.",
+            timestamp: new Date("2026-04-06T14:10:00"),
+            likes: 12,
+            likedBy: []
+          },
+          {
+            id: "r-new-5-5",
+            postId: "new-5",
+            userId: "mock28",
+            author: "Noah B.",
+            content: "Surviving is absolutely enough. Thanks for posting this.",
+            timestamp: new Date("2026-04-06T15:35:00"),
+            likes: 9,
             likedBy: []
           }
         ]
@@ -622,7 +772,7 @@ export function CommunitySection() {
         content: "I've been struggling with workplace anxiety lately, especially during meetings and presentations. My heart races, I get sweaty palms, and sometimes I feel like I can't breathe. Does anyone have strategies that have worked for them?",
         tags: ["Anxiety", "Coping Strategies"],
         replies: 3,
-        likes: 24,
+        likes: 36,
         likedBy: [],
         timestamp: new Date("2026-01-09T10:30:00"),
         responses: [
@@ -666,7 +816,7 @@ export function CommunitySection() {
         content: "Today marks 30 days of consistent therapy sessions and I'm so proud of myself! For years I resisted getting help, but now I wish I'd started sooner.",
         tags: ["Support", "Recovery"],
         replies: 1,
-        likes: 156,
+        likes: 7,
         likedBy: [],
         timestamp: new Date("2026-01-05T09:15:00"),
         responses: [
@@ -690,7 +840,7 @@ export function CommunitySection() {
         content: "I'm trying to incorporate more mindfulness into my daily routine. Can anyone recommend good mindfulness apps or guided meditations?",
         tags: ["Wellness", "Self-Care"],
         replies: 1,
-        likes: 15,
+        likes: 8,
         likedBy: [],
         timestamp: new Date("2025-12-28T14:20:00"),
         responses: [
@@ -714,7 +864,7 @@ export function CommunitySection() {
         content: "My partner has been struggling with depression and I want to be supportive but I'm not always sure what to say or do. Sometimes they push me away. How can I help without being overbearing?",
         tags: ["Depression", "Relationships", "Support"],
         replies: 2,
-        likes: 87,
+        likes: 18,
         likedBy: [],
         timestamp: new Date("2025-12-20T11:00:00"),
         responses: [
@@ -748,7 +898,7 @@ export function CommunitySection() {
         content: "I finally made an appointment with a therapist after months of thinking about it. I'm excited but also really nervous. What happens in a first session? Any tips?",
         tags: ["Support", "Wellness"],
         replies: 2,
-        likes: 43,
+        likes: 20,
         likedBy: [],
         timestamp: new Date("2025-12-10T13:45:00"),
         responses: [
@@ -782,7 +932,7 @@ export function CommunitySection() {
         content: "As a guy, I grew up being told to 'man up' and not show emotions. It took me hitting rock bottom to finally ask for help. We need to normalize men talking about their mental health. Anyone else struggle with this?",
         tags: ["Support", "Wellness"],
         replies: 2,
-        likes: 234,
+        likes: 22,
         likedBy: [],
         timestamp: new Date("2025-11-25T08:30:00"),
         responses: [
@@ -816,7 +966,7 @@ export function CommunitySection() {
         content: "The holidays are coming up and I'm already dreading family gatherings. Large groups make me so anxious, plus everyone asks invasive questions about my life. How do you all handle this?",
         tags: ["Anxiety", "Coping Strategies", "Relationships"],
         replies: 1,
-        likes: 67,
+        likes: 12,
         likedBy: [],
         timestamp: new Date("2025-11-15T17:00:00"),
         responses: [
@@ -840,7 +990,7 @@ export function CommunitySection() {
         content: "My PTSD nightmares have been getting worse lately. I wake up several times a night and then I'm afraid to go back to sleep. I'm already in therapy but looking for additional coping strategies. What's worked for you?",
         tags: ["PTSD", "Coping Strategies"],
         replies: 1,
-        likes: 52,
+        likes: 7,
         likedBy: [],
         timestamp: new Date("2025-11-01T22:15:00"),
         responses: [
@@ -864,7 +1014,7 @@ export function CommunitySection() {
         content: "I had my baby 3 months ago and everyone expects me to be over the moon happy, but I feel empty and overwhelmed. I love my baby but I don't feel the joy I thought I would. Is this normal?",
         tags: ["Depression", "Support"],
         replies: 2,
-        likes: 145,
+        likes: 16,
         likedBy: [],
         timestamp: new Date("2025-10-20T15:30:00"),
         responses: [
@@ -898,7 +1048,7 @@ export function CommunitySection() {
         content: "Reminder for anyone struggling with OCD: intrusive thoughts are not your fault and they don't define you. They're symptoms of a treatable condition. You are not a bad person for having them.",
         tags: ["OCD", "Support"],
         replies: 1,
-        likes: 198,
+        likes: 9,
         likedBy: [],
         timestamp: new Date("2025-10-05T12:00:00"),
         responses: [
@@ -919,21 +1069,51 @@ export function CommunitySection() {
         userId: "mock27",
         author: "Samantha B.",
         title: "Grief doesn't have a timeline",
-        content: "It's been a year since I lost my mom and people keep saying I should be 'over it by now.' But grief isn't linear. Some days are okay, others I can barely function. Anyone else experience this?",
+        content: "It has been a year since my mom passed, and I still have random days where it hits like day one. Some friends mean well but keep saying I should be \"moving on\" by now. Anyone else feel like grief comes in waves no matter how much time passes?",
         tags: ["Support", "Coping Strategies"],
-        replies: 1,
-        likes: 267,
+        replies: 4,
+        likes: 40,
         likedBy: [],
-        timestamp: new Date("2025-09-18T16:45:00"),
+        timestamp: new Date("2026-04-09T16:45:00"),
         responses: [
           {
             id: "r11-1",
             postId: "11",
             userId: "mock28",
             author: "Patricia W.",
-            content: "There's no 'right' way to grieve. Anyone who tells you there's a timeline doesn't understand grief. Take all the time you need. Sending love.",
-            timestamp: new Date("2025-09-18T19:00:00"),
+            content: "Yes. Absolutely. I still get blindsided by little things too. There is no expiration date on missing someone.",
+            timestamp: new Date("2026-04-09T19:00:00"),
             likes: 89,
+            likedBy: []
+          },
+          {
+            id: "r11-2",
+            postId: "11",
+            userId: "mock62",
+            author: "Jenna R.",
+            content: "Same here. Anniversaries are hard, but honestly random Tuesdays can be harder. You're not doing grief wrong.",
+            timestamp: new Date("2026-04-09T20:20:00"),
+            likes: 41,
+            likedBy: []
+          },
+          {
+            id: "r11-3",
+            postId: "11",
+            userId: "mock63",
+            author: "Luis M.",
+            content: "One thing that helped me was making a small ritual on hard days. It gives the grief somewhere to go.",
+            timestamp: new Date("2026-04-09T21:05:00"),
+            likes: 33,
+            likedBy: []
+          },
+          {
+            id: "r11-4",
+            postId: "11",
+            userId: "mock64",
+            author: "Holly T.",
+            content: "Thanks for posting this. I needed this thread tonight.",
+            timestamp: new Date("2026-04-09T22:10:00"),
+            likes: 18,
             likedBy: []
           }
         ]
@@ -946,7 +1126,7 @@ export function CommunitySection() {
         content: "Just got diagnosed with bipolar II after years of thinking I was just moody. I'm relieved to have answers but also scared about what this means. Where do I even start?",
         tags: ["Bipolar", "Support"],
         replies: 1,
-        likes: 89,
+        likes: 11,
         likedBy: [],
         timestamp: new Date("2025-09-01T10:20:00"),
         responses: [
@@ -967,21 +1147,51 @@ export function CommunitySection() {
         userId: "mock31",
         author: "Megan S.",
         title: "Recovery from eating disorder - celebrating 1 year",
-        content: "One year ago today I started treatment for my eating disorder. It's been the hardest thing I've ever done, but I'm finally learning to have a healthy relationship with food and my body. To anyone struggling: recovery is possible.",
+        content: "Hit one year in recovery today. Not every day has been easy, but I can honestly say my relationship with food and my body feels way safer than it used to. If you're in the messy middle, keep going. Small steps really do add up.",
         tags: ["Eating Disorders", "Recovery", "Support"],
-        replies: 1,
-        likes: 312,
+        replies: 4,
+        likes: 48,
         likedBy: [],
-        timestamp: new Date("2025-08-20T14:00:00"),
+        timestamp: new Date("2026-04-08T14:00:00"),
         responses: [
           {
             id: "r13-1",
             postId: "13",
             userId: "mock32",
             author: "Ashley D.",
-            content: "This gives me so much hope. I'm 3 months into treatment and some days I want to give up. Thank you for sharing that it gets better.",
-            timestamp: new Date("2025-08-20T16:30:00"),
+            content: "This gives me so much hope. I'm a few months into treatment and some days feel impossible.",
+            timestamp: new Date("2026-04-08T16:30:00"),
             likes: 67,
+            likedBy: []
+          },
+          {
+            id: "r13-2",
+            postId: "13",
+            userId: "mock65",
+            author: "Rina C.",
+            content: "Proud of you. Thank you for being honest about it not being perfect and still being worth it.",
+            timestamp: new Date("2026-04-08T17:10:00"),
+            likes: 36,
+            likedBy: []
+          },
+          {
+            id: "r13-3",
+            postId: "13",
+            userId: "mock66",
+            author: "Dev K.",
+            content: "Needed this today. I'm at 6 weeks and trying to trust the process.",
+            timestamp: new Date("2026-04-08T18:25:00"),
+            likes: 29,
+            likedBy: []
+          },
+          {
+            id: "r13-4",
+            postId: "13",
+            userId: "mock67",
+            author: "Mila J.",
+            content: "Congrats on 1 year. That's huge.",
+            timestamp: new Date("2026-04-08T19:40:00"),
+            likes: 21,
             likedBy: []
           }
         ]
@@ -991,21 +1201,61 @@ export function CommunitySection() {
         userId: "mock33",
         author: "Ryan P.",
         title: "Medication stigma needs to end",
-        content: "I'm tired of people saying I'm 'taking the easy way out' by being on antidepressants. You wouldn't shame a diabetic for taking insulin. Mental illness is a medical condition. Medication is healthcare, not weakness.",
+        content: "Can we retire the idea that taking antidepressants is \"the easy way out\"? My meds help me function and show up for my life. No one shames people for taking medication for other health conditions. Mental health treatment should be treated the same way.",
         tags: ["Support", "Wellness"],
-        replies: 1,
-        likes: 421,
+        replies: 5,
+        likes: 35,
         likedBy: [],
-        timestamp: new Date("2025-07-15T09:30:00"),
+        timestamp: new Date("2026-04-10T09:30:00"),
         responses: [
           {
             id: "r14-1",
             postId: "14",
             userId: "mock34",
             author: "Nicole K.",
-            content: "THANK YOU. My medication literally saved my life. People who've never experienced severe mental illness don't understand that sometimes medication isn't optional - it's survival.",
-            timestamp: new Date("2025-07-15T11:45:00"),
+            content: "Thank you for saying this. Medication helped me get stable enough to use therapy skills.",
+            timestamp: new Date("2026-04-10T11:45:00"),
             likes: 134,
+            likedBy: []
+          },
+          {
+            id: "r14-2",
+            postId: "14",
+            userId: "mock68",
+            author: "Aiden F.",
+            content: "Same. It wasn't magic, but it gave me a floor so I could start rebuilding.",
+            timestamp: new Date("2026-04-10T12:30:00"),
+            likes: 58,
+            likedBy: []
+          },
+          {
+            id: "r14-3",
+            postId: "14",
+            userId: "mock69",
+            author: "Kara N.",
+            content: "People forget treatment can be meds + therapy + routines. It's all healthcare.",
+            timestamp: new Date("2026-04-10T13:15:00"),
+            likes: 44,
+            likedBy: []
+          },
+          {
+            id: "r14-4",
+            postId: "14",
+            userId: "mock70",
+            author: "Eli P.",
+            content: "I used to hide that I was on meds. Threads like this make it easier to be open.",
+            timestamp: new Date("2026-04-10T14:05:00"),
+            likes: 27,
+            likedBy: []
+          },
+          {
+            id: "r14-5",
+            postId: "14",
+            userId: "mock71",
+            author: "Sophie L.",
+            content: "Co-signing this 100%. You're taking care of your health, period.",
+            timestamp: new Date("2026-04-10T14:55:00"),
+            likes: 23,
             likedBy: []
           }
         ]
@@ -1018,7 +1268,7 @@ export function CommunitySection() {
         content: "I keep hearing about mindfulness and meditation but I have no idea where to start. My mind races constantly. Any beginner-friendly tips or resources?",
         tags: ["Wellness", "Self-Care"],
         replies: 1,
-        likes: 34,
+        likes: 8,
         likedBy: [],
         timestamp: new Date("2025-06-10T18:00:00"),
         responses: [
@@ -1759,8 +2009,15 @@ export function CommunitySection() {
 
                     {/* Featured/Most Interacted Posts */}
                     {forumPosts.length > 0 && (() => {
+                      const nowMs = Date.now();
+                      const getFeaturedScore = (post: ForumPost) => {
+                        const ageInDays = (nowMs - post.timestamp.getTime()) / (1000 * 60 * 60 * 24);
+                        const recencyBoost = Math.max(0, 30 - ageInDays) * 1.5;
+                        return post.likes + post.replies * 2 + recencyBoost;
+                      };
+
                       const featuredPosts = [...forumPosts]
-                        .sort((a, b) => (b.likes + b.replies * 2) - (a.likes + a.replies * 2))
+                        .sort((a, b) => getFeaturedScore(b) - getFeaturedScore(a))
                         .slice(0, 3);
 
                       return featuredPosts.length > 0 && (
