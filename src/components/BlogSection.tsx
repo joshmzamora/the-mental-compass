@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Calendar, User, Clock, BookOpen, Compass, X, Filter, CheckCircle2 } from "lucide-react";
 import { blogPosts, BlogPost } from "../data/blog-posts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -24,6 +24,8 @@ export function BlogSection() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [topicFilter, setTopicFilter] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(blogPosts);
+  const [isArticleHeaderCollapsed, setIsArticleHeaderCollapsed] = useState(false);
+  const articleScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Check for topic filter in URL params
@@ -52,6 +54,14 @@ export function BlogSection() {
 
     setFilteredPosts(filtered);
   }, [topicFilter]);
+
+  useEffect(() => {
+    setIsArticleHeaderCollapsed(false);
+
+    if (articleScrollRef.current) {
+      articleScrollRef.current.scrollTop = 0;
+    }
+  }, [selectedPost]);
 
   return (
     <section id="blog" className="py-20 bg-white relative overflow-hidden">
@@ -164,39 +174,117 @@ export function BlogSection() {
       </div>
 
       {/* Blog Post Dialog */}
-      <Dialog open={!!selectedPost} onOpenChange={(open) => !open && setSelectedPost(null)}>
-        <DialogContent className="!max-w-none !w-screen !h-screen !top-0 !left-0 !translate-x-0 !translate-y-0 !rounded-none overflow-y-auto p-0 flex flex-col [&>button]:!top-4 [&>button]:!right-4 [&>button]:!z-50 [&>button]:!bg-white/90 [&>button]:!w-10 [&>button]:!h-10 [&>button]:!rounded-full [&>button]:hover:!bg-white [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-md">
+      <Dialog
+        open={!!selectedPost}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPost(null);
+            setIsArticleHeaderCollapsed(false);
+          }
+        }}
+      >
+        <DialogContent className="!max-w-none !w-screen !h-screen !top-0 !left-0 !translate-x-0 !translate-y-0 !rounded-none overflow-hidden p-0 flex flex-col [&>button]:!top-4 [&>button]:!right-4 [&>button]:!z-50 [&>button]:!bg-white/90 [&>button]:!w-10 [&>button]:!h-10 [&>button]:!rounded-full [&>button]:hover:!bg-white [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-md">
           {selectedPost && (
             <>
-              {/* Sticky Header with Hero Image */}
-              <DialogHeader className="sticky top-0 z-10 bg-black border-b flex-shrink-0 p-0 space-y-0">
-                <div className="relative min-h-[300px] md:min-h-[400px] lg:min-h-[500px] overflow-hidden w-full flex items-end bg-black">
-                  <ImageWithFallback
-                    src={selectedPost.imageUrl}
-                    alt={selectedPost.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  {/* Dark overlay for readability */}
-                  <div className="absolute inset-0 bg-black/50"></div>
+              <div
+                ref={articleScrollRef}
+                onScroll={(event) => {
+                  const scrollTop = event.currentTarget.scrollTop;
 
-                  {/* Gradient for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
-                  <div className="relative z-10 w-full p-6 sm:p-8 md:p-12 pb-8">
-                    <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-4">
-                      {selectedPost.category}
-                    </Badge>
-                    <DialogTitle className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight max-w-5xl [text-shadow:0_2px_8px_rgba(0,0,0,0.8)]">
-                      {selectedPost.title}
-                    </DialogTitle>
-                    <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl lg:text-2xl mt-4 max-w-4xl font-medium leading-relaxed">
-                      {selectedPost.excerpt}
-                    </DialogDescription>
+                  setIsArticleHeaderCollapsed((current) => {
+                    if (scrollTop <= 0) {
+                      return false;
+                    }
+
+                    if (scrollTop > 8) {
+                      return true;
+                    }
+
+                    return current;
+                  });
+                }}
+                className="flex-1 overflow-y-auto bg-white"
+              >
+                {/* Sticky Header with Hero Image */}
+                <DialogHeader
+                  className="sticky top-0 z-20 flex-shrink-0 overflow-hidden border-b border-white/10 bg-black p-0 space-y-0"
+                >
+                  <div
+                    className={`relative w-full overflow-hidden transition-[min-height,height] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                      isArticleHeaderCollapsed
+                        ? "h-16 min-h-16"
+                        : "min-h-[300px] md:min-h-[400px] lg:min-h-[500px]"
+                    }`}
+                  >
+                    <div
+                      className={`absolute inset-0 transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
+                        isArticleHeaderCollapsed
+                          ? "scale-108 opacity-100 blur-xl"
+                          : "scale-100 opacity-100 blur-0"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      <ImageWithFallback
+                        src={selectedPost.imageUrl}
+                        alt={selectedPost.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div
+                        className={`absolute inset-0 transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isArticleHeaderCollapsed ? "bg-black/70" : "bg-black/50"
+                        }`}
+                      ></div>
+                      <div
+                        className={`absolute inset-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isArticleHeaderCollapsed
+                            ? "opacity-0"
+                            : "opacity-100 bg-gradient-to-t from-black via-black/60 to-transparent"
+                        }`}
+                      ></div>
+                      <div
+                        className={`absolute inset-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isArticleHeaderCollapsed
+                            ? "opacity-100 bg-gradient-to-r from-black/80 via-black/55 to-black/80"
+                            : "opacity-0"
+                        }`}
+                      ></div>
+                    </div>
+
+                    <div
+                      className={`relative z-10 flex h-full w-full items-end transition-[opacity,transform] duration-560 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        isArticleHeaderCollapsed
+                          ? "translate-y-6 opacity-0"
+                          : "translate-y-0 opacity-100"
+                      }`}
+                      aria-hidden={isArticleHeaderCollapsed}
+                    >
+                      <div className="w-full p-6 sm:p-8 md:p-12 pb-8">
+                        <Badge className="bg-teal-500/90 hover:bg-teal-500 text-white border-none mb-4">
+                          {selectedPost.category}
+                        </Badge>
+                        <DialogTitle className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight max-w-5xl [text-shadow:0_2px_8px_rgba(0,0,0,0.8)]">
+                          {selectedPost.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-teal-50 text-base sm:text-lg md:text-xl lg:text-2xl mt-4 max-w-4xl font-medium leading-relaxed">
+                          {selectedPost.excerpt}
+                        </DialogDescription>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`absolute inset-0 z-20 flex items-center justify-center px-16 sm:px-24 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        isArticleHeaderCollapsed
+                          ? "translate-y-0 opacity-100"
+                          : "pointer-events-none translate-y-2 opacity-0"
+                      }`}
+                    >
+                      <DialogTitle className="w-full text-center text-base font-semibold leading-tight text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.45)] sm:text-lg md:text-xl line-clamp-2">
+                        {selectedPost.title}
+                      </DialogTitle>
+                    </div>
                   </div>
-                </div>
-              </DialogHeader>
+                </DialogHeader>
 
-              {/* Scrollable Content Area */}
-              <div className="flex-1 overflow-y-auto bg-white">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12">
 
                   {/* Metadata Row */}
