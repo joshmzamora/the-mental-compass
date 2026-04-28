@@ -7,22 +7,22 @@ import { PageTransition } from "../components/PageTransition";
 export function SignUp() {
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative">
-                <Compass className="h-16 w-16 text-teal-600 animate-spin-slow" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-2 w-2 bg-teal-600 rounded-full"></div>
-                </div>
-              </div>
+      <div className="auth-shell">
+        <div className="auth-orb auth-orb-one" />
+        <div className="auth-orb auth-orb-two" />
+
+        <section className="auth-card-wrap">
+          <div className="auth-intro">
+            <div className="auth-mark" aria-hidden="true">
+              <Compass className="auth-mark-icon" />
+              <span className="auth-mark-dot" />
             </div>
-            <h1 className="text-3xl font-medium text-gray-900 mb-2">Begin Your Journey</h1>
-            <p className="text-gray-600">Create an account to access personalized support</p>
+            <p className="auth-kicker">Set your direction</p>
+            <h1>Begin your journey</h1>
+            <p>Create your account and tailor the app around the kind of support you need.</p>
           </div>
 
-          <div className="flex justify-center">
+          <div className="auth-clerk-panel">
             <ClerkFailed>
               <ClerkAuthError />
             </ClerkFailed>
@@ -36,12 +36,12 @@ export function SignUp() {
             />
           </div>
 
-          <div className="mt-6 text-center">
-            <Link to="/" className="text-sm text-gray-600 hover:text-teal-600">
+          <div className="auth-back-link">
+            <Link to="/">
               Back to Home
             </Link>
           </div>
-        </div>
+        </section>
       </div>
     </PageTransition>
   );

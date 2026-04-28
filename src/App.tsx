@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { AIChatSection } from "./components/AIChatSection";
@@ -27,44 +27,53 @@ import { Contact } from "./pages/Contact";
 import { Accessibility } from "./pages/Accessibility";
 import { Team } from "./pages/Team";
 
+function AppContent() {
+  const location = useLocation();
+  const isAuthRoute = location.pathname === "/login" || location.pathname === "/signup";
+
+  return (
+    <AuthProvider>
+      <UserProfileProvider>
+        <ScrollToTop />
+        <div className="min-h-screen bg-white">
+          {!isAuthRoute && <Header />}
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/disorders" element={<Disorders />} />
+              <Route path="/helplines" element={<Helplines />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/community-guidelines" element={<CommunityGuidelines />} />
+              <Route path="/user/:userId" element={<UserProfile />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/journeys" element={<GuidedJourneys />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          {!isAuthRoute && <Footer />}
+          {!isAuthRoute && <AIChatSection />}
+          <Toaster />
+        </div>
+      </UserProfileProvider>
+    </AuthProvider>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <UserProfileProvider>
-          <ScrollToTop />
-          <div className="min-h-screen bg-white">
-            <Header />
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/disorders" element={<Disorders />} />
-                <Route path="/helplines" element={<Helplines />} />
-                <Route path="/appointments" element={<Appointments />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/community-guidelines" element={<CommunityGuidelines />} />
-                <Route path="/user/:userId" element={<UserProfile />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms-of-service" element={<TermsOfService />} />
-                <Route path="/accessibility" element={<Accessibility />} />
-                <Route path="/team" element={<Team />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/journeys" element={<GuidedJourneys />} />
-                <Route path="/testimonials" element={<Testimonials />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <Footer />
-            <AIChatSection />
-            <Toaster />
-          </div>
-        </UserProfileProvider>
-      </AuthProvider>
+      <AppContent />
     </BrowserRouter>
   );
 }
