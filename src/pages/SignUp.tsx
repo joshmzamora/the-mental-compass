@@ -1,15 +1,21 @@
 import { Link } from "react-router-dom";
-import { ClerkFailed, SignUp as ClerkSignUp } from "@clerk/react";
-import { Compass } from "lucide-react";
-import { ClerkAuthError, ClerkAuthFallback } from "../components/ClerkAuthFallback";
+import { SignUp as ClerkSignUp } from "@clerk/react";
+import { Compass, X } from "lucide-react";
+import { ClerkAuthFallback } from "../components/ClerkAuthFallback";
 import { PageTransition } from "../components/PageTransition";
 
 export function SignUp() {
   return (
     <PageTransition>
-      <div className="auth-shell">
+      <div className="auth-shell auth-shell-signup">
         <div className="auth-orb auth-orb-one" />
         <div className="auth-orb auth-orb-two" />
+        <div className="auth-compass-rose" aria-hidden="true" />
+        <div className="auth-route auth-route-one" aria-hidden="true" />
+        <div className="auth-route auth-route-two" aria-hidden="true" />
+        <Link aria-label="Close sign up and return home" className="auth-close" to="/">
+          <X aria-hidden="true" />
+        </Link>
 
         <section className="auth-card-wrap">
           <div className="auth-intro">
@@ -23,9 +29,6 @@ export function SignUp() {
           </div>
 
           <div className="auth-clerk-panel">
-            <ClerkFailed>
-              <ClerkAuthError mode="signup" />
-            </ClerkFailed>
             <ClerkSignUp
               routing="path"
               path="/signup"
