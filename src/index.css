@@ -6898,6 +6898,94 @@ h3 {
   border-color: rgba(220, 38, 38, 0.2);
 }
 
+.local-auth-form {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 29.5rem;
+  padding: 2.25rem;
+  border: 1px solid rgba(15, 159, 150, 0.16);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 30px 80px rgba(15, 56, 74, 0.16);
+  text-align: left;
+}
+
+.local-auth-heading {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.55rem;
+  text-align: center;
+}
+
+.local-auth-heading strong {
+  color: #102033;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.local-auth-form label {
+  display: grid;
+  gap: 0.4rem;
+  color: #23364a;
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.local-auth-form input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(15, 159, 150, 0.2);
+  border-radius: 14px;
+  background: #f8fbfc;
+  color: #102033;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.local-auth-form input:focus {
+  border-color: rgba(15, 159, 150, 0.55);
+  box-shadow: 0 0 0 4px rgba(15, 159, 150, 0.1);
+}
+
+.local-auth-form > button[type="submit"] {
+  min-height: 2.8rem;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f9f96 0%, #1688b5 100%);
+  box-shadow: 0 18px 34px rgba(15, 159, 150, 0.22);
+  color: white;
+  cursor: pointer;
+  font-size: 0.94rem;
+  font-weight: 800;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.local-auth-form > button[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 40px rgba(15, 159, 150, 0.28);
+}
+
+.local-auth-disclaimer {
+  margin: 0.35rem 0 0;
+  color: #60758b;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.local-auth-link {
+  border: 0;
+  background: transparent;
+  color: #0f8f88;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0;
+}
+
 @media (max-width: 640px) {
   .auth-shell {
     align-items: start;

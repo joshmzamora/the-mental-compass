@@ -1,5 +1,8 @@
-import { createContext, ReactNode, useContext, useMemo } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { useClerk, useUser } from "@clerk/react";
+
+const BACKUP_AUTH_USER_KEY = "mental_compass_backup_user";
+const BACKUP_AUTH_EVENT = "mental-compass-backup-auth";
 
 interface User {
   id: string;
@@ -28,10 +31,34 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const clerk = useClerk();
   const { isLoaded, isSignedIn, user: clerkUser } = useUser();
+  const [backupUser, setBackupUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const readBackupUser = () => {
+      try {
+        const savedUser = localStorage.getItem(BACKUP_AUTH_USER_KEY);
+        setBackupUser(savedUser ? JSON.parse(savedUser) : null);
+      } catch {
+        localStorage.removeItem(BACKUP_AUTH_USER_KEY);
+        setBackupUser(null);
+      }
+    };
+
+    readBackupUser();
+    window.addEventListener(BACKUP_AUTH_EVENT, readBackupUser);
+
+    return () => {
+      window.removeEventListener(BACKUP_AUTH_EVENT, readBackupUser);
+    };
+  }, []);
 
   const user = useMemo<User | null>(() => {
-    if (!isLoaded || !isSignedIn || !clerkUser) {
-      return null;
+    if (!isLoaded) {
+      return backupUser;
+    }
+
+    if (!isSignedIn || !clerkUser) {
+      return backupUser;
     }
 
     const email =
@@ -48,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email.split("@")[0] ||
         "User",
     };
-  }, [clerkUser, isLoaded, isSignedIn]);
+  }, [backupUser, clerkUser, isLoaded, isSignedIn]);
 
   const login: AuthContextType["login"] = async () => {
     await clerk.redirectToSignIn({
@@ -64,6 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem(BACKUP_AUTH_USER_KEY);
+    window.dispatchEvent(new Event(BACKUP_AUTH_EVENT));
     await clerk.signOut({ redirectUrl: "/" });
   };
 
@@ -71,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        loading: !isLoaded,
+        loading: !isLoaded && !backupUser,
         signup,
         login,
         logout,

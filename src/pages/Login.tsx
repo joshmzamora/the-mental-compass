@@ -24,7 +24,7 @@ export function Login() {
 
           <div className="auth-clerk-panel">
             <ClerkFailed>
-              <ClerkAuthError />
+              <ClerkAuthError mode="login" />
             </ClerkFailed>
             <SignIn
               routing="path"
@@ -32,7 +32,7 @@ export function Login() {
               fallbackRedirectUrl="/dashboard"
               signUpUrl="/signup"
               signUpFallbackRedirectUrl="/onboarding"
-              fallback={<ClerkAuthFallback message="Loading sign in..." />}
+              fallback={<ClerkAuthFallback message="Loading sign in..." mode="login" />}
             />
           </div>
 
