@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Compass, Navigation, User } from "lucide-react";
 import { Show, UserButton, useUser } from "@clerk/react";
@@ -57,8 +57,21 @@ function MemberActions({
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeIndicator, setActiveIndicator] = useState({ left: 0, width: 0, visible: false });
   const location = useLocation();
   const { isLoaded } = useUser();
+  const desktopNavRef = useRef<HTMLElement | null>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/disorders", label: "Mental Health Info" },
+    { path: "/helplines", label: "Get Help" },
+    { path: "/appointments", label: "Book Appointment" },
+    { path: "/community", label: "Community" },
+    { path: "/blog", label: "Blog" },
+    { path: "/testimonials", label: "Stories" },
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -69,6 +82,67 @@ export function Header() {
         : "text-gray-700 hover:text-teal-600"
     }`;
   };
+
+  useLayoutEffect(() => {
+    const navElement = desktopNavRef.current;
+    const activeLink = linkRefs.current[location.pathname];
+
+    if (!navElement || !activeLink) {
+      setActiveIndicator((current) =>
+        current.visible ? { ...current, visible: false } : current,
+      );
+      return;
+    }
+
+    const navBounds = navElement.getBoundingClientRect();
+    const linkBounds = activeLink.getBoundingClientRect();
+
+    setActiveIndicator({
+      left: linkBounds.left - navBounds.left,
+      width: linkBounds.width,
+      visible: true,
+    });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const navElement = desktopNavRef.current;
+
+    if (!navElement || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const syncIndicator = () => {
+      const activeLink = linkRefs.current[location.pathname];
+
+      if (!activeLink) {
+        return;
+      }
+
+      const navBounds = navElement.getBoundingClientRect();
+      const linkBounds = activeLink.getBoundingClientRect();
+
+      setActiveIndicator({
+        left: linkBounds.left - navBounds.left,
+        width: linkBounds.width,
+        visible: true,
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(syncIndicator);
+    resizeObserver.observe(navElement);
+
+    const activeLink = linkRefs.current[location.pathname];
+    if (activeLink) {
+      resizeObserver.observe(activeLink);
+    }
+
+    window.addEventListener("resize", syncIndicator);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", syncIndicator);
+    };
+  }, [location.pathname]);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -103,70 +177,29 @@ export function Header() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 flex-shrink-0">
-            <Link to="/" className={navLinkClass("/")}>
-              Home
-              {isActive("/") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/disorders" className={navLinkClass("/disorders")}>
-              Mental Health Info
-              {isActive("/disorders") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/helplines" className={navLinkClass("/helplines")}>
-              Get Help
-              {isActive("/helplines") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/appointments" className={navLinkClass("/appointments")}>
-              Book Appointment
-              {isActive("/appointments") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/community" className={navLinkClass("/community")}>
-              Community
-              {isActive("/community") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/blog" className={navLinkClass("/blog")}>
-              Blog
-              {isActive("/blog") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
-            <Link to="/testimonials" className={navLinkClass("/testimonials")}>
-              Stories
-              {isActive("/testimonials") && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-600"
-                />
-              )}
-            </Link>
+          <nav ref={desktopNavRef} className="hidden md:flex items-center gap-6 flex-shrink-0 relative">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                ref={(node) => {
+                  linkRefs.current[item.path] = node;
+                }}
+                className={navLinkClass(item.path)}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            {activeIndicator.visible && (
+              <motion.div
+                aria-hidden="true"
+                className="absolute bottom-0 h-0.5 rounded-full bg-teal-600"
+                animate={{ x: activeIndicator.left, width: activeIndicator.width, opacity: 1 }}
+                initial={false}
+                transition={{ type: "spring", stiffness: 420, damping: 34 }}
+              />
+            )}
 
             {!isLoaded ? (
               <GuestActions />
