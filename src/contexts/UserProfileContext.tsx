@@ -140,6 +140,10 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       }
 
       const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        initializeDefaultProfile();
+        return;
+      }
 
       try {
         const response = await fetch(
@@ -199,6 +203,10 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     // Try to sync with backend
     try {
       const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        return;
+      }
+
       await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/user/profile`,
         {

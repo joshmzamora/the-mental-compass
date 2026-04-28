@@ -784,6 +784,10 @@ export function CommunitySection() {
   const loadForumPosts = async () => {
     try {
       const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        loadMockPosts();
+        return;
+      }
 
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/community-posts`,
@@ -2743,17 +2747,19 @@ export function CommunitySection() {
     try {
       // Save to backend
       const accessToken = localStorage.getItem("access_token");
-      await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/community-posts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken || ""}`,
-          },
-          body: JSON.stringify(newPost),
-        }
-      );
+      if (accessToken) {
+        await fetch(
+          `https://${projectId}.supabase.co/functions/v1/server/community-posts`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(newPost),
+          }
+        );
+      }
     } catch (error) {
       // Silently handle error - post will be saved locally
     }
@@ -2796,17 +2802,19 @@ export function CommunitySection() {
       try {
         // Save to backend
         const accessToken = localStorage.getItem("access_token");
-        await fetch(
-          `https://${projectId}.supabase.co/functions/v1/server/community-posts/${selectedPost.id}/responses`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken || ""}`,
-            },
-            body: JSON.stringify(response),
-          }
-        );
+        if (accessToken) {
+          await fetch(
+            `https://${projectId}.supabase.co/functions/v1/server/community-posts/${selectedPost.id}/responses`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+              body: JSON.stringify(response),
+            }
+          );
+        }
       } catch (error) {
         // Silently handle error - response will be saved locally
       }
@@ -2867,17 +2875,19 @@ export function CommunitySection() {
     // Save to backend
     try {
       const accessToken = localStorage.getItem("access_token");
-      await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/community-posts/${postId}/like`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken || ""}`,
-          },
-          body: JSON.stringify({ userId: user.id }),
-        }
-      );
+      if (accessToken) {
+        await fetch(
+          `https://${projectId}.supabase.co/functions/v1/server/community-posts/${postId}/like`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ userId: user.id }),
+          }
+        );
+      }
     } catch (error) {
       // Silently handle error - like will be updated locally
     }

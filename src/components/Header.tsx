@@ -1,18 +1,66 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Compass, Navigation, User } from "lucide-react";
-import { Button } from "./ui/button";
+import { Show, UserButton, useUser } from "@clerk/react";
 import { motion } from "motion/react";
-import { useAuth } from "../contexts/AuthContext";
+import { Button } from "./ui/button";
+
+function GuestActions({
+  mobile = false,
+  onNavigate,
+}: {
+  mobile?: boolean;
+  onNavigate?: () => void;
+}) {
+  return (
+    <div className={mobile ? "flex flex-col gap-2" : "flex items-center gap-2"}>
+      <Button asChild variant="outline" className={mobile ? "w-full" : undefined}>
+        <Link to="/login" onClick={onNavigate}>
+          Log In
+        </Link>
+      </Button>
+      <Button
+        asChild
+        className={`bg-teal-600 hover:bg-teal-700 ${mobile ? "w-full" : ""}`}
+      >
+        <Link to="/signup" onClick={onNavigate}>
+          Sign Up
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function MemberActions({
+  mobile = false,
+  onNavigate,
+}: {
+  mobile?: boolean;
+  onNavigate?: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <Button
+        asChild
+        variant="outline"
+        className={`border-teal-600 text-teal-600 hover:bg-teal-50 ${mobile ? "flex-1" : ""}`}
+      >
+        <Link to="/dashboard" onClick={onNavigate}>
+          <User className="mr-2 h-4 w-4" />
+          Dashboard
+        </Link>
+      </Button>
+      <UserButton />
+    </div>
+  );
+}
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
+  const { isLoaded } = useUser();
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
+  const isActive = (path: string) => location.pathname === path;
 
   const navLinkClass = (path: string) => {
     return `text-sm transition-colors relative group ${
@@ -22,9 +70,10 @@ export function Header() {
     }`;
   };
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 relative">
-      {/* Decorative compass elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -right-20 opacity-5">
           <Compass className="h-40 w-40 text-teal-600" />
@@ -54,7 +103,6 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6 flex-shrink-0">
             <Link to="/" className={navLinkClass("/")}>
               Home
@@ -119,31 +167,21 @@ export function Header() {
                 />
               )}
             </Link>
-            
-            {user ? (
-              <Button asChild variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50">
-                <Link to="/dashboard">
-                  <User className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Link>
-              </Button>
+
+            {!isLoaded ? (
+              <GuestActions />
             ) : (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="outline">
-                  <Link to="/login">
-                    Log In
-                  </Link>
-                </Button>
-                <Button asChild className="bg-teal-600 hover:bg-teal-700">
-                  <Link to="/signup">
-                    Sign Up
-                  </Link>
-                </Button>
-              </div>
+              <>
+                <Show when="signed-in">
+                  <MemberActions />
+                </Show>
+                <Show when="signed-out">
+                  <GuestActions />
+                </Show>
+              </>
             )}
           </nav>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -156,7 +194,6 @@ export function Header() {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <motion.nav
             initial={{ opacity: 0, y: -10 }}
@@ -165,76 +202,39 @@ export function Header() {
             className="md:hidden py-4 border-t"
           >
             <div className="flex flex-col gap-4">
-              <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/") + " text-left"}
-              >
+              <Link to="/" onClick={closeMobileMenu} className={navLinkClass("/") + " text-left"}>
                 Home
               </Link>
-              <Link
-                to="/disorders"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/disorders") + " text-left"}
-              >
+              <Link to="/disorders" onClick={closeMobileMenu} className={navLinkClass("/disorders") + " text-left"}>
                 Mental Health Info
               </Link>
-              <Link
-                to="/helplines"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/helplines") + " text-left"}
-              >
+              <Link to="/helplines" onClick={closeMobileMenu} className={navLinkClass("/helplines") + " text-left"}>
                 Get Help
               </Link>
-              <Link
-                to="/appointments"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/appointments") + " text-left"}
-              >
+              <Link to="/appointments" onClick={closeMobileMenu} className={navLinkClass("/appointments") + " text-left"}>
                 Book Appointment
               </Link>
-              <Link
-                to="/community"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/community") + " text-left"}
-              >
+              <Link to="/community" onClick={closeMobileMenu} className={navLinkClass("/community") + " text-left"}>
                 Community
               </Link>
-              <Link
-                to="/blog"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/blog") + " text-left"}
-              >
+              <Link to="/blog" onClick={closeMobileMenu} className={navLinkClass("/blog") + " text-left"}>
                 Blog
               </Link>
-              <Link
-                to="/testimonials"
-                onClick={() => setMobileMenuOpen(false)}
-                className={navLinkClass("/testimonials") + " text-left"}
-              >
+              <Link to="/testimonials" onClick={closeMobileMenu} className={navLinkClass("/testimonials") + " text-left"}>
                 Stories
               </Link>
-              
-              {user ? (
-                <Button asChild variant="outline" className="border-teal-600 text-teal-600 w-full">
-                  <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <User className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </Button>
+
+              {!isLoaded ? (
+                <GuestActions mobile onNavigate={closeMobileMenu} />
               ) : (
-                <div className="flex flex-col gap-2">
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                      Log In
-                    </Link>
-                  </Button>
-                  <Button asChild className="bg-teal-600 hover:bg-teal-700 w-full">
-                    <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-                      Sign Up
-                    </Link>
-                  </Button>
-                </div>
+                <>
+                  <Show when="signed-in">
+                    <MemberActions mobile onNavigate={closeMobileMenu} />
+                  </Show>
+                  <Show when="signed-out">
+                    <GuestActions mobile onNavigate={closeMobileMenu} />
+                  </Show>
+                </>
               )}
             </div>
           </motion.nav>

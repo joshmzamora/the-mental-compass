@@ -201,24 +201,26 @@ export function Onboarding() {
       const accessToken = localStorage.getItem("access_token");
 
       // Try to sync with backend
-      try {
-        await fetch(
-          `https://${projectId}.supabase.co/functions/v1/server/user/compass-bearing`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-            body: JSON.stringify({
-              userId: user.id,
-              answers,
-              analysis,
-            }),
-          }
-        );
-      } catch (fetchError) {
-        // Silently handle - data is saved locally
+      if (accessToken) {
+        try {
+          await fetch(
+            `https://${projectId}.supabase.co/functions/v1/server/user/compass-bearing`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+              body: JSON.stringify({
+                userId: user.id,
+                answers,
+                analysis,
+              }),
+            }
+          );
+        } catch (fetchError) {
+          // Silently handle - data is saved locally
+        }
       }
 
       // Mark onboarding as completed

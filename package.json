@@ -3,6 +3,7 @@
       "version": "0.1.0",
       "private": true,
       "dependencies": {
+            "@clerk/react": "^6.4.5",
             "@google/generative-ai": "^0.24.1",
             "@jsr/supabase__supabase-js": "^2.49.8",
             "@radix-ui/react-accordion": "^1.2.3",

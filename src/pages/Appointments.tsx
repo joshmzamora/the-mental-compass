@@ -93,11 +93,17 @@ export function Appointments() {
 
   const fetchBookings = async () => {
     try {
+      const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        setBookings([]);
+        return;
+      }
+
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/bookings`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token") || ""}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -160,6 +166,9 @@ export function Appointments() {
     // Mock email sending - in production, integrate with SendGrid, AWS SES, or similar
     try {
       const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        return;
+      }
 
       // Attempt to send email via edge function
       await fetch(
@@ -279,20 +288,22 @@ export function Appointments() {
       addAppointment(appointmentData);
 
       // Try to sync with backend
-      try {
-        await fetch(
-          `https://${projectId}.supabase.co/functions/v1/server/bookings`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-            body: JSON.stringify(appointmentData),
-          }
-        );
-      } catch (fetchError) {
-        // Silently handle - appointment is saved locally
+      if (accessToken) {
+        try {
+          await fetch(
+            `https://${projectId}.supabase.co/functions/v1/server/bookings`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+              body: JSON.stringify(appointmentData),
+            }
+          );
+        } catch (fetchError) {
+          // Silently handle - appointment is saved locally
+        }
       }
 
       // Send confirmation email

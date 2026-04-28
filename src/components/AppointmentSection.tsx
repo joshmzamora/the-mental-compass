@@ -36,11 +36,17 @@ export function AppointmentSection() {
 
   const fetchBookings = async () => {
     try {
+      const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        setBookings([]);
+        return;
+      }
+
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/bookings`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token") || ""}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -92,6 +98,23 @@ export function AppointmentSection() {
     try {
       const accessToken = localStorage.getItem("access_token");
       const dateString = date.toISOString().split("T")[0];
+
+      if (!accessToken) {
+        setBookings((currentBookings) => [
+          ...currentBookings,
+          {
+            therapistId: selectedTherapist.id,
+            date: dateString,
+            time: selectedTime,
+            userId: user.id,
+          },
+        ]);
+        toast.success("Appointment booked successfully!");
+        setShowConfirmDialog(true);
+        setSelectedTherapist(null);
+        setSelectedTime("");
+        return;
+      }
 
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/bookings`,
