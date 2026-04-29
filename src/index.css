@@ -6684,6 +6684,30 @@ h3 {
   letter-spacing: -0.035em;
 }
 
+.home-hero-title {
+  letter-spacing: -0.014em;
+  word-spacing: 0.14em;
+}
+
+.home-hero-subtitle,
+.home-hero-subtitle span {
+  letter-spacing: -0.006em;
+  word-spacing: 0.1em;
+}
+
+@media (max-width: 640px) {
+  .home-hero-title {
+    letter-spacing: -0.008em;
+    word-spacing: 0.18em;
+  }
+
+  .home-hero-subtitle,
+  .home-hero-subtitle span {
+    letter-spacing: normal;
+    word-spacing: 0.14em;
+  }
+}
+
 .auth-shell {
   position: relative;
   min-height: 100vh;
