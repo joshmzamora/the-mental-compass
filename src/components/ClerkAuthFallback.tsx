@@ -13,6 +13,7 @@ interface LocalAuthFormProps {
 
 const BACKUP_AUTH_USER_KEY = "mental_compass_backup_user";
 const BACKUP_AUTH_EVENT = "mental-compass-backup-auth";
+const LOCAL_AUTH_FALLBACK_DELAY_MS = 900;
 
 function LocalAuthForm({ mode }: LocalAuthFormProps) {
   const navigate = useNavigate();
@@ -90,7 +91,10 @@ export function ClerkAuthFallback({ message, mode }: ClerkAuthFallbackProps) {
   const [showBackup, setShowBackup] = useState(false);
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => setShowBackup(true), 4500);
+    const timeout = window.setTimeout(
+      () => setShowBackup(true),
+      LOCAL_AUTH_FALLBACK_DELAY_MS
+    );
     return () => window.clearTimeout(timeout);
   }, []);
 
