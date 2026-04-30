@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle2, Compass, ShieldCheck, X } from "lucide-react";
 
 interface AuthPageShellProps {
   children: ReactNode;
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
   mode: "login" | "signup";
@@ -16,6 +16,19 @@ const authHighlights = [
   "A calmer path back to what helps",
 ];
 
+const guidanceCopy = {
+  login: {
+    title: "Return to your saved path",
+    description:
+      "Your recent tools, saved resources, and next steps are ready when you sign back in.",
+  },
+  signup: {
+    title: "Set a private starting point",
+    description:
+      "Create a space that can adapt around your goals, support needs, and wellness rhythm.",
+  },
+};
+
 export function AuthPageShell({
   children,
   eyebrow,
@@ -25,7 +38,11 @@ export function AuthPageShell({
 }: AuthPageShellProps) {
   return (
     <div className={`auth-shell auth-shell-${mode}`}>
-      <div className="auth-compass-rose" aria-hidden="true" />
+      <div className="auth-background-compasses" aria-hidden="true">
+        <Compass className="auth-background-compass auth-background-compass-one" />
+        <Compass className="auth-background-compass auth-background-compass-two" />
+        <Compass className="auth-background-compass auth-background-compass-three" />
+      </div>
       <Link aria-label={`Close ${mode} and return home`} className="auth-close" to="/">
         <X aria-hidden="true" />
       </Link>
@@ -43,7 +60,7 @@ export function AuthPageShell({
           </div>
 
           <div className="auth-intro">
-            <p className="auth-kicker">{eyebrow}</p>
+            {eyebrow ? <p className="auth-kicker">{eyebrow}</p> : null}
             <h1>{title}</h1>
             <p>{description}</p>
           </div>
@@ -53,11 +70,8 @@ export function AuthPageShell({
               <ShieldCheck />
             </div>
             <div>
-              <strong>Built for steady support</strong>
-              <p>
-                Your account keeps the tools you use most close by, without adding
-                noise when you are looking for help.
-              </p>
+              <strong>{guidanceCopy[mode].title}</strong>
+              <p>{guidanceCopy[mode].description}</p>
             </div>
           </div>
 
@@ -72,15 +86,6 @@ export function AuthPageShell({
         </div>
 
         <div className="auth-form-panel">
-          <div className="auth-form-heading">
-            <p>{mode === "signup" ? "Create your account" : "Sign in securely"}</p>
-            <span>
-              {mode === "signup"
-                ? "Start with a few details, then personalize your compass."
-                : "Continue to your dashboard and saved support tools."}
-            </span>
-          </div>
-
           <div className="auth-clerk-panel">{children}</div>
 
           <Link className="auth-back-link" to="/">

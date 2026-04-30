@@ -41,9 +41,10 @@ const clerkAppearance = {
     },
     headerTitle: {
       color: "#102033",
-      fontSize: "1.18rem",
+      fontSize: "1.42rem",
       fontWeight: "850",
       letterSpacing: "-0.035em",
+      lineHeight: "1.15",
       wordSpacing: "0.08em",
     },
     headerSubtitle: {

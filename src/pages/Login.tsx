@@ -7,7 +7,6 @@ export function Login() {
   return (
     <PageTransition>
       <AuthPageShell
-        eyebrow="Your private compass"
         title="Welcome back"
         description="Pick up where you left off with your dashboard, journals, and support tools."
         mode="login"

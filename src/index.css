@@ -7507,12 +7507,9 @@ h3 {
   overflow: hidden;
   padding: 3rem 1.25rem;
   background:
-    linear-gradient(rgba(15, 159, 150, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 159, 150, 0.055) 1px, transparent 1px),
     radial-gradient(circle at 20% 18%, rgba(20, 184, 166, 0.16), transparent 22rem),
     radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.12), transparent 24rem),
     linear-gradient(135deg, #edfdfa 0%, #f4faff 55%, #f8fbff 100%);
-  background-size: 100px 100px, 100px 100px, auto, auto, auto;
   isolation: isolate;
 }
 
@@ -7532,7 +7529,13 @@ h3 {
   content: "";
   position: absolute;
   inset: auto 0 0;
+  width: auto;
   height: 12rem;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  z-index: 0;
   pointer-events: none;
   background: linear-gradient(180deg, transparent, rgba(237, 253, 250, 0.8));
 }
@@ -7542,19 +7545,50 @@ h3 {
   background-color: #f4fbff;
 }
 
-.auth-compass-rose {
+.auth-background-compasses {
   position: absolute;
-  right: max(-5rem, -7vw);
-  top: max(-5rem, -8vw);
-  width: min(27rem, 46vw);
-  height: min(27rem, 46vw);
-  opacity: 0.15;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  background:
-    conic-gradient(from 42deg, transparent 0 10%, rgba(15, 159, 150, 0.56) 10% 11.5%, transparent 11.5% 25%, rgba(37, 99, 235, 0.28) 25% 26.5%, transparent 26.5% 50%, rgba(15, 159, 150, 0.48) 50% 51.5%, transparent 51.5% 75%, rgba(37, 99, 235, 0.25) 75% 76.5%, transparent 76.5% 100%),
-    radial-gradient(circle, transparent 0 34%, rgba(15, 159, 150, 0.4) 34.5% 35%, transparent 35.5% 52%, rgba(37, 99, 235, 0.25) 52.5% 53%, transparent 53.5%);
-  border-radius: 999px;
-  z-index: -1;
+  overflow: hidden;
+}
+
+.auth-background-compass {
+  position: absolute;
+  color: rgba(15, 159, 150, 0.11);
+  stroke-width: 1.05;
+  filter: drop-shadow(0 18px 34px rgba(15, 159, 150, 0.04));
+  transform-origin: 50% 50%;
+}
+
+.auth-background-compass-one {
+  top: max(1.8rem, 5vh);
+  left: max(1.5rem, calc(50% - 44rem));
+  width: clamp(5rem, 8vw, 8rem);
+  height: clamp(5rem, 8vw, 8rem);
+  opacity: 0.42;
+  animation: authCompassFloat 18s ease-in-out infinite;
+}
+
+.auth-background-compass-two {
+  right: max(1.8rem, calc(50% - 45rem));
+  bottom: max(-4rem, -6vh);
+  width: clamp(7rem, 12vw, 11rem);
+  height: clamp(7rem, 12vw, 11rem);
+  color: rgba(37, 99, 235, 0.1);
+  opacity: 0.28;
+  animation: authCompassFloat 24s ease-in-out infinite reverse;
+}
+
+.auth-background-compass-three {
+  right: max(-2rem, calc(50% - 50rem));
+  top: max(-2.5rem, -5vh);
+  width: clamp(10rem, 16vw, 16rem);
+  height: clamp(10rem, 16vw, 16rem);
+  color: rgba(15, 159, 150, 0.09);
+  opacity: 0.48;
+  transform: rotate(14deg);
+  animation: authCompassTurn 42s linear infinite;
 }
 
 .auth-page-grid {
@@ -7562,8 +7596,8 @@ h3 {
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(22rem, 28rem);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
+  gap: clamp(2.5rem, 5vw, 4.75rem);
+  align-items: stretch;
   width: min(100%, 72rem);
 }
 
@@ -7572,43 +7606,32 @@ h3 {
   min-height: 38rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 0;
   overflow: hidden;
-  padding: clamp(2rem, 4vw, 3.25rem);
+  padding: clamp(2.25rem, 3.4vw, 3rem);
   border: 1px solid rgba(15, 159, 150, 0.16);
   border-radius: 24px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(240, 253, 250, 0.62)),
+    radial-gradient(circle at 80% 18%, rgba(255, 255, 255, 0.66), transparent 8rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(240, 253, 250, 0.64)),
     linear-gradient(rgba(15, 159, 150, 0.065) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 159, 150, 0.065) 1px, transparent 1px);
-  background-size: auto, 74px 74px, 74px 74px;
+  background-size: auto, auto, 74px 74px, 74px 74px;
   box-shadow:
     0 28px 90px rgba(30, 64, 85, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  animation: authPanelSettle 720ms cubic-bezier(0.2, 0.9, 0.18, 1) both;
 }
 
 .auth-story-panel::before {
-  content: "";
-  position: absolute;
-  right: -9rem;
-  top: -7rem;
-  width: 26rem;
-  height: 26rem;
-  border: 1px solid rgba(15, 159, 150, 0.18);
-  border-radius: 999px;
-  box-shadow:
-    inset 0 0 0 4.75rem rgba(15, 159, 150, 0.06),
-    inset 0 0 0 9.5rem rgba(37, 99, 235, 0.035);
+  content: none;
+  display: none;
 }
 
 .auth-story-panel::after {
-  content: "";
-  position: absolute;
-  left: 3rem;
-  bottom: 3.1rem;
-  width: min(32rem, 72%);
-  height: 1px;
-  background: linear-gradient(90deg, rgba(15, 159, 150, 0.45), transparent);
+  content: none;
+  display: none;
 }
 
 .auth-brand-lockup {
@@ -7618,7 +7641,7 @@ h3 {
   align-items: center;
   gap: 0.85rem;
   width: fit-content;
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 4vh, 2.7rem);
 }
 
 .auth-brand-lockup p {
@@ -7682,10 +7705,10 @@ h3 {
 }
 
 .auth-intro h1 {
-  max-width: 34rem;
+  max-width: 32rem;
   margin: 0;
   color: #101827;
-  font-size: clamp(3.25rem, 7vw, 5.8rem);
+  font-size: clamp(3rem, 6vw, 4.95rem);
   font-weight: 500;
   line-height: 0.98;
   letter-spacing: -0.055em;
@@ -7696,7 +7719,7 @@ h3 {
 
 .auth-intro p:not(.auth-kicker) {
   max-width: 31rem;
-  margin: 1.35rem 0 0;
+  margin: 1.05rem 0 0;
   color: #4b6178;
   font-size: clamp(1.02rem, 1.4vw, 1.18rem);
   font-weight: 500;
@@ -7711,7 +7734,7 @@ h3 {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 1rem;
   max-width: 31rem;
-  margin-top: 3rem;
+  margin-top: clamp(2rem, 5vh, 2.75rem);
   padding: 1rem;
   border: 1px solid rgba(15, 159, 150, 0.14);
   border-radius: 18px;
@@ -7755,7 +7778,7 @@ h3 {
   display: grid;
   gap: 0.75rem;
   max-width: 31rem;
-  margin: 1.15rem 0 0;
+  margin: clamp(1.45rem, 3vh, 2rem) 0 0.35rem;
   padding: 0;
   list-style: none;
 }
@@ -7780,7 +7803,11 @@ h3 {
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: 1.1rem;
+  min-height: 38rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.92rem;
   border: 1px solid rgba(15, 159, 150, 0.16);
   border-radius: 28px;
   background:
@@ -7789,9 +7816,11 @@ h3 {
     0 32px 86px rgba(30, 64, 85, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
+  animation: authPanelSettle 820ms 90ms cubic-bezier(0.2, 0.9, 0.18, 1) both;
 }
 
 .auth-form-heading {
+  display: none;
   padding: 0.55rem 0.55rem 1rem;
   text-align: center;
 }
@@ -7937,9 +7966,10 @@ h3 {
 
 .local-auth-heading strong {
   color: #102033;
-  font-size: 1.16rem;
+  font-size: 1.42rem;
   font-weight: 850;
   letter-spacing: -0.035em;
+  line-height: 1.15;
   word-spacing: 0.08em;
 }
 
@@ -8008,6 +8038,52 @@ h3 {
   padding: 0;
 }
 
+@keyframes authCompassFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-8deg);
+  }
+
+  50% {
+    transform: translate3d(0.85rem, -0.7rem, 0) rotate(10deg);
+  }
+}
+
+@keyframes authCompassTurn {
+  from {
+    transform: rotate(14deg);
+  }
+
+  to {
+    transform: rotate(374deg);
+  }
+}
+
+@keyframes authRouteDraw {
+  0%,
+  100% {
+    opacity: 0.54;
+    transform: scaleX(0.76);
+  }
+
+  48% {
+    opacity: 0.95;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes authPanelSettle {
+  from {
+    opacity: 0;
+    transform: translateY(0.9rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 1024px) {
   .auth-shell {
     align-items: start;
@@ -8018,8 +8094,29 @@ h3 {
 
   .auth-page-grid {
     grid-template-columns: 1fr;
+    align-items: start;
     gap: 1rem;
     width: min(100%, 34rem);
+  }
+
+  .auth-background-compass-one {
+    top: 4.5rem;
+    left: -3rem;
+    width: 6.75rem;
+    height: 6.75rem;
+  }
+
+  .auth-background-compass-two {
+    right: -3.25rem;
+    bottom: 3rem;
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .auth-background-compass-three {
+    right: -4rem;
+    top: -3.5rem;
+    opacity: 0.28;
   }
 
   .auth-story-panel {
@@ -8030,7 +8127,6 @@ h3 {
 
   .auth-story-panel::before,
   .auth-story-panel::after,
-  .auth-compass-rose,
   .auth-guidance-panel,
   .auth-highlight-list {
     display: none;
@@ -8058,6 +8154,8 @@ h3 {
   }
 
   .auth-form-panel {
+    min-height: auto;
+    display: block;
     padding: 0.8rem;
     border-radius: 24px;
   }
@@ -8110,6 +8208,10 @@ h3 {
     font-size: 0.9rem;
   }
 
+  .auth-background-compass-three {
+    display: none;
+  }
+
   .auth-close {
     top: max(0.85rem, env(safe-area-inset-top));
     right: max(0.85rem, env(safe-area-inset-right));
@@ -8125,5 +8227,15 @@ h3 {
   .local-auth-form {
     padding: 1.05rem;
     border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-background-compass,
+  .auth-story-panel,
+  .auth-story-panel::before,
+  .auth-story-panel::after,
+  .auth-form-panel {
+    animation: none;
   }
 }

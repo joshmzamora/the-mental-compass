@@ -7,7 +7,6 @@ export function SignUp() {
   return (
     <PageTransition>
       <AuthPageShell
-        eyebrow="Set your direction"
         title="Begin your journey"
         description="Create your account and tailor the app around the kind of support you need."
         mode="signup"
