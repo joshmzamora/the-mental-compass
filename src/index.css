@@ -6686,7 +6686,10 @@ h3 {
 
 .home-hero-title {
   letter-spacing: -0.014em;
-  word-spacing: 0.14em;
+  gap: 0.22em;
+  font-size: clamp(2.6rem, 5vw, 4.35rem);
+  line-height: 1;
+  word-spacing: normal;
 }
 
 .home-hero-subtitle,
@@ -6695,16 +6698,112 @@ h3 {
   word-spacing: 0.1em;
 }
 
+.home-hero-stage {
+  min-height: min(42rem, calc(100vh - 14rem));
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.home-hero-copy {
+  margin-top: 2.25rem;
+  line-height: 1.65;
+  text-wrap: balance;
+}
+
+.home-hero-word {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: min(10.75ch, 100%);
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0.18em 0.42em 0.24em;
+  border-radius: 0.3em;
+  background: linear-gradient(135deg, #0f9f96 0%, #06b6d4 52%, #2563eb 100%);
+  box-shadow: 0 1.25rem 3rem rgba(13, 148, 136, 0.24);
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  white-space: nowrap;
+  word-spacing: normal;
+}
+
+.home-hero-word > div {
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.home-hero-word span.whitespace-pre {
+  display: inline-block;
+  flex: 0 0 0.26em;
+  width: 0.26em;
+}
+
+.home-hero-word-split {
+  display: inline-flex;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.home-hero-word-letter {
+  display: inline-block;
+  padding-bottom: 0.04em;
+}
+
+.home-hero-cards {
+  padding-bottom: 4.5rem;
+}
+
+.home-hero-card {
+  min-height: 11.1rem;
+  padding-bottom: 1.7rem;
+}
+
 @media (max-width: 640px) {
   .home-hero-title {
     letter-spacing: -0.008em;
-    word-spacing: 0.18em;
+    gap: 0.24em;
+    font-size: clamp(2.25rem, 11vw, 3.1rem);
+    line-height: 1.02;
+    word-spacing: normal;
   }
 
   .home-hero-subtitle,
   .home-hero-subtitle span {
     letter-spacing: normal;
     word-spacing: 0.14em;
+  }
+
+  .home-hero-stage {
+    min-height: auto;
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .home-hero-copy {
+    margin-top: 1.75rem;
+    line-height: 1.55;
+  }
+
+  .home-hero-word {
+    min-width: min(9.8ch, 100%);
+    padding: 0.2em 0.36em 0.25em;
+    border-radius: 0.34em;
+  }
+
+  .home-hero-word span.whitespace-pre {
+    flex-basis: 0.22em;
+    width: 0.22em;
+  }
+
+  .home-hero-cards {
+    padding-bottom: 3.25rem;
+  }
+
+  .home-hero-card {
+    min-height: 10.25rem;
+    padding-bottom: 1.55rem;
   }
 }
 
