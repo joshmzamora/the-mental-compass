@@ -114,11 +114,13 @@ For a simple competition demo, the site can sync one desktop browser window with
    ```text
    http://localhost:5173/?sync=follow
    ```
-5. Navigate and scroll in the desktop controller window. The mobile-sized window follows the route and scroll position automatically.
+5. Navigate, scroll, click, and type in the desktop controller window. The mobile-sized window follows automatically.
 
 Notes:
 * This uses the browser `BroadcastChannel` API, so it is meant for two windows/tabs on the same computer and same browser profile.
 * Scroll syncing uses page percentage instead of exact pixels so desktop and mobile layouts stay aligned even when their page heights differ.
+* Basic links, buttons, tabs, selects, checkboxes, radio buttons, text inputs, textareas, clickable cards, and scrollable dialog/panel areas are mirrored. Password fields are intentionally not mirrored.
+* Custom interactions that do not use normal clickable or form elements may need their own URL state or a small `data-sync-target` marker.
 * To stop sync in a window, open the site with `?sync=off`.
 
 ---

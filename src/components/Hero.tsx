@@ -31,7 +31,7 @@ const heroCardVariants = {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50">
+    <section data-sync-section="home-hero" className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50">
       {/* Animated compass background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div

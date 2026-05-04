@@ -9,7 +9,7 @@ export function FeaturedNavigators() {
   const featuredTherapists = therapists.slice(0, 4);
 
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
+    <section data-sync-section="home-navigators" className="py-20 bg-white relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 text-teal-600">

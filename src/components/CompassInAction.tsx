@@ -35,7 +35,7 @@ export function CompassInAction() {
   ];
 
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-br from-teal-600 via-blue-600 to-purple-600 relative overflow-hidden">
+    <section data-sync-section="home-action" className="py-24 lg:py-32 bg-gradient-to-br from-teal-600 via-blue-600 to-purple-600 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
