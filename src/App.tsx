@@ -26,17 +26,20 @@ import { TermsOfService } from "./pages/TermsOfService";
 import { Contact } from "./pages/Contact";
 import { Accessibility } from "./pages/Accessibility";
 import { Team } from "./pages/Team";
+import { Presentation } from "./pages/Presentation";
 
 function AppContent() {
   const location = useLocation();
   const isAuthRoute = location.pathname === "/login" || location.pathname === "/signup";
+  const isPresentationRoute = location.pathname === "/presentation";
+  const isShelllessRoute = isAuthRoute || isPresentationRoute;
 
   return (
     <AuthProvider>
       <UserProfileProvider>
         <ScrollToTop />
         <div className="min-h-screen bg-white">
-          {!isAuthRoute && <Header />}
+          {!isShelllessRoute && <Header />}
           <main>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -58,11 +61,12 @@ function AppContent() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/presentation" element={<Presentation />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-          {!isAuthRoute && <Footer />}
-          {!isAuthRoute && <AIChatSection />}
+          {!isShelllessRoute && <Footer />}
+          {!isShelllessRoute && <AIChatSection />}
           <Toaster />
         </div>
       </UserProfileProvider>
