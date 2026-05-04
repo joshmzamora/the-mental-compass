@@ -31,7 +31,7 @@ import { Presentation } from "./pages/Presentation";
 
 function AppContent() {
   const location = useLocation();
-  const isAuthRoute = location.pathname === "/login" || location.pathname === "/signup";
+  const isAuthRoute = location.pathname.startsWith("/login") || location.pathname.startsWith("/signup");
   const isPresentationRoute = location.pathname === "/presentation";
   const isShelllessRoute = isAuthRoute || isPresentationRoute;
 
@@ -59,8 +59,8 @@ function AppContent() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/journeys" element={<GuidedJourneys />} />
               <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login/*" element={<Login />} />
+              <Route path="/signup/*" element={<SignUp />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/presentation" element={<Presentation />} />
