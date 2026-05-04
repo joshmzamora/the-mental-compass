@@ -93,6 +93,36 @@ To run the production build or development server locally, follow the steps belo
 
 ---
 
+## BPA Presentation Tools
+
+### Hidden Waiting Screen
+Open `/presentation` directly for the ambient judges-room screen. It is intentionally hidden from the main navigation.
+
+### Desktop-To-Mobile Demo Sync
+For a simple competition demo, the site can sync one desktop browser window with a second mobile-sized browser window on the same computer.
+
+1. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+2. Open the desktop controller window:
+   ```text
+   http://localhost:5173/?sync=host
+   ```
+3. Open a second browser window and turn on mobile device mode in DevTools.
+4. In that mobile-sized window, open:
+   ```text
+   http://localhost:5173/?sync=follow
+   ```
+5. Navigate and scroll in the desktop controller window. The mobile-sized window follows the route and scroll position automatically.
+
+Notes:
+* This uses the browser `BroadcastChannel` API, so it is meant for two windows/tabs on the same computer and same browser profile.
+* Scroll syncing uses page percentage instead of exact pixels so desktop and mobile layouts stay aligned even when their page heights differ.
+* To stop sync in a window, open the site with `?sync=off`.
+
+---
+
 ## 👥 Competition Credits
 This project was developed by the **Website Design Team** for the Business Professionals of America competition.
 
