@@ -158,6 +158,8 @@ const simulatedChatLinePool = [
   "Does anyone else do tiny task lists on low-energy days?",
 ];
 
+const LIVE_CHAT_ROOM = "community-live-chat";
+
 const DAILY_ENGAGEMENT_START = new Date("2026-04-10T00:00:00");
 const DAILY_ENGAGEMENT_END = new Date("2026-06-01T23:59:59");
 const DAILY_ENGAGEMENT_POSTS_PER_DAY = 3;
@@ -625,6 +627,7 @@ export function CommunitySection() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const latestRealChatTimestampRef = useRef(0);
+  const liveChatChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   const isSearching = !!(searchQuery.trim() || selectedTags.length > 0 || dateRangeFilter !== "all");
   const visibleOnlineCount = useMemo(() => {
@@ -668,51 +671,43 @@ export function CommunitySection() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load chat messages from Supabase and set up real-time subscription
+  // Temporary live chat room. Broadcast messages are not stored, so the room
+  // naturally resets when all visitors leave the page.
   useEffect(() => {
-    loadChatMessages();
-
-    // Set up real-time subscription for new messages
     const channel = supabase
-      .channel('live_chat_messages')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'live_chat_messages'
-        },
-        (payload) => {
-          const newMessage = payload.new as ChatMessage;
-          setRealTimeChatMessages(prev => [...prev, newMessage]);
-        }
-      )
+      .channel(LIVE_CHAT_ROOM, { config: { broadcast: { self: true } } })
+      .on("broadcast", { event: "chat-message" }, ({ payload }) => {
+        const incomingMessage = payload as ChatMessage;
+        if (!incomingMessage?.id || !incomingMessage?.content) return;
+        setRealTimeChatMessages((prev) => {
+          if (prev.some((msg) => msg.id === incomingMessage.id)) {
+            return prev;
+          }
+          return [...prev, incomingMessage].slice(-80);
+        });
+      })
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
+          setChatDatabaseConfigured(true);
+          setChatLoading(false);
           console.log('✓ Real-time chat connected');
         } else if (status === 'CHANNEL_ERROR') {
+          setChatDatabaseConfigured(false);
+          setChatLoading(false);
           console.log('Real-time chat unavailable - using local messages');
         } else if (status === 'TIMED_OUT') {
+          setChatDatabaseConfigured(false);
+          setChatLoading(false);
           console.log('Real-time chat connection timed out - using local messages');
         }
       });
 
+    liveChatChannelRef.current = channel;
+
     return () => {
       supabase.removeChannel(channel);
+      liveChatChannelRef.current = null;
     };
-  }, []);
-
-  // Load local messages from localStorage on mount
-  useEffect(() => {
-    const savedLocalMessages = localStorage.getItem('local_chat_messages');
-    if (savedLocalMessages) {
-      try {
-        const parsed = JSON.parse(savedLocalMessages);
-        setRealTimeChatMessages(prev => [...prev, ...parsed]);
-      } catch (error) {
-        console.error('Error loading local messages:', error);
-      }
-    }
   }, []);
 
   useEffect(() => {
@@ -830,14 +825,6 @@ export function CommunitySection() {
       window.clearTimeout(timeoutId);
     };
   }, [chatDatabaseConfigured]);
-
-  // Save local messages to localStorage whenever they change
-  useEffect(() => {
-    const localMessages = realTimeChatMessages.filter(msg => msg.id.startsWith('local-'));
-    if (localMessages.length > 0) {
-      localStorage.setItem('local_chat_messages', JSON.stringify(localMessages));
-    }
-  }, [realTimeChatMessages]);
 
   // Combine starter, real-time, and simulated activity messages
   useEffect(() => {
@@ -1026,43 +1013,6 @@ export function CommunitySection() {
 
     if (newNotifications.length > 0) {
       setNotifications(prev => [...newNotifications, ...prev]);
-    }
-  };
-
-  const loadChatMessages = async () => {
-    try {
-      setChatLoading(true);
-
-      // Check if we have a valid session first (silently)
-      try {
-        await supabase.auth.getSession();
-      } catch (sessionError) {
-        // Ignore session errors
-      }
-
-      const { data, error } = await supabase
-        .from('live_chat_messages')
-        .select('*')
-        .order('created_at', { ascending: true });
-
-      if (error) {
-        // Silently handle all database errors - chat is optional
-        console.log('Live chat database not configured yet - using local mode');
-        setChatDatabaseConfigured(false);
-        setChatLoading(false);
-        return;
-      }
-
-      if (data) {
-        setRealTimeChatMessages(data);
-        setChatDatabaseConfigured(true);
-        console.log('✓ Live chat database connected - real-time mode enabled');
-      }
-      setChatLoading(false);
-    } catch (error: any) {
-      // Silently handle all errors - chat is optional and should not break the app
-      setChatDatabaseConfigured(false);
-      setChatLoading(false);
     }
   };
 
@@ -2806,68 +2756,34 @@ export function CommunitySection() {
     }
 
     if (message.trim()) {
-      const newMessage = {
+      const liveMessage: ChatMessage = {
+        id: `live-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         user_id: user.id,
         author: user.email?.split('@')[0] || "You",
         content: message.trim(),
-        avatar: (user.email?.charAt(0) || "Y").toUpperCase()
+        avatar: (user.email?.charAt(0) || "Y").toUpperCase(),
+        created_at: new Date().toISOString(),
       };
 
-      // If database is not configured, use local mode immediately
-      if (!chatDatabaseConfigured) {
-        const localMessage: ChatMessage = {
-          id: `local-${Date.now()}`,
-          ...newMessage,
-          created_at: new Date().toISOString()
-        };
-        setRealTimeChatMessages(prev => [...prev, localMessage]);
-        setMessage("");
-        toast.success("Message sent!");
-        return;
-      }
+      const channel = liveChatChannelRef.current;
 
       try {
-        const { error } = await supabase
-          .from('live_chat_messages')
-          .insert([newMessage]);
+        const result = await channel?.send({
+          type: "broadcast",
+          event: "chat-message",
+          payload: liveMessage,
+        });
 
-        if (error) {
-          // Handle specific error cases - switch to local mode
-          if (error.code === 'PGRST205' || error.code === 'PGRST116' ||
-            error.message.includes('relation') ||
-            error.message.includes('does not exist') ||
-            error.message.includes('schema cache')) {
-            console.log('Switching to local mode - database table not found');
-            setChatDatabaseConfigured(false);
-            // Add message locally
-            const localMessage: ChatMessage = {
-              id: `local-${Date.now()}`,
-              ...newMessage,
-              created_at: new Date().toISOString()
-            };
-            setRealTimeChatMessages(prev => [...prev, localMessage]);
-            setMessage("");
-            toast.success("Message sent!");
-          } else {
-            console.error('Error sending message:', error);
-            toast.error("Failed to send message. Please try again.");
-          }
-          return;
+        if (result !== "ok") {
+          setRealTimeChatMessages((prev) => [...prev, liveMessage].slice(-80));
         }
 
         setMessage("");
         toast.success("Message sent!");
-      } catch (error: any) {
-        // Handle network errors - add message locally as fallback
-        console.log('Network error, using local mode:', error);
-        const localMessage: ChatMessage = {
-          id: `local-${Date.now()}`,
-          ...newMessage,
-          created_at: new Date().toISOString()
-        };
-        setRealTimeChatMessages(prev => [...prev, localMessage]);
+      } catch (error) {
+        setRealTimeChatMessages((prev) => [...prev, liveMessage].slice(-80));
         setMessage("");
-        toast.success("Message sent!");
+        toast.success("Message sent locally!");
       }
     }
   };
