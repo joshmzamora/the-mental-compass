@@ -1,14 +1,11 @@
+/// <reference types="vite/client" />
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ClerkProvider } from "@clerk/react";
 import App from "./App.tsx";
 import "./index.css";
-
-const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-if (!CLERK_PUBLISHABLE_KEY) {
-  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY. Add it to your Vite environment.");
-}
+import { clerkEnabled, clerkMissingMessage, clerkPublishableKey } from "./utils/clerk";
 
 const clerkAppearance = {
   variables: {
@@ -127,16 +124,23 @@ const clerkLocalization = {
   },
 };
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ClerkProvider
-      afterSignOutUrl="/"
-      appearance={clerkAppearance}
-      localization={clerkLocalization}
-      signInUrl="/login"
-      signUpUrl="/signup"
-    >
-      <App />
-    </ClerkProvider>
-  </StrictMode>
+if (!clerkEnabled) {
+  console.warn(clerkMissingMessage);
+}
+
+const app = clerkEnabled ? (
+  <ClerkProvider
+    publishableKey={clerkPublishableKey}
+    afterSignOutUrl="/"
+    appearance={clerkAppearance}
+    localization={clerkLocalization}
+    signInUrl="/login"
+    signUpUrl="/signup"
+  >
+    <App />
+  </ClerkProvider>
+) : (
+  <App />
 );
+
+createRoot(document.getElementById("root")!).render(<StrictMode>{app}</StrictMode>);

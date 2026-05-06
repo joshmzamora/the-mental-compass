@@ -271,6 +271,8 @@ export function DisordersSection() {
     useState(true);
   const [breathingPhaseIndex, setBreathingPhaseIndex] =
     useState(0);
+  const [breathingPhaseProgress, setBreathingPhaseProgress] =
+    useState(0);
   const [displayedMythCards, setDisplayedMythCards] =
     useState<MythFactCard[]>(() =>
       getRandomMythCards(6),
@@ -387,24 +389,31 @@ export function DisordersSection() {
     const phaseDurationMs = 4000;
     const cycleDurationMs =
       phaseDurationMs * breathingPhases.length;
+    let animationFrameId = 0;
 
     const updatePhase = () => {
+      const totalElapsed =
+        performance.now() - cycleStart;
       const elapsed =
-        (performance.now() - cycleStart) % cycleDurationMs;
+        totalElapsed % cycleDurationMs;
       const nextPhase = Math.floor(
         elapsed / phaseDurationMs,
       );
+      const nextPhaseProgress =
+        (elapsed % phaseDurationMs) / phaseDurationMs;
       setBreathingPhaseIndex(nextPhase);
+      setBreathingPhaseProgress(nextPhaseProgress);
+      animationFrameId = window.requestAnimationFrame(
+        updatePhase,
+      );
     };
 
-    updatePhase();
-    const breathingTimer = window.setInterval(
+    animationFrameId = window.requestAnimationFrame(
       updatePhase,
-      120,
     );
 
     return () => {
-      window.clearInterval(breathingTimer);
+      window.cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
@@ -595,6 +604,19 @@ export function DisordersSection() {
   const bubbleOpacity = isLargeBubble ? 1 : 0.86;
   const bubbleTransitionMs =
     isExpandingPhase || isShrinkingPhase ? 4000 : 220;
+  const breathingProgressRadius = 82;
+  const breathingProgressCircumference =
+    2 * Math.PI * breathingProgressRadius;
+  const isBreathingWipePhase =
+    breathingPhaseIndex % 2 === 1;
+  const breathingSweepLength =
+    breathingProgressCircumference *
+    breathingPhaseProgress;
+  const breathingSweepAngle =
+    breathingPhaseProgress * 360;
+  const breathingDotRadius = 6;
+  const breathingDotAngleRadians =
+    ((breathingSweepAngle - 90) * Math.PI) / 180;
 
   return (
     <section
@@ -999,55 +1021,71 @@ export function DisordersSection() {
                               fill="url(#breathingGradient)"
                               opacity={bubbleOpacity}
                             />
-                            <circle
-                              cx="100"
-                              cy="100"
-                              r="56"
-                              fill="none"
-                              stroke="#5eead4"
-                              strokeOpacity={isLargeBubble ? 0.18 : 0.3}
-                              strokeWidth="1.5"
-                              style={{
-                                transition: `stroke-opacity ${bubbleTransitionMs}ms linear`,
-                              }}
-                            />
                           </g>
                           <circle
                             cx="100"
                             cy="100"
                             r="82"
                             fill="none"
-                            stroke="#0f766e"
-                            strokeOpacity="0.25"
-                            strokeWidth="2"
-                            strokeDasharray="10 8"
-                          >
-                            <animateTransform
-                              attributeName="transform"
-                              attributeType="XML"
-                              type="rotate"
-                              from="0 100 100"
-                              to="360 100 100"
-                              dur="14s"
-                              repeatCount="indefinite"
-                            />
-                          </circle>
+                            stroke="#cbd5e1"
+                            strokeOpacity="0.45"
+                            strokeWidth="4"
+                          />
                           <circle
                             cx="100"
-                            cy="20"
-                            r="6"
-                            fill="#2dd4bf"
-                          >
-                            <animateTransform
-                              attributeName="transform"
-                              attributeType="XML"
-                              type="rotate"
-                              from="0 100 100"
-                              to="360 100 100"
-                              dur="12s"
-                              repeatCount="indefinite"
+                            cy="100"
+                            r={breathingProgressRadius}
+                            fill="none"
+                            stroke={
+                              isBreathingWipePhase
+                                ? "#14b8a6"
+                                : "#14b8a6"
+                            }
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeDasharray={
+                              isBreathingWipePhase
+                                ? undefined
+                                : `${breathingSweepLength} ${breathingProgressCircumference}`
+                            }
+                            strokeDashoffset={0}
+                            transform="rotate(-90 100 100)"
+                          />
+                          {isBreathingWipePhase && (
+                            <circle
+                              cx="100"
+                              cy="100"
+                              r={breathingProgressRadius}
+                              fill="none"
+                              stroke="#e2e8f0"
+                              strokeOpacity="0.95"
+                              strokeWidth="4"
+                              strokeLinecap="round"
+                              strokeDasharray={`${breathingSweepLength} ${breathingProgressCircumference}`}
+                              strokeDashoffset={0}
+                              transform="rotate(-90 100 100)"
                             />
-                          </circle>
+                          )}
+                          <circle
+                            cx={
+                              100 +
+                              breathingProgressRadius *
+                                Math.cos(
+                                  breathingDotAngleRadians,
+                                )
+                            }
+                            cy={
+                              100 +
+                              breathingProgressRadius *
+                                Math.sin(
+                                  breathingDotAngleRadians,
+                                )
+                            }
+                            r={breathingDotRadius}
+                            fill="#f8fafc"
+                            stroke="#14b8a6"
+                            strokeWidth="3"
+                          />
                         </svg>
 
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

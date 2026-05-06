@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { useClerk, useUser } from "@clerk/react";
+import { clerkEnabled } from "../utils/clerk";
 
 const BACKUP_AUTH_USER_KEY = "mental_compass_backup_user";
 const BACKUP_AUTH_EVENT = "mental-compass-backup-auth";
@@ -20,6 +21,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function readBackupUser(): User | null {
+  try {
+    const savedUser = localStorage.getItem(BACKUP_AUTH_USER_KEY);
+    return savedUser ? JSON.parse(savedUser) : null;
+  } catch {
+    localStorage.removeItem(BACKUP_AUTH_USER_KEY);
+    return null;
+  }
+}
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -28,27 +39,61 @@ export function useAuth() {
   return context;
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+function LocalAuthProvider({ children }: { children: ReactNode }) {
+  const [backupUser, setBackupUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const syncBackupUser = () => {
+      setBackupUser(readBackupUser());
+    };
+
+    syncBackupUser();
+    window.addEventListener(BACKUP_AUTH_EVENT, syncBackupUser);
+
+    return () => {
+      window.removeEventListener(BACKUP_AUTH_EVENT, syncBackupUser);
+    };
+  }, []);
+
+  const login: AuthContextType["login"] = async () => {};
+  const signup: AuthContextType["signup"] = async () => {};
+
+  const logout = async () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem(BACKUP_AUTH_USER_KEY);
+    window.dispatchEvent(new Event(BACKUP_AUTH_EVENT));
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user: backupUser,
+        loading: false,
+        signup,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+function ClerkBackedAuthProvider({ children }: { children: ReactNode }) {
   const clerk = useClerk();
   const { isLoaded, isSignedIn, user: clerkUser } = useUser();
   const [backupUser, setBackupUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const readBackupUser = () => {
-      try {
-        const savedUser = localStorage.getItem(BACKUP_AUTH_USER_KEY);
-        setBackupUser(savedUser ? JSON.parse(savedUser) : null);
-      } catch {
-        localStorage.removeItem(BACKUP_AUTH_USER_KEY);
-        setBackupUser(null);
-      }
+    const syncBackupUser = () => {
+      setBackupUser(readBackupUser());
     };
 
-    readBackupUser();
-    window.addEventListener(BACKUP_AUTH_EVENT, readBackupUser);
+    syncBackupUser();
+    window.addEventListener(BACKUP_AUTH_EVENT, syncBackupUser);
 
     return () => {
-      window.removeEventListener(BACKUP_AUTH_EVENT, readBackupUser);
+      window.removeEventListener(BACKUP_AUTH_EVENT, syncBackupUser);
     };
   }, []);
 
@@ -117,4 +162,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  if (!clerkEnabled) {
+    return <LocalAuthProvider>{children}</LocalAuthProvider>;
+  }
+
+  return <ClerkBackedAuthProvider>{children}</ClerkBackedAuthProvider>;
 }

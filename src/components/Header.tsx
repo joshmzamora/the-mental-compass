@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Compass, Navigation, User } from "lucide-react";
-import { Show, UserButton, useUser } from "@clerk/react";
+import { Menu, X, Compass, Navigation, User, LogOut } from "lucide-react";
+import { UserButton } from "@clerk/react";
 import { motion } from "motion/react";
 import { Button } from "./ui/button";
+import { useAuth } from "../contexts/AuthContext";
+import { clerkEnabled } from "../utils/clerk";
 
 function GuestActions({
   mobile = false,
@@ -34,9 +36,11 @@ function GuestActions({
 function MemberActions({
   mobile = false,
   onNavigate,
+  onLogout,
 }: {
   mobile?: boolean;
   onNavigate?: () => void;
+  onLogout: () => Promise<void>;
 }) {
   return (
     <div className="flex items-center gap-3">
@@ -50,7 +54,22 @@ function MemberActions({
           Dashboard
         </Link>
       </Button>
-      <UserButton />
+      {clerkEnabled ? (
+        <UserButton />
+      ) : (
+        <Button
+          type="button"
+          variant="ghost"
+          className={mobile ? "flex-1" : undefined}
+          onClick={() => {
+            void onLogout();
+            onNavigate?.();
+          }}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Log Out
+        </Button>
+      )}
     </div>
   );
 }
@@ -59,7 +78,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeIndicator, setActiveIndicator] = useState({ left: 0, width: 0, visible: false });
   const location = useLocation();
-  const { isLoaded } = useUser();
+  const { user, loading, logout } = useAuth();
   const desktopNavRef = useRef<HTMLElement | null>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
@@ -201,17 +220,12 @@ export function Header() {
               />
             )}
 
-            {!isLoaded ? (
+            {loading ? (
               <GuestActions />
+            ) : user ? (
+              <MemberActions onLogout={logout} />
             ) : (
-              <>
-                <Show when="signed-in">
-                  <MemberActions />
-                </Show>
-                <Show when="signed-out">
-                  <GuestActions />
-                </Show>
-              </>
+              <GuestActions />
             )}
           </nav>
 
@@ -257,17 +271,12 @@ export function Header() {
                 Stories
               </Link>
 
-              {!isLoaded ? (
+              {loading ? (
                 <GuestActions mobile onNavigate={closeMobileMenu} />
+              ) : user ? (
+                <MemberActions mobile onNavigate={closeMobileMenu} onLogout={logout} />
               ) : (
-                <>
-                  <Show when="signed-in">
-                    <MemberActions mobile onNavigate={closeMobileMenu} />
-                  </Show>
-                  <Show when="signed-out">
-                    <GuestActions mobile onNavigate={closeMobileMenu} />
-                  </Show>
-                </>
+                <GuestActions mobile onNavigate={closeMobileMenu} />
               )}
             </div>
           </motion.nav>
