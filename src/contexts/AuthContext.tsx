@@ -52,6 +52,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn || !clerkUser || !backupUser) return;
+
+    localStorage.removeItem(BACKUP_AUTH_USER_KEY);
+    setBackupUser(null);
+    window.dispatchEvent(new Event(BACKUP_AUTH_EVENT));
+  }, [backupUser, clerkUser, isLoaded, isSignedIn]);
+
   const user = useMemo<User | null>(() => {
     if (!isLoaded) {
       return backupUser;

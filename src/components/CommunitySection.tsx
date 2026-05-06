@@ -624,8 +624,9 @@ export function CommunitySection() {
 
   // Featured discussions minimize state
   const [isFeaturedMinimized, setIsFeaturedMinimized] = useState(false);
+  const [activeCommunityTab, setActiveCommunityTab] = useState("forums");
 
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
   const latestRealChatTimestampRef = useRef(0);
   const liveChatChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
@@ -842,10 +843,20 @@ export function CommunitySection() {
 
   // Auto-scroll chat to bottom only on initial load
   useEffect(() => {
-    if (chatMessages.length > 0 && chatMessages.length <= initialChatMessages.length + 1) {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (
+      activeCommunityTab === "chat" &&
+      chatMessages.length > 0 &&
+      chatMessages.length <= initialChatMessages.length + 1
+    ) {
+      const chatScroll = chatScrollRef.current;
+      if (chatScroll) {
+        chatScroll.scrollTo({
+          top: chatScroll.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     }
-  }, [chatMessages.length]);
+  }, [activeCommunityTab, chatMessages.length]);
 
   // Filter and prioritize posts
   useEffect(() => {
@@ -3205,7 +3216,11 @@ export function CommunitySection() {
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="forums" className="w-full">
+          <Tabs
+            value={activeCommunityTab}
+            onValueChange={setActiveCommunityTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6 sm:mb-8">
               <TabsTrigger value="forums" className="text-sm sm:text-base">Discussion Forums</TabsTrigger>
               <TabsTrigger value="chat" className="text-sm sm:text-base">Live Chat</TabsTrigger>
@@ -3694,7 +3709,7 @@ export function CommunitySection() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col p-0">
-                    <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
+                    <div ref={chatScrollRef} className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
                       {chatLoading ? (
                         <div className="flex items-center justify-center h-full">
                           <div className="text-center">
@@ -3742,7 +3757,6 @@ export function CommunitySection() {
                               </div>
                             </div>
                           ))}
-                          <div ref={chatEndRef} />
                         </>
                       )}
                     </div>

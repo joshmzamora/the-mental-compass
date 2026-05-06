@@ -115,8 +115,11 @@ const motivationalQuotes = [
   "One day at a time, one step at a time.",
 ];
 
+const getOnboardingStorageKey = (userId: string) =>
+  `onboarding_completed_${userId}`;
+
 export function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const {
     profile,
@@ -143,6 +146,9 @@ export function Dashboard() {
   const [showJournalDialog, setShowJournalDialog] = useState(false);
   const [journalText, setJournalText] = useState("");
   const [showCustomization, setShowCustomization] = useState(false);
+  const hasCompletedOnboarding = user
+    ? localStorage.getItem(getOnboardingStorageKey(user.id)) === "true"
+    : false;
 
   // Dashboard preferences
   const [preferences, setPreferences] = useState<DashboardPreferences>(() => {
@@ -182,6 +188,10 @@ export function Dashboard() {
   };
 
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
     if (!user) {
       navigate("/login");
       return;
@@ -195,16 +205,18 @@ export function Dashboard() {
         markCheckIn();
       }
     }
-  }, [user, profile, loading]);
+  }, [authLoading, user, profile, loading, navigate]);
 
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem("onboarding_completed") === "true";
+    if (authLoading || !user) {
+      return;
+    }
 
     if (!loading && profile && !profile.compassBearing && !hasCompletedOnboarding) {
       console.log("Onboarding required - redirecting...");
       navigate("/onboarding");
     }
-  }, [loading, profile, navigate]);
+  }, [authLoading, hasCompletedOnboarding, loading, profile, navigate, user]);
 
   // Refresh profile when returning to dashboard (for assessment updates)
   useEffect(() => {
@@ -481,7 +493,7 @@ export function Dashboard() {
     return motivationalQuotes[dayOfYear % motivationalQuotes.length];
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <PageTransition>
         <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 flex items-center justify-center">
@@ -494,7 +506,7 @@ export function Dashboard() {
     );
   }
 
-  if (!profile?.compassBearing && localStorage.getItem("onboarding_completed") !== "true") {
+  if (!profile?.compassBearing && !hasCompletedOnboarding) {
     return (
       <PageTransition>
         <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50 flex items-center justify-center">
@@ -982,7 +994,9 @@ export function Dashboard() {
                       <Button
                         variant="secondary"
                         onClick={async () => {
-                          localStorage.removeItem("onboarding_completed");
+                          if (user) {
+                            localStorage.removeItem(getOnboardingStorageKey(user.id));
+                          }
                           navigate("/onboarding");
                         }}
                       >
@@ -1001,7 +1015,9 @@ export function Dashboard() {
                       <Button
                         variant="secondary"
                         onClick={() => {
-                          localStorage.removeItem("onboarding_completed");
+                          if (user) {
+                            localStorage.removeItem(getOnboardingStorageKey(user.id));
+                          }
                           navigate("/onboarding");
                         }}
                       >

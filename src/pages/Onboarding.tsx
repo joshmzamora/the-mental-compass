@@ -93,6 +93,9 @@ const questions = [
   },
 ];
 
+const getOnboardingStorageKey = (userId: string) =>
+  `onboarding_completed_${userId}`;
+
 export function Onboarding() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -223,8 +226,9 @@ export function Onboarding() {
         }
       }
 
-      // Mark onboarding as completed
-      localStorage.setItem("onboarding_completed", "true");
+      // Mark onboarding as completed for this account only.
+      localStorage.setItem(getOnboardingStorageKey(user.id), "true");
+      localStorage.removeItem("onboarding_completed");
 
       toast.success("Your Compass Bearing has been set!");
 
