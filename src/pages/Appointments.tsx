@@ -541,50 +541,38 @@ export function Appointments() {
             {/* Progress Indicator */}
             <div className="mb-12 max-w-4xl mx-auto">
               <div className="overflow-x-auto pb-2">
-                <div className="flex items-center justify-between min-w-[560px] sm:min-w-0 sm:w-full mx-auto">
+                <div className="flex items-start justify-between min-w-[560px] sm:min-w-0 sm:w-full mx-auto">
                   {bookingSteps.map((step, index) => (
-                  <div
-                    key={step.num}
-                    className="relative flex items-center flex-1 last:flex-none"
-                  >
-                    {/* Step Circle and Label */}
-                    <div className="flex flex-col items-center z-10">
-                      <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-medium transition-all duration-300 shadow-md ${currentStep >= step.num
-                          ? "bg-teal-600 text-white"
-                          : "bg-gray-300 text-gray-600"
-                          }`}
-                      >
-                        {currentStep > step.num ? (
-                          <CheckCircle2 className="h-7 w-7" />
-                        ) : (
-                          step.num
-                        )}
-                      </div>
-                      <span className="mt-3 text-xs sm:text-sm font-medium text-gray-700">
-                        {step.label}
-                      </span>
-                    </div>
-
-                    {/* Connecting Line */}
-                    {index < bookingSteps.length - 1 && (
-                      <div className="absolute top-6 left-12 right-0 h-1 -z-10">
+                    <React.Fragment key={step.num}>
+                      <div className="flex w-16 sm:w-20 flex-col items-center shrink-0">
                         <div
-                          className="h-full transition-all duration-500"
-                          style={{
-                            backgroundColor:
-                              currentStep > step.num ? "#0d9488" : "#d1d5db",
-                            width:
-                              currentStep > step.num
-                                ? "100%" // previous steps fully filled
-                                : currentStep === step.num
-                                  ? "50%" // optional partial fill for active step
-                                  : "0%", // future steps empty
-                          }}
-                        />
+                          className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-medium shadow-md transition-all duration-300 ${
+                            currentStep >= step.num
+                              ? "bg-teal-600 text-white"
+                              : "bg-gray-300 text-gray-600"
+                          }`}
+                        >
+                          {currentStep > step.num ? (
+                            <CheckCircle2 className="h-7 w-7" />
+                          ) : (
+                            step.num
+                          )}
+                        </div>
+                        <span className="mt-3 text-center text-xs font-medium text-gray-700 sm:text-sm">
+                          {step.label}
+                        </span>
                       </div>
-                    )}
-                  </div>
+
+                      {index < bookingSteps.length - 1 && (
+                        <div
+                          className={`mt-6 min-w-[2.5rem] flex-1 transition-colors duration-300 ${
+                            currentStep > step.num
+                              ? "h-1 rounded-full bg-teal-600"
+                              : "h-0 border-t-2 border-dashed border-gray-300"
+                          }`}
+                        />
+                      )}
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

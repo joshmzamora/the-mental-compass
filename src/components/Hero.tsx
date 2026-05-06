@@ -70,10 +70,10 @@ export function Hero() {
           <rect width="100%" height="100%" fill="url(#compassGrid)" />
         </svg>
 
-        <div className="absolute left-1/2 top-8 hidden -translate-x-1/2 transform text-teal-400 opacity-30 sm:block">
+        <div className="absolute left-1/2 top-4 hidden -translate-x-1/2 transform text-teal-400 opacity-30 md:block lg:top-6">
           <div className="flex flex-col items-center">
-            <div className="text-sm">N</div>
-            <div className="h-12 w-px bg-teal-400"></div>
+            <div className="text-xs">N</div>
+            <div className="h-8 w-px bg-teal-400 lg:h-10"></div>
           </div>
         </div>
         <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 transform text-teal-400 opacity-30 sm:block">

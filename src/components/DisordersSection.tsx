@@ -51,6 +51,8 @@ const disorderImages: Record<string, string> = {
     "https://images.unsplash.com/photo-1474418397713-7ede21d49118?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   depression:
     "https://images.unsplash.com/photo-1493836512294-502baa1986e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
+  "persistent-depressive-disorder":
+    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   bipolar:
     "https://images.unsplash.com/photo-1517842645767-c639042777db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   ptsd: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
@@ -61,6 +63,10 @@ const disorderImages: Record<string, string> = {
     "https://images.unsplash.com/photo-1519389950473-47ba0277781c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   "social-anxiety":
     "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
+  agoraphobia:
+    "https://images.unsplash.com/photo-1500534623283-312aade485b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
+  "specific-phobia":
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   "panic-disorder":
     "https://images.unsplash.com/photo-1485727749690-d091e8284ef3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   gad: "https://images.unsplash.com/photo-1508672019048-805c876b67e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
@@ -79,6 +85,8 @@ const disorderImages: Record<string, string> = {
     "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   "insomnia-disorder":
     "https://images.unsplash.com/photo-1520206183501-b80df61043c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
+  misophonia:
+    "https://images.unsplash.com/photo-1516321497487-e288fb19713f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
 };
 
 const defaultDisorderImage =
@@ -88,12 +96,15 @@ const defaultDisorderImage =
 const disorderToSpecialties: Record<string, string[]> = {
   anxiety: ["Anxiety", "Stress Management"],
   depression: ["Depression"],
+  "persistent-depressive-disorder": ["Depression"],
   bipolar: ["Depression", "Mood Disorders"],
   ptsd: ["PTSD", "Trauma"],
   ocd: ["OCD", "Anxiety"],
   "eating-disorders": ["Eating Disorders"],
   adhd: ["ADHD", "Anxiety"],
   "social-anxiety": ["Anxiety", "Social Anxiety"],
+  agoraphobia: ["Anxiety", "Panic"],
+  "specific-phobia": ["Anxiety", "Stress Management"],
   "panic-disorder": ["Anxiety", "Panic"],
   gad: ["Anxiety", "Stress Management"],
   schizophrenia: ["Psychosis", "Severe Mental Illness"],
@@ -104,18 +115,22 @@ const disorderToSpecialties: Record<string, string[]> = {
   autism: ["Neurodiversity", "ADHD"],
   "dissociative-disorders": ["Trauma", "PTSD"],
   "insomnia-disorder": ["Sleep Disorders", "Anxiety"],
+  misophonia: ["OCD", "Anxiety"],
 };
 
 // Mapping of disorders to blog categories
 const disorderToCategories: Record<string, string[]> = {
   anxiety: ["Coping Strategies", "Education"],
   depression: ["Support", "Education"],
+  "persistent-depressive-disorder": ["Support", "Education"],
   bipolar: ["Support", "Education"],
   ptsd: ["Support", "Education"],
   ocd: ["Coping Strategies", "Education"],
   "eating-disorders": ["Support", "Wellness"],
   adhd: ["Education", "Coping Strategies"],
   "social-anxiety": ["Coping Strategies", "Education"],
+  agoraphobia: ["Coping Strategies", "Education"],
+  "specific-phobia": ["Coping Strategies", "Education"],
   "panic-disorder": ["Coping Strategies", "Support"],
   gad: ["Coping Strategies", "Education"],
   schizophrenia: ["Support", "Education"],
@@ -126,6 +141,7 @@ const disorderToCategories: Record<string, string[]> = {
   autism: ["Education", "Support"],
   "dissociative-disorders": ["Education", "Support"],
   "insomnia-disorder": ["Wellness", "Coping Strategies"],
+  misophonia: ["Education", "Support"],
 };
 
 const DISORDERS_PAGE_SIZE = 6;
@@ -1480,6 +1496,8 @@ export function DisordersSection() {
                                   "https://www.dbsalliance.org",
                                 "National Alliance on Mental Illness (NAMI)":
                                   "https://www.nami.org",
+                                "Cleveland Clinic":
+                                  "https://my.clevelandclinic.org/health/diseases/24460-misophonia",
                                 "Substance Abuse and Mental Health Services Administration (SAMHSA)":
                                   "https://www.samhsa.gov",
                                 "International Bipolar Foundation":

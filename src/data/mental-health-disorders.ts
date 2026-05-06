@@ -61,6 +61,31 @@ export const mentalHealthDisorders: MentalHealthDisorder[] = [
     ]
   },
   {
+    id: "persistent-depressive-disorder",
+    name: "Persistent Depressive Disorder (PDD)",
+    description: "Persistent depressive disorder is a chronic form of depression involving a low or depressed mood and related symptoms that last for two years or longer in adults.",
+    symptoms: [
+      "Low or depressed mood most days",
+      "Low energy or fatigue",
+      "Low self-esteem",
+      "Poor concentration or difficulty making decisions",
+      "Changes in sleep or appetite",
+      "Feelings of hopelessness"
+    ],
+    treatments: [
+      "Psychotherapy such as Cognitive Behavioral Therapy (CBT) or interpersonal therapy",
+      "Antidepressant medications",
+      "Regular follow-up with a mental health professional",
+      "Exercise and daily routine support",
+      "Treatment for co-occurring anxiety or substance use when present"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Depression and Bipolar Support Alliance (DBSA)",
+      "National Alliance on Mental Illness (NAMI)"
+    ]
+  },
+  {
     id: "bipolar",
     name: "Bipolar Disorder",
     description: "Bipolar disorder is characterized by unusual shifts in mood, energy, activity levels, and the ability to carry out day-to-day tasks, including manic and depressive episodes.",
@@ -204,6 +229,54 @@ export const mentalHealthDisorders: MentalHealthDisorder[] = [
     resources: [
       "Anxiety and Depression Association of America (ADAA)",
       "National Institute of Mental Health (NIMH)",
+      "Mental Health America"
+    ]
+  },
+  {
+    id: "agoraphobia",
+    name: "Agoraphobia",
+    description: "Agoraphobia is an anxiety disorder involving intense fear of situations where escape may feel difficult or help may not be available, often leading to avoidance of public places or leaving home alone.",
+    symptoms: [
+      "Fear of public transportation, crowds, open spaces, or enclosed places",
+      "Avoidance of situations that feel hard to escape",
+      "Needing a companion to go outside or travel",
+      "Panic-like symptoms in feared situations",
+      "Distress that disrupts work, school, or daily routines"
+    ],
+    treatments: [
+      "Cognitive Behavioral Therapy (CBT)",
+      "Exposure-based therapy",
+      "Medication such as SSRIs when appropriate",
+      "Panic-management and coping skills",
+      "Gradual return to avoided situations with support"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Anxiety and Depression Association of America (ADAA)",
+      "National Alliance on Mental Illness (NAMI)"
+    ]
+  },
+  {
+    id: "specific-phobia",
+    name: "Specific Phobia",
+    description: "Specific phobia is an intense fear of a particular object or situation that is out of proportion to the actual danger and can interfere with daily life.",
+    symptoms: [
+      "Immediate fear or anxiety around a specific object or situation",
+      "Avoidance of the feared trigger",
+      "Physical symptoms such as trembling, rapid heartbeat, or shortness of breath",
+      "Recognition that the fear feels excessive or hard to control",
+      "Distress or impairment in daily functioning"
+    ],
+    treatments: [
+      "Exposure therapy",
+      "Cognitive Behavioral Therapy (CBT)",
+      "Relaxation and coping-skills training",
+      "Medication in select situations",
+      "Psychoeducation and relapse prevention"
+    ],
+    resources: [
+      "National Institute of Mental Health (NIMH)",
+      "Anxiety and Depression Association of America (ADAA)",
       "Mental Health America"
     ]
   },
@@ -445,6 +518,30 @@ export const mentalHealthDisorders: MentalHealthDisorder[] = [
       "National Institute of Mental Health (NIMH)",
       "Mental Health America",
       "Substance Abuse and Mental Health Services Administration (SAMHSA)"
+    ]
+  },
+  {
+    id: "misophonia",
+    name: "Misophonia",
+    description: "Misophonia is a condition involving decreased tolerance to specific sounds or related cues that can trigger intense emotional and physical reactions. It is recognized clinically, but it is not currently a distinct DSM-5 disorder.",
+    symptoms: [
+      "Strong anger, disgust, anxiety, or irritation in response to trigger sounds",
+      "Trigger sounds such as chewing, sniffing, tapping, or throat clearing",
+      "Physical stress responses like muscle tension or rapid heartbeat",
+      "Avoidance of situations where trigger sounds may occur",
+      "Difficulty concentrating or staying present when triggers happen"
+    ],
+    treatments: [
+      "Psychotherapy focused on coping skills and trigger management",
+      "Treatment of related anxiety, OCD, or trauma symptoms when present",
+      "Sound-management strategies such as earplugs, white noise, or noise-canceling headphones",
+      "Environmental accommodations at school, work, or home",
+      "Stress-reduction and emotion-regulation techniques"
+    ],
+    resources: [
+      "Cleveland Clinic",
+      "International OCD Foundation",
+      "National Alliance on Mental Illness (NAMI)"
     ]
   }
 ];

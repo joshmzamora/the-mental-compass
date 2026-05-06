@@ -6700,7 +6700,7 @@ h3 {
 
 .home-hero-stage {
   min-height: min(42rem, calc(100vh - 14rem));
-  padding-top: 3rem;
+  padding-top: 4.5rem;
   padding-bottom: 2rem;
 }
 
@@ -6777,7 +6777,7 @@ h3 {
 
   .home-hero-stage {
     min-height: auto;
-    padding-top: 2.5rem;
+    padding-top: 3rem;
     padding-bottom: 1.5rem;
   }
 
