@@ -77,9 +77,16 @@ function MemberActions({
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeIndicator, setActiveIndicator] = useState({ left: 0, width: 0, visible: false });
+  const [showDesktopNav, setShowDesktopNav] = useState(true);
+  const [showBrandText, setShowBrandText] = useState(false);
   const location = useLocation();
   const { user, loading, logout } = useAuth();
+  const headerRowRef = useRef<HTMLDivElement | null>(null);
+  const brandLinkRef = useRef<HTMLAnchorElement | null>(null);
   const desktopNavRef = useRef<HTMLElement | null>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement | null>(null);
+  const brandMeasureRef = useRef<HTMLDivElement | null>(null);
+  const desktopNavMeasureRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
   const navItems = [
@@ -163,6 +170,67 @@ export function Header() {
     };
   }, [location.pathname]);
 
+  useLayoutEffect(() => {
+    const rowElement = headerRowRef.current;
+    const brandMeasureElement = brandMeasureRef.current;
+    const desktopNavMeasureElement = desktopNavMeasureRef.current;
+    const brandLinkElement = brandLinkRef.current;
+
+    if (!rowElement || !brandMeasureElement || !desktopNavMeasureElement || !brandLinkElement) {
+      return;
+    }
+
+    const syncBrandVisibility = () => {
+      const mobileToggleElement = mobileToggleRef.current;
+      const mobileToggleWidth = mobileToggleElement?.offsetWidth ?? 0;
+      const rowWidth = rowElement.clientWidth;
+      const fullBrandWidth = brandMeasureElement.offsetWidth;
+      const logoOnlyWidth = brandLinkElement.offsetWidth;
+      const desktopNavWidth = desktopNavMeasureElement.offsetWidth;
+      const headerGapAllowance = 24;
+      const canShowDesktopNav = rowWidth >= logoOnlyWidth + desktopNavWidth + headerGapAllowance;
+      const rightSideWidth = canShowDesktopNav ? desktopNavWidth : mobileToggleWidth;
+      const availableWidth = rowElement.clientWidth - rightSideWidth;
+      const requiredWidth = fullBrandWidth + headerGapAllowance;
+
+      setShowDesktopNav(canShowDesktopNav);
+      setShowBrandText(availableWidth >= requiredWidth);
+    };
+
+    syncBrandVisibility();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", syncBrandVisibility);
+
+      return () => {
+        window.removeEventListener("resize", syncBrandVisibility);
+      };
+    }
+
+    const resizeObserver = new ResizeObserver(syncBrandVisibility);
+    resizeObserver.observe(rowElement);
+    resizeObserver.observe(brandMeasureElement);
+    resizeObserver.observe(desktopNavMeasureElement);
+    resizeObserver.observe(brandLinkElement);
+
+    const desktopNavElement = desktopNavRef.current;
+    if (desktopNavElement) {
+      resizeObserver.observe(desktopNavElement);
+    }
+
+    const mobileToggleElement = mobileToggleRef.current;
+    if (mobileToggleElement) {
+      resizeObserver.observe(mobileToggleElement);
+    }
+
+    window.addEventListener("resize", syncBrandVisibility);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", syncBrandVisibility);
+    };
+  }, [loading, user]);
+
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
@@ -177,8 +245,8 @@ export function Header() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex h-16 items-center justify-between gap-2">
-          <Link to="/" className="flex items-center gap-2 group min-w-0 flex-shrink">
+        <div ref={headerRowRef} className="flex h-16 items-center justify-between gap-2">
+          <Link ref={brandLinkRef} to="/" className="flex items-center gap-2 group flex-shrink-0">
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -186,17 +254,20 @@ export function Header() {
             >
               <Compass className="h-7 w-7 sm:h-8 sm:w-8 text-teal-600 group-hover:text-teal-700 transition-colors" />
             </motion.div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-base sm:text-xl text-teal-900 group-hover:text-teal-700 transition-colors truncate">
+            <div className={showBrandText ? "flex flex-col" : "hidden"}>
+              <span className="text-base sm:text-xl text-teal-900 group-hover:text-teal-700 transition-colors">
                 The Mental Compass
               </span>
-              <span className="text-xs text-gray-500 hidden lg:block">
+              <span className="text-xs text-gray-500">
                 Navigate Your Mental Wellness
               </span>
             </div>
           </Link>
 
-          <nav ref={desktopNavRef} className="hidden md:flex items-center gap-6 flex-shrink-0 relative">
+          <nav
+            ref={desktopNavRef}
+            className={`${showDesktopNav ? "flex" : "hidden"} items-center gap-6 flex-shrink-0 relative`}
+          >
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -230,7 +301,8 @@ export function Header() {
           </nav>
 
           <button
-            className="md:hidden"
+            ref={mobileToggleRef}
+            className={showDesktopNav ? "hidden" : "block"}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
@@ -246,7 +318,7 @@ export function Header() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden py-4 border-t"
+            className="py-4 border-t"
           >
             <div className="flex flex-col gap-4">
               <Link to="/" onClick={closeMobileMenu} className={navLinkClass("/") + " text-left"}>
@@ -280,6 +352,38 @@ export function Header() {
               )}
             </div>
           </motion.nav>
+        )}
+      </div>
+
+      <div
+        ref={brandMeasureRef}
+        aria-hidden="true"
+        className="invisible pointer-events-none absolute left-0 top-0 flex items-center gap-2 whitespace-nowrap"
+      >
+        <div className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0" />
+        <div className="flex flex-col">
+          <span className="text-base sm:text-xl">The Mental Compass</span>
+          <span className="text-xs">Navigate Your Mental Wellness</span>
+        </div>
+      </div>
+
+      <div
+        ref={desktopNavMeasureRef}
+        aria-hidden="true"
+        className="invisible pointer-events-none absolute left-0 top-0 flex items-center gap-6 whitespace-nowrap"
+      >
+        {navItems.map((item) => (
+          <span key={item.path} className="text-sm">
+            {item.label}
+          </span>
+        ))}
+
+        {loading ? (
+          <GuestActions />
+        ) : user ? (
+          <MemberActions onLogout={logout} />
+        ) : (
+          <GuestActions />
         )}
       </div>
     </header>
