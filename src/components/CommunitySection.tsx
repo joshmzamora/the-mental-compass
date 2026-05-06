@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -48,7 +48,7 @@ import { projectId } from "../utils/supabase/info";
 import { supabase } from "../utils/supabase/client";
 
 // Standardized tags that match the site's content tagging system
-export const COMMUNITY_TAGS = [
+const COMMUNITY_TAGS = [
   "Anxiety",
   "Depression",
   "Bipolar",
@@ -63,9 +63,9 @@ export const COMMUNITY_TAGS = [
   "Relationships"
 ] as const;
 
-export type CommunityTag = typeof COMMUNITY_TAGS[number];
+type CommunityTag = typeof COMMUNITY_TAGS[number];
 
-export interface ForumPost {
+interface ForumPost {
   id: string;
   userId: string;
   author: string;
@@ -80,7 +80,7 @@ export interface ForumPost {
   responses: Response[];
 }
 
-export interface Response {
+interface Response {
   id: string;
   postId: string;
   userId: string;
@@ -91,7 +91,7 @@ export interface Response {
   likedBy: string[];
 }
 
-export interface Notification {
+interface Notification {
   id: string;
   postId: string;
   postTitle: string;
@@ -117,42 +117,44 @@ interface ChatMessage {
 const initialChatMessages: ChatMessage[] = [
   {
     id: "starter-1",
-    user_id: "system",
-    author: "Michael",
+    user_id: "starter-michael",
+    author: "Michael R.",
     content: "Has anyone tried the new meditation app recommended in the blog?",
     created_at: new Date(Date.now() - 3600000).toISOString(),
     avatar: "M"
   },
   {
     id: "starter-2",
-    user_id: "system",
-    author: "Jessica",
-    content: "Yes! I've been using it for a week now and it's really helpful for my anxiety.",
-    created_at: new Date(Date.now() - 3480000).toISOString(),
+    user_id: "starter-jessica",
+    author: "Jessica M.",
+    content: "I tried it twice this week. The short breathing sessions are the easiest part for me to stick with.",
+    created_at: new Date(Date.now() - 2820000).toISOString(),
     avatar: "J"
   },
 ];
 
 const simulatedChatProfiles = [
-  { author: "Avery", avatar: "A" },
-  { author: "Nina", avatar: "N" },
-  { author: "Marcus", avatar: "M" },
-  { author: "Leah", avatar: "L" },
-  { author: "Owen", avatar: "O" },
-  { author: "Sofia", avatar: "S" },
-  { author: "Eli", avatar: "E" },
+  { author: "Avery K.", avatar: "A" },
+  { author: "Nina S.", avatar: "N" },
+  { author: "Marcus T.", avatar: "M" },
+  { author: "Leah P.", avatar: "L" },
+  { author: "Owen R.", avatar: "O" },
+  { author: "Sofia L.", avatar: "S" },
+  { author: "Eli B.", avatar: "E" },
+  { author: "Maya C.", avatar: "M" },
+  { author: "Jordan V.", avatar: "J" },
 ];
 
 const simulatedChatLinePool = [
-  "Quick check-in: drinking water and taking a breath helped me reset.",
-  "Anyone have a go-to 2 minute grounding exercise?",
-  "Small win: I asked for support instead of isolating.",
-  "I took a short walk and my anxiety dropped from an 8 to a 5.",
-  "Reminder for anyone reading this: progress counts even on heavy days.",
+  "I used the 5-4-3-2-1 grounding thing before class today. It actually helped a little.",
+  "Does anyone else feel better when they write the next tiny step down?",
+  "Small win today: I answered a message I had been avoiding.",
+  "I took a 10 minute walk after work and felt less stuck.",
+  "Trying a no-phone bedtime routine this week. Mixed results so far.",
   "What helps you unwind after therapy sessions?",
   "I’m trying a no-phone bedtime routine this week.",
-  "Sending support to anyone feeling overwhelmed tonight.",
-  "My stress was high earlier, but breathing + journaling helped.",
+  "I made lunch instead of skipping it today, so counting that as a win.",
+  "Breathing exercises help me more when I do them before I feel overwhelmed.",
   "Does anyone else do tiny task lists on low-energy days?",
 ];
 
@@ -231,12 +233,31 @@ const engagementTemplates: EngagementTemplate[] = [
 ];
 
 const engagementAuthors = [
-  "Community Pulse",
-  "Care Circle",
-  "Support Desk",
-  "Wellness Team",
-  "Check-in Crew",
-  "Growth Circle"
+  "Maya C.",
+  "Jordan V.",
+  "Priya N.",
+  "Ethan R.",
+  "Samira K.",
+  "Caleb M.",
+  "Tessa L.",
+  "Noah P.",
+  "Iris W.",
+  "Dylan S."
+];
+
+const engagementReplyAuthors = [
+  "Alex J.",
+  "Nora P.",
+  "Daniel K.",
+  "Aisha L.",
+  "Owen P.",
+  "Leah R.",
+  "Marcus T.",
+  "Sofia B.",
+  "Cam W.",
+  "Elena M.",
+  "Riley H.",
+  "Mina S."
 ];
 
 const toDayStart = (date: Date) =>
@@ -248,6 +269,80 @@ const toIsoDay = (date: Date) => {
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 };
+
+const getSeedFromString = (value: string) =>
+  value.split("").reduce(
+    (sum, char, index) => sum + char.charCodeAt(0) * (index + 1),
+    0,
+  );
+
+const getSeededNumber = (seed: string | number, min: number, max: number) => {
+  const normalizedSeed =
+    typeof seed === "number" ? Math.abs(seed) : getSeedFromString(seed);
+  const range = Math.max(1, max - min + 1);
+  return min + ((normalizedSeed * 9301 + 49297) % range);
+};
+
+const getPostAgeMinutes = (timestamp: Date, now: Date) =>
+  Math.max(0, Math.floor((now.getTime() - timestamp.getTime()) / 60000));
+
+const getEngagementCaps = (ageMinutes: number) => {
+  if (ageMinutes < 30) {
+    return { replies: 0, likesMin: 0, likesMax: 2, responseLikesMax: 0 };
+  }
+
+  if (ageMinutes < 120) {
+    return { replies: 1, likesMin: 1, likesMax: 5, responseLikesMax: 1 };
+  }
+
+  if (ageMinutes < 480) {
+    return { replies: 2, likesMin: 3, likesMax: 12, responseLikesMax: 2 };
+  }
+
+  if (ageMinutes < 1440) {
+    return { replies: 3, likesMin: 5, likesMax: 20, responseLikesMax: 4 };
+  }
+
+  if (ageMinutes < 10080) {
+    return { replies: 5, likesMin: 8, likesMax: 42, responseLikesMax: 7 };
+  }
+
+  return { replies: 6, likesMin: 10, likesMax: 68, responseLikesMax: 10 };
+};
+
+const getRealisticReplyCount = (ageMinutes: number, seed: string) => {
+  const caps = getEngagementCaps(ageMinutes);
+  if (caps.replies === 0) return 0;
+  return getSeededNumber(seed, 0, caps.replies);
+};
+
+const getRealisticPostLikes = (
+  ageMinutes: number,
+  replyCount: number,
+  seed: string,
+) => {
+  const caps = getEngagementCaps(ageMinutes);
+  const seededLikes = getSeededNumber(seed, caps.likesMin, caps.likesMax);
+  const replyLift = replyCount > 0 ? Math.min(replyCount * 2, 8) : 0;
+  return Math.min(caps.likesMax, seededLikes + replyLift);
+};
+
+const getRealisticResponseLikes = (
+  responseAgeMinutes: number,
+  postLikes: number,
+  seed: string,
+) => {
+  const caps = getEngagementCaps(responseAgeMinutes);
+  const maxLikes = Math.min(caps.responseLikesMax, Math.max(0, postLikes - 1));
+  if (maxLikes <= 0) return 0;
+  return getSeededNumber(seed, 0, maxLikes);
+};
+
+const shouldNormalizeEngagement = (post: ForumPost) =>
+  post.id.startsWith("campaign-") ||
+  post.id.startsWith("new-") ||
+  post.userId.startsWith("campaign") ||
+  post.userId.startsWith("mock");
 
 const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
   const today = toDayStart(now);
@@ -282,7 +377,7 @@ const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
       if (isToday) {
         // Spread today's engagement posts so the feed feels active
         // without looking artificially clustered "right now".
-        const todayOffsetsMinutes = [12, 165, 360];
+        const todayOffsetsMinutes = [42, 225, 520];
         const minutesAgo = todayOffsetsMinutes[slot] ?? (120 + slot * 90);
         timestamp.setTime(now.getTime() - minutesAgo * 60000);
       } else {
@@ -294,9 +389,12 @@ const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
         );
       }
 
-      const replyCount = 1 + ((dayIndex + slot) % 3);
-      const likeMultiplier = 7 + ((dayIndex + slot) % 6);
       const postId = `campaign-${toIsoDay(cursor)}-${slot + 1}`;
+      const postAgeMinutes = getPostAgeMinutes(timestamp, now);
+      const replyCount = getRealisticReplyCount(
+        postAgeMinutes,
+        `${postId}-replies`,
+      );
 
       const responses: Response[] = Array.from(
         { length: replyCount },
@@ -304,14 +402,10 @@ const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
           const replyTimestamp = new Date(timestamp);
           replyTimestamp.setMinutes(
             replyTimestamp.getMinutes() +
-              10 +
-              responseIndex * 9,
+              24 +
+              responseIndex * 38 +
+              getSeededNumber(`${postId}-delay-${responseIndex}`, 0, 18),
           );
-          if (isToday && replyTimestamp > now) {
-            replyTimestamp.setTime(
-              now.getTime() - (2 + responseIndex) * 60000,
-            );
-          }
 
           const replyContent =
             template.replyPool[
@@ -323,18 +417,31 @@ const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
             id: `${postId}-r${responseIndex + 1}`,
             postId,
             userId: `campaign-user-${slot}-${responseIndex}`,
-            author: `Member ${String.fromCharCode(
-              65 +
-                ((dayIndex + slot + responseIndex) %
-                  26),
-            )}.`,
+            author:
+              engagementReplyAuthors[
+                (dayIndex + slot + responseIndex) %
+                  engagementReplyAuthors.length
+              ],
             content: replyContent,
             timestamp: replyTimestamp,
-            likes: 3 + ((dayIndex + responseIndex) % 7),
+            likes: 0,
             likedBy: [],
           };
         },
+      ).filter((response) => response.timestamp.getTime() <= now.getTime() - 2 * 60000);
+      const likes = getRealisticPostLikes(
+        postAgeMinutes,
+        responses.length,
+        `${postId}-likes`,
       );
+      const realisticResponses = responses.map((response, responseIndex) => ({
+        ...response,
+        likes: getRealisticResponseLikes(
+          getPostAgeMinutes(response.timestamp, now),
+          likes,
+          `${response.id}-likes-${responseIndex}`,
+        ),
+      }));
 
       generated.push({
         id: postId,
@@ -343,11 +450,11 @@ const generateDailyEngagementPosts = (now: Date): ForumPost[] => {
         title: template.title,
         content: template.content,
         tags: template.tags,
-        replies: responses.length,
-        likes: responses.length * likeMultiplier,
+        replies: realisticResponses.length,
+        likes,
         likedBy: [],
         timestamp,
-        responses,
+        responses: realisticResponses,
       });
     }
 
@@ -385,7 +492,8 @@ const normalizeForumTimestamps = (
       );
     }
 
-    const safeResponses = post.responses.map(
+    const postResponses = Array.isArray(post.responses) ? post.responses : [];
+    const safeResponses = postResponses.map(
       (response, responseIndex) => {
         const minResponseTime = new Date(
           safePostTimestamp.getTime() +
@@ -426,10 +534,53 @@ const normalizeForumTimestamps = (
       },
     );
 
+    if (!shouldNormalizeEngagement(post)) {
+      return {
+        ...post,
+        timestamp: safePostTimestamp,
+        replies: safeResponses.length,
+        responses: safeResponses,
+      };
+    }
+
+    const ageMinutes = getPostAgeMinutes(safePostTimestamp, now);
+    const caps = getEngagementCaps(ageMinutes);
+    const realisticResponses = safeResponses
+      .filter(
+        (response) =>
+          response.timestamp.getTime() <= now.getTime() - 2 * 60000 &&
+          response.timestamp.getTime() >=
+            safePostTimestamp.getTime() + 10 * 60000,
+      )
+      .slice(0, caps.replies);
+    const realisticLikes = Math.max(
+      post.likedBy.length,
+      getRealisticPostLikes(
+        ageMinutes,
+        realisticResponses.length,
+        `${post.id}-normalized-likes`,
+      ),
+    );
+    const normalizedResponses = realisticResponses.map(
+      (response, responseIndex) => ({
+        ...response,
+        likes: Math.max(
+          response.likedBy.length,
+          getRealisticResponseLikes(
+            getPostAgeMinutes(response.timestamp, now),
+            realisticLikes,
+            `${response.id}-normalized-likes-${responseIndex}`,
+          ),
+        ),
+      }),
+    );
+
     return {
       ...post,
       timestamp: safePostTimestamp,
-      responses: safeResponses,
+      replies: normalizedResponses.length,
+      likes: realisticLikes,
+      responses: normalizedResponses,
     };
   });
 };
@@ -476,6 +627,13 @@ export function CommunitySection() {
   const latestRealChatTimestampRef = useRef(0);
 
   const isSearching = !!(searchQuery.trim() || selectedTags.length > 0 || dateRangeFilter !== "all");
+  const visibleOnlineCount = useMemo(() => {
+    const hourSeed = new Date().getHours() % 3;
+    const realActivityLift = Math.min(2, realTimeChatMessages.length);
+    const localActivityLift = Math.min(1, simulatedChatMessages.length > 3 ? 1 : 0);
+    const connectionLift = chatDatabaseConfigured ? 1 : 0;
+    return 4 + hourSeed + realActivityLift + localActivityLift + connectionLift;
+  }, [chatDatabaseConfigured, realTimeChatMessages.length, simulatedChatMessages.length]);
 
   // Load notifications from localStorage on mount
   useEffect(() => {
@@ -568,7 +726,8 @@ export function CommunitySection() {
 
   useEffect(() => {
     const now = Date.now();
-    const seedCount = 6;
+    const seedCount = 3;
+    const seedAgesMinutes = [118, 63, 28];
 
     const seededMessages: ChatMessage[] = Array.from(
       { length: seedCount },
@@ -581,7 +740,7 @@ export function CommunitySection() {
           simulatedChatLinePool[
             index % simulatedChatLinePool.length
           ];
-        const minutesAgo = 95 - index * 14;
+        const minutesAgo = seedAgesMinutes[index] ?? 35;
         const createdAt = new Date(
           now - minutesAgo * 60000,
         ).toISOString();
@@ -603,6 +762,7 @@ export function CommunitySection() {
   useEffect(() => {
     const pushSimulatedMessage = () => {
       const now = Date.now();
+      const quietPeriod = chatDatabaseConfigured ? 360000 : 240000;
 
       setSimulatedChatMessages((previous) => {
         const latestSimulatedTimestamp = previous.reduce(
@@ -622,7 +782,7 @@ export function CommunitySection() {
         // Keep message cadence believable and avoid rapid "just now" clustering.
         if (
           latestKnownTimestamp > 0 &&
-          now - latestKnownTimestamp < 140000
+          now - latestKnownTimestamp < quietPeriod
         ) {
           return previous;
         }
@@ -642,7 +802,11 @@ export function CommunitySection() {
           user_id: `sim-live-user-${nextIndex % 12}`,
           author: profile.author,
           content,
-          created_at: new Date(now).toISOString(),
+          created_at: new Date(
+            now -
+              getSeededNumber(`chat-lag-${nextIndex}-${now}`, 45, 105) *
+                1000,
+          ).toISOString(),
           avatar: profile.avatar,
         };
 
@@ -650,20 +814,22 @@ export function CommunitySection() {
       });
     };
 
-    const firstMessageDelay = window.setTimeout(
-      pushSimulatedMessage,
-      55000,
-    );
-    const interval = window.setInterval(
-      pushSimulatedMessage,
-      175000,
-    );
+    let timeoutId: number;
+    const getNextDelay = () =>
+      getSeededNumber(`chat-delay-${Date.now()}`, 240000, 420000);
+    const scheduleNextMessage = (delay: number) => {
+      timeoutId = window.setTimeout(() => {
+        pushSimulatedMessage();
+        scheduleNextMessage(getNextDelay());
+      }, delay);
+    };
+
+    scheduleNextMessage(getSeededNumber("chat-first-delay", 90000, 150000));
 
     return () => {
-      window.clearTimeout(firstMessageDelay);
-      window.clearInterval(interval);
+      window.clearTimeout(timeoutId);
     };
-  }, []);
+  }, [chatDatabaseConfigured]);
 
   // Save local messages to localStorage whenever they change
   useEffect(() => {
@@ -3362,8 +3528,9 @@ export function CommunitySection() {
                       const nowMs = Date.now();
                       const getFeaturedScore = (post: ForumPost) => {
                         const ageInDays = (nowMs - post.timestamp.getTime()) / (1000 * 60 * 60 * 24);
-                        const recencyBoost = Math.max(0, 30 - ageInDays) * 1.5;
-                        return post.likes + post.replies * 2 + recencyBoost;
+                        const ageInHours = ageInDays * 24;
+                        const recencyBoost = ageInHours < 1 ? 0 : Math.max(0, 14 - ageInDays) * 0.75;
+                        return post.likes + post.replies * 3 + recencyBoost;
                       };
 
                       const featuredPosts = [...forumPosts]
@@ -3581,10 +3748,12 @@ export function CommunitySection() {
                       <Sparkles className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm text-gray-900 mb-1">
-                          <strong>Real-Time Chat Enabled</strong>
+                          <strong>{chatDatabaseConfigured ? "Live Chat Connected" : "Community Chat Active"}</strong>
                         </p>
                         <p className="text-xs text-gray-700">
-                          Messages appear instantly across all connected devices. Your conversations are synchronized in real-time.
+                          {chatDatabaseConfigured
+                            ? "Messages update across connected devices as people participate."
+                            : "A few recent community check-ins are shown while live sync is unavailable."}
                         </p>
                       </div>
                     </div>
@@ -3602,7 +3771,7 @@ export function CommunitySection() {
                         <CardDescription>
                           <span className="inline-flex items-center gap-1">
                             <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                            {23 + chatMessages.length - initialChatMessages.length} people online
+                            {visibleOnlineCount} people online
                           </span>
                         </CardDescription>
                       </div>
