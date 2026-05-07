@@ -1,4 +1,4 @@
-import { SignIn } from "@clerk/react";
+import { SignIn } from "@clerk/clerk-react";
 import { Navigate } from "react-router-dom";
 import { AuthPageShell } from "../components/AuthPageShell";
 import { ClerkAuthFallback } from "../components/ClerkAuthFallback";

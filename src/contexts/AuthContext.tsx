@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import { useClerk, useUser } from "@clerk/react";
+import { useClerk, useUser } from "@clerk/clerk-react";
 import { clerkEnabled } from "../utils/clerk";
 
 const BACKUP_AUTH_USER_KEY = "mental_compass_backup_user";

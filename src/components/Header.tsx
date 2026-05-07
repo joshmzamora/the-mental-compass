@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Compass, Navigation, User, LogOut } from "lucide-react";
-import { UserButton } from "@clerk/react";
+import { UserButton } from "@clerk/clerk-react";
 import { motion } from "motion/react";
 import { Button } from "./ui/button";
 import { useAuth } from "../contexts/AuthContext";
