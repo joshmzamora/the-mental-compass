@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -47,6 +47,8 @@ export function Appointments() {
   const { user } = useAuth();
   const { addAppointment } = useUserProfile();
   const navigate = useNavigate();
+  const stepContentRef = useRef<HTMLDivElement | null>(null);
+  const shouldScrollToStepRef = useRef(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [expandedBio, setExpandedBio] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -61,6 +63,25 @@ export function Appointments() {
   // Reset expanded bio when step changes
   useEffect(() => {
     setExpandedBio(false);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (!shouldScrollToStepRef.current) {
+      return;
+    }
+
+    shouldScrollToStepRef.current = false;
+
+    const top = stepContentRef.current?.getBoundingClientRect().top;
+    if (top === undefined) {
+      return;
+    }
+
+    const scrollOffset = 240;
+    window.scrollTo({
+      top: window.scrollY + top - scrollOffset,
+      behavior: "smooth",
+    });
   }, [currentStep]);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [cardDetails, setCardDetails] = useState({
@@ -346,9 +367,16 @@ export function Appointments() {
     : availableTherapists.slice(0, 5);
 
   const nextStep = () => {
-    if (currentStep === 1 && canProceedToStep2) setCurrentStep(2);
-    else if (currentStep === 2 && canProceedToStep3) setCurrentStep(3);
-    else if (currentStep === 3 && canProceedToStep4) setCurrentStep(4);
+    if (currentStep === 1 && canProceedToStep2) {
+      shouldScrollToStepRef.current = true;
+      setCurrentStep(2);
+    } else if (currentStep === 2 && canProceedToStep3) {
+      shouldScrollToStepRef.current = true;
+      setCurrentStep(3);
+    } else if (currentStep === 3 && canProceedToStep4) {
+      shouldScrollToStepRef.current = true;
+      setCurrentStep(4);
+    }
   };
 
   const prevStep = () => {
@@ -564,13 +592,21 @@ export function Appointments() {
                       </div>
 
                       {index < bookingSteps.length - 1 && (
-                        <div
-                          className={`mt-6 min-w-[2.5rem] flex-1 transition-colors duration-300 ${
-                            currentStep > step.num
-                              ? "h-1 rounded-full bg-teal-600"
-                              : "h-0 border-t-2 border-dashed border-gray-300"
-                          }`}
-                        />
+                        <div className="mt-6 min-w-[2.5rem] flex-1 px-2">
+                          <div
+                            className={`w-full transition-all duration-300 ${
+                              currentStep > step.num ? "h-1 rounded-full bg-teal-600" : "h-[3px]"
+                            }`}
+                            style={
+                              currentStep > step.num
+                                ? undefined
+                                : {
+                                    backgroundImage:
+                                      "repeating-linear-gradient(to right, #94a3b8 0 12px, transparent 12px 20px)",
+                                  }
+                            }
+                          />
+                        </div>
                       )}
                     </React.Fragment>
                   ))}
@@ -579,7 +615,7 @@ export function Appointments() {
             </div>
 
             {/* Step Content */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div ref={stepContentRef} className="max-w-4xl mx-auto mb-12">
               <AnimatePresence mode="wait">
                 {/* Step 1: Select Date */}
                 {currentStep === 1 && (
