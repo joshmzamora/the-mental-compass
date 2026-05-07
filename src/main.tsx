@@ -12,7 +12,7 @@ const clerkAppearance = {
     colorPrimary: "#0f9f96",
     colorText: "#102033",
     colorTextSecondary: "#5f7187",
-    colorBackground: "rgba(255, 255, 255, 0)",
+    colorBackground: "#ffffff",
     colorInputBackground: "#f8fbfc",
     colorInputText: "#102033",
     borderRadius: "0.9rem",
@@ -105,6 +105,43 @@ const clerkAppearance = {
     formResendCodeLink: {
       color: "#0f8f88",
       fontWeight: "700",
+    },
+    modalBackdrop: {
+      background: "rgba(15, 23, 42, 0.42)",
+      backdropFilter: "blur(2px)",
+    },
+    modalContent: {
+      borderRadius: "20px",
+      border: "1px solid rgba(15, 159, 150, 0.14)",
+      boxShadow: "0 28px 70px rgba(15, 23, 42, 0.3)",
+      overflow: "hidden",
+    },
+    userButtonAvatarBox: {
+      width: "40px",
+      height: "40px",
+      borderRadius: "9999px",
+      border: "2px solid rgba(15, 159, 150, 0.2)",
+      boxShadow: "0 8px 20px rgba(15, 159, 150, 0.18)",
+    },
+    userButtonPopoverCard: {
+      borderRadius: "18px",
+      border: "1px solid rgba(15, 159, 150, 0.14)",
+      boxShadow: "0 20px 44px rgba(15, 23, 42, 0.18)",
+      overflow: "hidden",
+    },
+    userButtonPopoverMain: {
+      background: "linear-gradient(180deg, rgba(240, 249, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)",
+    },
+    userButtonPopoverFooter: {
+      borderTop: "1px solid rgba(15, 159, 150, 0.12)",
+      background: "rgba(240, 253, 250, 0.62)",
+    },
+    userButtonPopoverActionButton: {
+      borderRadius: "12px",
+    },
+    userButtonPopoverActionButtonText: {
+      color: "#334155",
+      fontWeight: "650",
     },
   },
 };
