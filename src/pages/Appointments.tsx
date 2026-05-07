@@ -333,7 +333,7 @@ export function Appointments() {
       };
 
       // Add appointment to user profile immediately (real-time update)
-      addAppointment(appointmentData);
+      await addAppointment(appointmentData);
 
       // Try to sync with backend
       if (accessToken) {

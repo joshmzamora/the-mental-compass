@@ -333,14 +333,63 @@ export function Dashboard() {
 
     const clampScore = (score: number, minimum = 55) =>
       Math.max(minimum, Math.min(100, Math.round(score)));
+    const activityStats = {
+      totalActiveSeconds: 0,
+      pageViews: 0,
+      uniquePages: [],
+      articleViews: 0,
+      journeyStarts: 0,
+      journeyStepsCompleted: 0,
+      appointmentsBooked: 0,
+      ...profile.activityStats,
+    };
+    const activeMinutes = activityStats.totalActiveSeconds / 60;
+    const uniquePageCount = activityStats.uniquePages.length;
+    const totalJourneySteps = profile.activeJourneys?.reduce(
+      (sum, journey) => sum + (journey.completedSteps?.length || 0),
+      0,
+    ) || 0;
+    const completedJourneyCount = profile.completedJourneys?.length || 0;
+    const siteEngagementScore = clampScore(
+      56 +
+        Math.min(
+          uniquePageCount * 2 +
+            activityStats.pageViews * 0.75 +
+            activityStats.articleViews * 3 +
+            activeMinutes / 3,
+          36,
+        ),
+      56,
+    );
+    const guidedProgressScore = clampScore(
+      58 +
+        Math.min(
+          activityStats.journeyStarts * 6 +
+            activityStats.journeyStepsCompleted * 5 +
+            totalJourneySteps * 3 +
+            completedJourneyCount * 12,
+          38,
+        ),
+      58,
+    );
+    const careActionScore = clampScore(
+      58 +
+        Math.min(
+          (profile.appointments?.length || 0) * 12 +
+            activityStats.appointmentsBooked * 6 +
+            (profile.forumPosts || 0) * 4,
+          38,
+        ),
+      58,
+    );
 
     // NORTH - Mental Clarity (Goals, Journeys, Focus)
     const goalsCompleted = profile.goals?.filter(g => g.completed).length || 0;
     const totalGoals = profile.goals?.length || 0;
     const goalsScore = totalGoals > 0 ? 55 + (goalsCompleted / totalGoals) * 40 : 64;
     const journeyProgress = profile.activeJourneys?.length || 0;
-    const journeyScore = journeyProgress > 0 ? 72 + Math.min(journeyProgress * 8, 20) : 62;
-    const north = clampScore((goalsScore + journeyScore) / 2, 58);
+    const journeyScore = journeyProgress > 0 ? 70 + Math.min(journeyProgress * 6, 18) : 62;
+    const north = clampScore((goalsScore + journeyScore + guidedProgressScore + siteEngagementScore) / 4, 58);
 
     // EAST - Emotional Balance (Mood tracking)
     const recentMoods = getRecentMoodData();
@@ -349,16 +398,17 @@ export function Dashboard() {
       const avgMood = recentMoods.reduce((sum, entry) => sum + entry.mood, 0) / recentMoods.length;
       east = clampScore(42 + (avgMood / 5) * 50, 48);
     }
+    east = clampScore((east * 2 + siteEngagementScore + guidedProgressScore) / 4, 55);
 
     // SOUTH - Physical Vitality (Streak, Activity)
     const streakScore = 58 + Math.min((profile.wellnessStreak || 0) * 6, 32);
     const activityScore = 58 + Math.min(((profile.journalEntries?.length || 0) + (profile.appointments?.length || 0)) * 7, 34);
-    const south = clampScore((streakScore + activityScore) / 2, 58);
+    const south = clampScore((streakScore + activityScore + siteEngagementScore) / 3, 58);
 
     // WEST - Social Connection (Community, Appointments)
     const appointmentScore = 58 + Math.min((profile.appointments?.length || 0) * 12, 34);
     const communityScore = 58 + Math.min((profile.forumPosts || 0) * 8, 34);
-    const west = clampScore((appointmentScore + communityScore) / 2, 58);
+    const west = clampScore((appointmentScore + communityScore + careActionScore) / 3, 58);
 
     // Overall compass calibration
     const overall = clampScore((north + east + south + west) / 4, 58);

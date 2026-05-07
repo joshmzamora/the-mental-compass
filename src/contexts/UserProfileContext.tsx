@@ -73,6 +73,17 @@ interface CompletedJourney {
   reflectionCount: number;
 }
 
+interface ActivityStats {
+  totalActiveSeconds: number;
+  pageViews: number;
+  uniquePages: string[];
+  articleViews: number;
+  journeyStarts: number;
+  journeyStepsCompleted: number;
+  appointmentsBooked: number;
+  lastActivityAt?: string;
+}
+
 interface UserProfile {
   name: string;
   email: string;
@@ -88,20 +99,23 @@ interface UserProfile {
   forumPosts: number;
   activeJourneys: JourneyProgress[];
   completedJourneys?: CompletedJourney[];
+  activityStats?: ActivityStats;
 }
 
 interface UserProfileContextType {
   profile: UserProfile | null;
   loading: boolean;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
-  addAppointment: (appointment: Appointment) => void;
+  addAppointment: (appointment: Appointment) => Promise<void>;
   addGoal: (goalText: string) => Promise<void>;
   toggleGoal: (goalId: string) => Promise<void>;
   deleteGoal: (goalId: string) => Promise<void>;
   addMoodEntry: (mood: number, note?: string) => Promise<void>;
   addJournalEntry: (text: string) => Promise<void>;
   markCheckIn: () => Promise<void>;
-  addRecentlyViewedArticle: (articleId: string) => void;
+  addRecentlyViewedArticle: (articleId: string) => Promise<void>;
+  trackPageView: (pathname: string) => Promise<void>;
+  trackActiveTime: (seconds: number) => Promise<void>;
   refreshProfile: () => Promise<void>;
   enrollInJourney: (journeyId: string) => Promise<void>;
   completeJourneyStep: (journeyId: string, stepId: string, reflection?: string, timeSpent?: number) => Promise<void>;
@@ -109,6 +123,22 @@ interface UserProfileContextType {
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
+
+const defaultActivityStats: ActivityStats = {
+  totalActiveSeconds: 0,
+  pageViews: 0,
+  uniquePages: [],
+  articleViews: 0,
+  journeyStarts: 0,
+  journeyStepsCompleted: 0,
+  appointmentsBooked: 0,
+};
+
+const normalizeActivityStats = (stats?: Partial<ActivityStats>): ActivityStats => ({
+  ...defaultActivityStats,
+  ...stats,
+  uniquePages: Array.isArray(stats?.uniquePages) ? stats.uniquePages : [],
+});
 
 export function useUserProfile() {
   const context = useContext(UserProfileContext);
@@ -160,7 +190,10 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
         if (response.ok) {
           const data = await response.json();
-          setProfile(data);
+          setProfile({
+            ...data,
+            activityStats: normalizeActivityStats(data.activityStats),
+          });
         } else {
           // Initialize with default profile
           initializeDefaultProfile();
@@ -188,12 +221,18 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       recentlyViewedArticles: [],
       forumPosts: 0,
       activeJourneys: [],
+      activityStats: defaultActivityStats,
     };
 
     try {
       const storedProfile = localStorage.getItem(getProfileStorageKey(user.id));
       if (storedProfile) {
-        setProfile({ ...defaultProfile, ...JSON.parse(storedProfile) });
+        const parsedProfile = JSON.parse(storedProfile);
+        setProfile({
+          ...defaultProfile,
+          ...parsedProfile,
+          activityStats: normalizeActivityStats(parsedProfile.activityStats),
+        });
         return;
       }
     } catch (error) {
@@ -238,11 +277,23 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addAppointment = (appointment: Appointment) => {
+  const updateActivityStats = (updater: (current: ActivityStats) => ActivityStats) => {
+    const currentStats = normalizeActivityStats(profile?.activityStats);
+    return updater(currentStats);
+  };
+
+  const addAppointment = async (appointment: Appointment) => {
     if (!profile) return;
     
     const updatedAppointments = [...profile.appointments, appointment];
-    setProfile({ ...profile, appointments: updatedAppointments });
+    await updateProfile({
+      appointments: updatedAppointments,
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        appointmentsBooked: current.appointmentsBooked + 1,
+        lastActivityAt: new Date().toISOString(),
+      })),
+    });
   };
 
   const addGoal = async (goalText: string) => {
@@ -332,15 +383,49 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const addRecentlyViewedArticle = (articleId: string) => {
+  const addRecentlyViewedArticle = async (articleId: string) => {
     if (!profile) return;
 
+    const alreadyViewed = profile.recentlyViewedArticles.includes(articleId);
     const updated = [
       articleId,
       ...profile.recentlyViewedArticles.filter((id) => id !== articleId),
     ].slice(0, 5);
 
-    setProfile({ ...profile, recentlyViewedArticles: updated });
+    await updateProfile({
+      recentlyViewedArticles: updated,
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        articleViews: current.articleViews + (alreadyViewed ? 0 : 1),
+        lastActivityAt: new Date().toISOString(),
+      })),
+    });
+  };
+
+  const trackPageView = async (pathname: string) => {
+    if (!profile) return;
+
+    const normalizedPath = pathname || "/";
+    await updateProfile({
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        pageViews: current.pageViews + 1,
+        uniquePages: Array.from(new Set([normalizedPath, ...current.uniquePages])).slice(0, 50),
+        lastActivityAt: new Date().toISOString(),
+      })),
+    });
+  };
+
+  const trackActiveTime = async (seconds: number) => {
+    if (!profile || seconds <= 0) return;
+
+    await updateProfile({
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        totalActiveSeconds: current.totalActiveSeconds + seconds,
+        lastActivityAt: new Date().toISOString(),
+      })),
+    });
   };
 
   const refreshProfile = async () => {
@@ -361,28 +446,47 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
     await updateProfile({
       activeJourneys: [...profile.activeJourneys, newProgress],
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        journeyStarts: current.journeyStarts + 1,
+        lastActivityAt: new Date().toISOString(),
+      })),
     });
   };
 
   const completeJourneyStep = async (journeyId: string, stepId: string, reflection?: string, timeSpent?: number) => {
     if (!profile) return;
 
+    let completedNewStep = false;
     const updatedJourneys = profile.activeJourneys.map((journey) => {
       if (journey.journeyId === journeyId) {
-        const completedSteps = [...journey.completedSteps, stepId];
-        const newReflections = reflection && timeSpent ? [...(journey.reflections || []), { stepId, reflection, createdAt: new Date().toISOString(), timeSpent }] : journey.reflections;
+        const alreadyCompleted = journey.completedSteps.includes(stepId);
+        const completedSteps = alreadyCompleted
+          ? journey.completedSteps
+          : [...journey.completedSteps, stepId];
+        const newReflections = reflection && timeSpent && !alreadyCompleted ? [...(journey.reflections || []), { stepId, reflection, createdAt: new Date().toISOString(), timeSpent }] : journey.reflections;
+        completedNewStep = !alreadyCompleted;
         return {
           ...journey,
           completedSteps,
-          currentStep: journey.currentStep + 1,
+          currentStep: alreadyCompleted ? journey.currentStep : journey.currentStep + 1,
           lastAccessedAt: new Date().toISOString(),
           reflections: newReflections,
+          totalTimeSpent: (journey.totalTimeSpent || 0) + (alreadyCompleted ? 0 : timeSpent || 0),
         };
       }
       return journey;
     });
 
-    await updateProfile({ activeJourneys: updatedJourneys });
+    await updateProfile({
+      activeJourneys: updatedJourneys,
+      activityStats: updateActivityStats((current) => ({
+        ...current,
+        journeyStepsCompleted: current.journeyStepsCompleted + (completedNewStep ? 1 : 0),
+        totalActiveSeconds: current.totalActiveSeconds + (completedNewStep ? timeSpent || 0 : 0),
+        lastActivityAt: new Date().toISOString(),
+      })),
+    });
   };
 
   const unenrollFromJourney = async (journeyId: string) => {
@@ -407,6 +511,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     addJournalEntry,
     markCheckIn,
     addRecentlyViewedArticle,
+    trackPageView,
+    trackActiveTime,
     refreshProfile,
     enrollInJourney,
     completeJourneyStep,
