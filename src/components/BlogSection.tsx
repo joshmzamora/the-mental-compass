@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Calendar, User, Clock, BookOpen, Compass, X, Filter, CheckCircle2 } from "lucide-react";
+import { Calendar, User, Clock, BookOpen, Compass, X, Filter, CheckCircle2, Sparkles } from "lucide-react";
 import { blogPosts, BlogPost } from "../data/blog-posts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -9,6 +9,13 @@ import { CompassDecoration } from "./CompassDecoration";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { toast } from "sonner@2.0.3";
+import { useAuth } from "../contexts/AuthContext";
+import { useUserProfile } from "../contexts/UserProfileContext";
+import {
+  fillToCount,
+  getFocusTerms,
+  scoreTextMatch,
+} from "../data/personalized-recommendations";
 
 // Mapping of disorder topics to relevant categories/keywords
 const topicToCategoriesMap: Record<string, string[]> = {
@@ -21,6 +28,8 @@ const topicToCategoriesMap: Record<string, string[]> = {
 };
 
 export function BlogSection() {
+  const { user } = useAuth();
+  const { profile } = useUserProfile();
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [topicFilter, setTopicFilter] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(blogPosts);
@@ -62,6 +71,24 @@ export function BlogSection() {
       articleScrollRef.current.scrollTop = 0;
     }
   }, [selectedPost]);
+
+  const getRecommendedPosts = () => {
+    if (!user || !profile?.compassBearing) return [];
+
+    const terms = getFocusTerms(profile.compassBearing.primaryStruggle);
+    const matchedPosts = [...blogPosts]
+      .map((post) => ({
+        post,
+        score: scoreTextMatch([post.title, post.excerpt, post.category], terms),
+      }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ post }) => post);
+
+    return fillToCount(matchedPosts, blogPosts, 2, (post) => post.id);
+  };
+
+  const recommendedPosts = getRecommendedPosts();
 
   return (
     <section id="blog" className="py-20 bg-white relative overflow-hidden">
@@ -111,6 +138,53 @@ export function BlogSection() {
                 >
                   Clear Filter
                 </Button>
+              </div>
+            </div>
+          )}
+
+          {recommendedPosts.length > 0 && !topicFilter && (
+            <div className="mb-8">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <Sparkles className="h-5 w-5 text-purple-600" />
+                <h3 className="text-xl text-gray-900">Recommended Articles For You</h3>
+                <Badge className="bg-purple-600">Based on your Compass Bearing</Badge>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {recommendedPosts.map((post) => (
+                  <Card
+                    key={post.id}
+                    className="overflow-hidden border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50 hover:shadow-lg transition-shadow cursor-pointer group flex flex-col h-full gap-0"
+                    onClick={() => setSelectedPost(post)}
+                  >
+                    <div className="aspect-[16/9] overflow-hidden bg-gray-200">
+                      <ImageWithFallback
+                        src={post.imageUrl}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <CardHeader className="flex flex-col pb-4">
+                      <Badge variant="secondary" className="bg-purple-100 text-purple-800 w-fit mb-2">
+                        {post.category}
+                      </Badge>
+                      <CardTitle className="text-xl text-gray-900 line-clamp-2">
+                        {post.title}
+                      </CardTitle>
+                      <CardDescription className="text-gray-700 line-clamp-2 mt-2">
+                        {post.excerpt}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="mt-auto pt-4">
+                      <Button
+                        onClick={() => setSelectedPost(post)}
+                        variant="link"
+                        className="p-0 h-auto text-purple-600 hover:text-purple-700"
+                      >
+                        Read Recommended Article
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           )}

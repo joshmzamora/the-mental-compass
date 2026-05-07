@@ -44,6 +44,10 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { toast } from "sonner@2.0.3";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
+import {
+  fillToCount,
+  getRecommendedCommunityTags,
+} from "../data/personalized-recommendations";
 import { projectId } from "../utils/supabase/info";
 import { supabase } from "../utils/supabase/client";
 
@@ -919,15 +923,19 @@ export function CommunitySection() {
 
     // Personalized prioritization based on Compass Bearing
     if (user && profile?.compassBearing && !searchQuery && selectedTags.length === 0 && dateRangeFilter === "all") {
-      const primaryStruggle = profile.compassBearing.primaryStruggle;
+      const recommendedTags = getRecommendedCommunityTags(profile.compassBearing.primaryStruggle);
 
       // Sort posts - matching tags first, then by timestamp
       filtered.sort((a, b) => {
         const aMatches = a.tags.some(tag =>
-          tag.toLowerCase().includes(primaryStruggle.toLowerCase())
+          recommendedTags.some((recommendedTag) =>
+            tag.toLowerCase().includes(recommendedTag.toLowerCase())
+          )
         );
         const bMatches = b.tags.some(tag =>
-          tag.toLowerCase().includes(primaryStruggle.toLowerCase())
+          recommendedTags.some((recommendedTag) =>
+            tag.toLowerCase().includes(recommendedTag.toLowerCase())
+          )
         );
 
         if (aMatches && !bMatches) return -1;
@@ -3021,10 +3029,16 @@ export function CommunitySection() {
   const getRecommendedPosts = () => {
     if (!user || !profile?.compassBearing) return [];
 
-    const primaryStruggle = profile.compassBearing.primaryStruggle;
-    return filteredPosts.filter(post =>
-      post.tags.some(tag => tag.toLowerCase().includes(primaryStruggle.toLowerCase()))
-    ).slice(0, 2);
+    const recommendedTags = getRecommendedCommunityTags(profile.compassBearing.primaryStruggle);
+    const matchedPosts = filteredPosts.filter(post =>
+      post.tags.some(tag =>
+        recommendedTags.some((recommendedTag) =>
+          tag.toLowerCase().includes(recommendedTag.toLowerCase())
+        )
+      )
+    );
+
+    return fillToCount(matchedPosts, filteredPosts, 2, (post) => post.id);
   };
 
   const recommendedPosts = getRecommendedPosts();

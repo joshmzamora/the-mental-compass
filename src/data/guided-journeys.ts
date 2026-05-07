@@ -1,3 +1,8 @@
+import {
+  fillToCount,
+  getRecommendedJourneyCategories,
+} from "./personalized-recommendations";
+
 export interface GuidedJourney {
   id: string;
   title: string;
@@ -368,22 +373,13 @@ export function getJourneysByCategory(category: string): GuidedJourney[] {
 
 // Helper function to get recommended journeys based on compass bearing
 export function getRecommendedJourneys(primaryStruggle: string): GuidedJourney[] {
-  const categoryMap: Record<string, string[]> = {
-    anxiety: ["Anxiety", "Wellness"],
-    depression: ["Depression", "Wellness"],
-    stress: ["Wellness", "Anxiety"],
-    trauma: ["Depression", "Advocacy"],
-    grief: ["Depression", "Wellness"],
-    relationships: ["Wellness", "Advocacy"],
-    addiction: ["Wellness", "Depression"],
-    wellness: ["Wellness"],
-  };
-
-  const relevantCategories = categoryMap[primaryStruggle.toLowerCase()] || ["Wellness"];
+  const relevantCategories = getRecommendedJourneyCategories(primaryStruggle);
   
-  return guidedJourneys.filter(journey => 
+  const matchedJourneys = guidedJourneys.filter(journey => 
     relevantCategories.includes(journey.category)
   );
+
+  return fillToCount(matchedJourneys, guidedJourneys, 3, (journey) => journey.id);
 }
 
 // Journey Completion Badges

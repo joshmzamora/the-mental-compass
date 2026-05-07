@@ -70,6 +70,12 @@ import { useUserProfile } from "../contexts/UserProfileContext";
 import { blogPosts } from "../data/blog-posts";
 import { therapists } from "../data/therapists";
 import { guidedJourneys, getJourneyById } from "../data/guided-journeys";
+import {
+  fillToCount,
+  getRecommendedTherapistSpecialties,
+  getFocusTerms,
+  scoreTextMatch,
+} from "../data/personalized-recommendations";
 import { toast } from "sonner@2.0.3";
 
 interface DashboardPreferences {
@@ -278,45 +284,30 @@ export function Dashboard() {
   const getRecommendedPosts = () => {
     if (!profile?.compassBearing) return blogPosts.slice(0, 4);
 
-    const categoryMap: Record<string, string[]> = {
-      anxiety: ["Coping Strategies", "Wellness", "Education"],
-      depression: ["Support", "Wellness", "Education"],
-      stress: ["Wellness", "Coping Strategies"],
-      trauma: ["Support", "Education"],
-      grief: ["Support", "Coping Strategies"],
-      relationships: ["Support", "Wellness"],
-      addiction: ["Support", "Education"],
-      wellness: ["Wellness", "Education"],
-    };
+    const terms = getFocusTerms(profile.compassBearing.primaryStruggle);
+    const matchedPosts = [...blogPosts]
+      .map((post) => ({
+        post,
+        score: scoreTextMatch([post.title, post.excerpt, post.category], terms),
+      }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ post }) => post);
 
-    const relevantCategories = categoryMap[profile.compassBearing.primaryStruggle] || ["Wellness"];
-
-    return blogPosts
-      .filter((post) => relevantCategories.includes(post.category))
-      .slice(0, 4);
+    return fillToCount(matchedPosts, blogPosts, 4, (post) => post.id);
   };
 
   const getRecommendedTherapists = () => {
     if (!profile?.compassBearing) return therapists.slice(0, 3);
 
-    const specialtyMap: Record<string, string[]> = {
-      anxiety: ["Anxiety", "Stress Management"],
-      depression: ["Depression"],
-      stress: ["Stress Management", "Wellness"],
-      trauma: ["PTSD", "Trauma"],
-      grief: ["Grief Counseling", "Trauma"],
-      relationships: ["Relationships", "Family Therapy", "Couples Therapy"],
-      addiction: ["Addiction", "Substance Abuse"],
-      wellness: ["Mindfulness", "Wellness"],
-    };
-
-    const relevantSpecialties = specialtyMap[profile.compassBearing.primaryStruggle] || ["Wellness"];
-
-    return therapists
-      .filter((therapist) =>
-        therapist.specialty.some((spec) => relevantSpecialties.some((rel) => spec.includes(rel)))
+    const relevantSpecialties = getRecommendedTherapistSpecialties(profile.compassBearing.primaryStruggle);
+    const matchedTherapists = therapists.filter((therapist) =>
+      therapist.specialty.some((spec) =>
+        relevantSpecialties.some((rel) => spec.toLowerCase().includes(rel.toLowerCase()))
       )
-      .slice(0, 3);
+    );
+
+    return fillToCount(matchedTherapists, therapists, 3, (therapist) => therapist.id);
   };
 
   const getMoodIcon = (mood: number) => {
@@ -412,7 +403,7 @@ export function Dashboard() {
         icon: Map,
         message: `Based on your ${profile.compassBearing.primaryStruggle} focus, guided journeys can help.`,
         action: "Start a Journey",
-        link: "/blog"
+        link: "/journeys"
       });
     }
 
@@ -1631,7 +1622,7 @@ export function Dashboard() {
                       Get Support
                     </Button>
                   </Link>
-                  <Link to="/blog">
+                  <Link to="/journeys">
                     <Button variant="outline" className="w-full justify-start">
                       <Map className="h-4 w-4 mr-2" />
                       Guided Journeys

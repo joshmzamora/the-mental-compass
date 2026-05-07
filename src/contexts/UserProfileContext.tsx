@@ -5,6 +5,9 @@ import { projectId } from "../utils/supabase/info";
 const EDGE_FUNCTIONS_ENABLED =
   import.meta.env.VITE_ENABLE_SUPABASE_EDGE_FUNCTIONS === "true";
 
+const getProfileStorageKey = (userId: string) =>
+  `mental_compass_profile_${userId}`;
+
 interface CompassBearing {
   analysis: string;
   primaryStruggle: string;
@@ -187,6 +190,16 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       activeJourneys: [],
     };
 
+    try {
+      const storedProfile = localStorage.getItem(getProfileStorageKey(user.id));
+      if (storedProfile) {
+        setProfile({ ...defaultProfile, ...JSON.parse(storedProfile) });
+        return;
+      }
+    } catch (error) {
+      localStorage.removeItem(getProfileStorageKey(user.id));
+    }
+
     setProfile(defaultProfile);
   };
 
@@ -195,6 +208,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
     const updatedProfile = { ...profile, ...updates };
     setProfile(updatedProfile);
+    localStorage.setItem(getProfileStorageKey(user.id), JSON.stringify(updatedProfile));
 
     if (!EDGE_FUNCTIONS_ENABLED) {
       return;

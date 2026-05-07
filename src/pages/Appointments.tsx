@@ -26,13 +26,15 @@ import {
   FileText,
   Award,
   Globe,
-  Mail
+  Mail,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 import { PageTransition } from "../components/PageTransition";
 import { therapists, timeSlots, Therapist } from "../data/therapists";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
+import { getRecommendedTherapistSpecialties } from "../data/personalized-recommendations";
 import { projectId } from "../utils/supabase/info";
 import { CompassDecoration } from "../components/CompassDecoration";
 
@@ -45,7 +47,7 @@ interface Booking {
 
 export function Appointments() {
   const { user } = useAuth();
-  const { addAppointment } = useUserProfile();
+  const { profile, addAppointment } = useUserProfile();
   const navigate = useNavigate();
   const stepContentRef = useRef<HTMLDivElement | null>(null);
   const shouldScrollToStepRef = useRef(false);
@@ -180,7 +182,32 @@ export function Appointments() {
       }
     }
 
+    if (profile?.compassBearing) {
+      const recommendedSpecialties = getRecommendedTherapistSpecialties(profile.compassBearing.primaryStruggle);
+      filteredTherapists = [...filteredTherapists].sort((a, b) => {
+        const aRecommended = isRecommendedTherapist(a, recommendedSpecialties);
+        const bRecommended = isRecommendedTherapist(b, recommendedSpecialties);
+
+        if (aRecommended && !bRecommended) return -1;
+        if (!aRecommended && bRecommended) return 1;
+        return 0;
+      });
+    }
+
     return filteredTherapists;
+  };
+
+  const isRecommendedTherapist = (
+    therapist: Therapist,
+    recommendedSpecialties = profile?.compassBearing
+      ? getRecommendedTherapistSpecialties(profile.compassBearing.primaryStruggle)
+      : [],
+  ) => {
+    return therapist.specialty.some((spec) =>
+      recommendedSpecialties.some((recommendedSpec) =>
+        spec.toLowerCase().includes(recommendedSpec.toLowerCase())
+      )
+    );
   };
 
   const sendConfirmationEmail = async (appointmentDetails: any) => {
@@ -463,6 +490,22 @@ export function Appointments() {
               </div>
             )}
 
+            {user && profile?.compassBearing && (
+              <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-4 text-left">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="h-5 w-5 text-purple-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-purple-900">
+                      Recommended navigators are prioritized for your {profile.compassBearing.primaryStruggle} focus.
+                    </p>
+                    <p className="text-sm text-purple-700">
+                      You can still choose any available navigator.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* How It Works Section */}
             <Card className="max-w-6xl mx-auto shadow-lg mb-16">
               <CardHeader className="text-center">
@@ -719,6 +762,12 @@ export function Appointments() {
                                           <p className="text-sm text-teal-600 font-medium">{therapist.credential}</p>
                                         </div>
                                         <div className="flex items-center gap-2 sm:ml-4">
+                                          {profile?.compassBearing && isRecommendedTherapist(therapist) && (
+                                            <Badge className="bg-purple-600 text-white">
+                                              <Sparkles className="h-3 w-3 mr-1" />
+                                              Recommended
+                                            </Badge>
+                                          )}
                                           <Badge variant="secondary" className="bg-teal-100 text-teal-700 font-semibold px-3">
                                             ${therapist.rate}/session
                                           </Badge>

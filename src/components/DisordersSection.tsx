@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useUserProfile } from "../contexts/UserProfileContext";
+import { getRecommendedDisorderIds } from "../data/personalized-recommendations";
 import { toast } from "sonner";
 
 // Mapping of disorder IDs to abstract images
@@ -550,15 +551,9 @@ export function DisordersSection() {
   const handleRecommendedClick = () => {
     if (!profile?.compassBearing) return;
 
-    const disorder = mentalHealthDisorders.find(
-      (d) =>
-        d.id ===
-        profile.compassBearing?.primaryStruggle?.toLowerCase() ||
-        d.name
-          .toLowerCase()
-          .includes(
-            profile.compassBearing?.primaryStruggle?.toLowerCase() || "",
-          ),
+    const recommendedIds = getRecommendedDisorderIds(profile.compassBearing.primaryStruggle);
+    const disorder = mentalHealthDisorders.find((d) =>
+      recommendedIds.includes(d.id)
     );
 
     if (disorder) {
@@ -730,13 +725,7 @@ export function DisordersSection() {
                 const isRecommended =
                   user &&
                   profile?.compassBearing &&
-                  (disorder.id ===
-                    profile.compassBearing.primaryStruggle.toLowerCase() ||
-                    disorder.name
-                      .toLowerCase()
-                      .includes(
-                        profile.compassBearing.primaryStruggle.toLowerCase(),
-                      ));
+                  getRecommendedDisorderIds(profile.compassBearing.primaryStruggle).includes(disorder.id);
 
                 return (
                   <Card
