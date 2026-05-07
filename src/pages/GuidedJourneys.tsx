@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Map, 
@@ -45,9 +45,22 @@ export function GuidedJourneys() {
   const [viewingStepJourney, setViewingStepJourney] = useState<GuidedJourney | null>(null);
 
   const activeJourneys = profile?.activeJourneys || [];
-  const recommendedJourneys = profile?.compassBearing 
+  const hasPersonalizedRecommendations = Boolean(user && profile?.compassBearing);
+  const recommendedJourneys = hasPersonalizedRecommendations
     ? getRecommendedJourneys(profile.compassBearing.primaryStruggle)
-    : guidedJourneys.slice(0, 3);
+    : [];
+  const visibleRecommendedJourneys = recommendedJourneys.slice(0, 2);
+  const visibleRecommendedJourneyIds = new Set(visibleRecommendedJourneys.map((journey) => journey.id));
+  const allJourneys = hasPersonalizedRecommendations
+    ? guidedJourneys.filter((journey) => !visibleRecommendedJourneyIds.has(journey.id))
+    : guidedJourneys;
+  const [activeTab, setActiveTab] = useState(activeJourneys.length > 0 ? "active" : "discover");
+
+  useEffect(() => {
+    if (user && activeJourneys.length > 0) {
+      setActiveTab("active");
+    }
+  }, [user, activeJourneys.length]);
 
   const handleEnroll = async (journeyId: string) => {
     if (!user) {
@@ -95,6 +108,21 @@ export function GuidedJourneys() {
     setViewingStep(step);
     setViewingStepJourney(journey);
     setSelectedJourney(null);
+  };
+
+  const handleContinueJourney = (journeyId: string) => {
+    const journeyToContinue = getJourneyById(journeyId);
+    const journeyProg = activeJourneys.find(j => j.journeyId === journeyId);
+    const currentStep = journeyToContinue && journeyProg
+      ? journeyToContinue.steps[journeyProg.currentStep - 1]
+      : undefined;
+
+    if (journeyToContinue && currentStep) {
+      handleViewStep(currentStep, journeyToContinue);
+      return;
+    }
+
+    setSelectedJourney(journeyId);
   };
 
   const journey = selectedJourney ? getJourneyById(selectedJourney) : null;
@@ -158,7 +186,7 @@ export function GuidedJourneys() {
               </div>
             </div>
 
-            <Tabs defaultValue="discover" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
                 <TabsTrigger value="discover">Discover Journeys</TabsTrigger>
                 <TabsTrigger value="active">
@@ -169,7 +197,7 @@ export function GuidedJourneys() {
               {/* Discover Tab */}
               <TabsContent value="discover" className="space-y-8">
                 {/* Recommended Journeys */}
-                {user && profile?.compassBearing && recommendedJourneys.length > 0 && (
+                {hasPersonalizedRecommendations && visibleRecommendedJourneys.length > 0 && (
                   <div>
                     <div className="flex items-center gap-2 mb-4">
                       <Sparkles className="h-5 w-5 text-purple-600" />
@@ -179,7 +207,7 @@ export function GuidedJourneys() {
                       </Badge>
                     </div>
                     <div className="grid md:grid-cols-2 gap-6">
-                      {recommendedJourneys.slice(0, 2).map((journey) => {
+                      {visibleRecommendedJourneys.map((journey) => {
                         const isEnrolled = activeJourneys.some(j => j.journeyId === journey.id);
                         return (
                           <Card key={journey.id} className="hover:shadow-lg transition-shadow cursor-pointer border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50">
@@ -224,12 +252,11 @@ export function GuidedJourneys() {
                                   </Button>
                                 ) : (
                                   <Button
-                                    variant="secondary"
-                                    className="flex-1"
-                                    disabled
+                                    onClick={() => handleContinueJourney(journey.id)}
+                                    className="flex-1 bg-teal-600 hover:bg-teal-700"
                                   >
                                     <Check className="h-4 w-4 mr-2" />
-                                    Enrolled
+                                    Continue
                                   </Button>
                                 )}
                               </div>
@@ -245,12 +272,11 @@ export function GuidedJourneys() {
                 <div>
                   <h3 className="text-xl text-gray-900 mb-4">All Guided Journeys</h3>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {guidedJourneys.map((journey) => {
+                    {allJourneys.map((journey) => {
                       const isEnrolled = activeJourneys.some(j => j.journeyId === journey.id);
-                      const isRecommended = recommendedJourneys.some(j => j.id === journey.id);
                       
                       return (
-                        <Card key={journey.id} className={`hover:shadow-lg transition-shadow cursor-pointer ${isRecommended && user ? 'opacity-50' : ''}`}>
+                        <Card key={journey.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                           <CardHeader>
                             <div className="flex items-start justify-between mb-2">
                               <Badge className={getDifficultyColor(journey.difficulty)}>
@@ -291,21 +317,22 @@ export function GuidedJourneys() {
                                 </Button>
                               ) : (
                                 <Button
-                                  variant="secondary"
+                                  onClick={() => handleContinueJourney(journey.id)}
                                   size="sm"
-                                  className="flex-1"
-                                  disabled
-                                >
-                                  Enrolled
-                                </Button>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+                                    className="flex-1"
+                                    variant="secondary"
+                                  >
+                                    Continue
+                                  </Button>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+
               </TabsContent>
 
               {/* Active Journeys Tab */}
@@ -318,10 +345,7 @@ export function GuidedJourneys() {
                       Start a guided journey to receive structured support and track your progress.
                     </p>
                     <Button
-                      onClick={() => {
-                        const tabs = document.querySelector('[value="discover"]') as HTMLElement;
-                        tabs?.click();
-                      }}
+                      onClick={() => setActiveTab("discover")}
                       className="bg-teal-600 hover:bg-teal-700"
                     >
                       Browse Journeys
@@ -376,7 +400,7 @@ export function GuidedJourneys() {
 
                             <div className="flex gap-2">
                               <Button
-                                onClick={() => setSelectedJourney(journey.id)}
+                                onClick={() => handleContinueJourney(journey.id)}
                                 className="flex-1 bg-teal-600 hover:bg-teal-700"
                               >
                                 Continue Journey
@@ -443,6 +467,8 @@ export function GuidedJourneys() {
                     {journey.steps.map((step, index) => {
                       const isCompleted = journeyProgress?.completedSteps.includes(step.id);
                       const isCurrent = journeyProgress?.currentStep === step.stepNumber;
+                      const isPrevious = Boolean(journeyProgress && step.stepNumber < journeyProgress.currentStep);
+                      const canOpenStep = !journeyProgress || isCompleted || isCurrent || isPrevious;
                       const StepIconComponent = getStepIcon(step.type);
                       
                       return (
@@ -483,24 +509,34 @@ export function GuidedJourneys() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
+                                  disabled={!canOpenStep}
                                   onClick={() => handleViewStep(step, journey)}
-                                  className="text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+                                  className="text-teal-600 hover:text-teal-700 hover:bg-teal-50 disabled:text-gray-400 disabled:hover:bg-transparent"
                                 >
-                                  View Content
-                                  <ChevronRight className="h-4 w-4 ml-1" />
+                                  {!canOpenStep ? (
+                                    <>
+                                      <Lock className="h-4 w-4 mr-1" />
+                                      Locked
+                                    </>
+                                  ) : isCompleted ? (
+                                    <>
+                                      Review Step
+                                      <ChevronRight className="h-4 w-4 ml-1" />
+                                    </>
+                                  ) : isCurrent ? (
+                                    <>
+                                      Start Step
+                                      <ChevronRight className="h-4 w-4 ml-1" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      View Step
+                                      <ChevronRight className="h-4 w-4 ml-1" />
+                                    </>
+                                  )}
                                 </Button>
                               )}
                             </div>
-                            {isCurrent && !isCompleted && journeyProgress && (
-                              <Button
-                                size="sm"
-                                onClick={() => handleStepComplete(journey.id, step.id, "", 0)}
-                                className="bg-teal-600 hover:bg-teal-700"
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                Complete
-                              </Button>
-                            )}
                           </div>
                         </div>
                       );
@@ -522,7 +558,7 @@ export function GuidedJourneys() {
                     </Button>
                   ) : (
                     <Button
-                      onClick={() => setSelectedJourney(null)}
+                      onClick={() => handleContinueJourney(journey.id)}
                       className="flex-1 bg-teal-600 hover:bg-teal-700"
                     >
                       Continue Journey
@@ -581,7 +617,18 @@ export function GuidedJourneys() {
                     <Alert className="bg-blue-50 border-blue-200">
                       <BookOpen className="h-4 w-4 text-blue-600" />
                       <AlertDescription className="text-blue-900">
-                        This step includes reading a recommended article. You'll find it in our Blog section.
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <span>This step includes reading a recommended article in the Blog section.</span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate("/blog")}
+                            className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                          >
+                            Open Blog
+                            <ChevronRight className="h-4 w-4 ml-1" />
+                          </Button>
+                        </div>
                       </AlertDescription>
                     </Alert>
                   )}

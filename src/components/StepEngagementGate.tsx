@@ -26,14 +26,13 @@ interface StepEngagementGateProps {
 
 export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngagementGateProps) {
   // Pillar 1: Time Gate
-  const minimumTime = step.minimumTimeSeconds || 60; // Default 60 seconds
+  const minimumTime = step.minimumTimeSeconds || 20;
   const [timeSpent, setTimeSpent] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);
   
   // Pillar 2: Reflection
-  const requiresReflection = step.type === "reflection" || step.type === "exercise" || step.type === "meditation";
+  const requiresReflection = step.requiresReflection ?? (step.type === "reflection" || step.type === "exercise" || step.type === "meditation");
   const [reflection, setReflection] = useState("");
-  const minReflectionLength = 50;
+  const minReflectionLength = 25;
   
   // Pillar 3: Active Confirmation (for specific step types)
   const [confirmationComplete, setConfirmationComplete] = useState(false);
@@ -47,8 +46,6 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
   
   // Auto-start timer when component mounts
   useEffect(() => {
-    setTimerActive(true);
-    
     const interval = setInterval(() => {
       setTimeSpent(prev => prev + 1);
     }, 1000);
@@ -71,9 +68,15 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
   }
   
   function canComplete(): boolean {
-    // Must pass at least 2 out of 3 pillars
-    const completedPillars = Object.values(pillarsComplete).filter(Boolean).length;
-    return completedPillars >= 2;
+    return getVisibleRequirements().every((requirement) => requirement.complete);
+  }
+
+  function getVisibleRequirements() {
+    return [
+      { key: "time", complete: pillarsComplete.time },
+      ...(requiresReflection ? [{ key: "reflection", complete: pillarsComplete.reflection }] : []),
+      ...(requiresConfirmation() ? [{ key: "confirmation", complete: pillarsComplete.confirmation }] : []),
+    ];
   }
   
   function formatTime(seconds: number): string {
@@ -92,13 +95,10 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
     }
   }
   
-  function handleConfirmationCheck(checklistItem: string) {
-    // Simple confirmation - check at least one item
-    setConfirmationComplete(true);
-  }
-  
   const timeProgress = Math.min((timeSpent / minimumTime) * 100, 100);
   const timeRemaining = getTimeRemaining();
+  const visibleRequirements = getVisibleRequirements();
+  const remainingRequirements = visibleRequirements.filter((requirement) => !requirement.complete).length;
   
   const getStepIcon = () => {
     switch (step.type) {
@@ -117,10 +117,10 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
       <div className="bg-gradient-to-br from-teal-50 to-blue-50 rounded-lg p-6 border-2 border-teal-200">
         <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <CheckCircle className="h-5 w-5 text-teal-600" />
-          Engagement Requirements
+          Quick Step Check-In
         </h4>
         <p className="text-sm text-gray-600 mb-4">
-          Complete at least 2 of these 3 requirements to finish this step:
+          Do these quick actions to show you engaged with this step before marking it complete.
         </p>
         
         <div className="grid gap-3">
@@ -142,7 +142,7 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-900">Time Investment</p>
               <p className="text-xs text-gray-600">
-                Spend at least {Math.ceil(minimumTime / 60)} minute{Math.ceil(minimumTime / 60) !== 1 ? 's' : ''} engaging with content
+                Spend at least {minimumTime < 60 ? `${minimumTime} seconds` : `${Math.ceil(minimumTime / 60)} minutes`} engaging with content
               </p>
             </div>
             <Badge variant={pillarsComplete.time ? "default" : "outline"} className={pillarsComplete.time ? "bg-green-600" : ""}>
@@ -246,7 +246,7 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
                 ? "Share your thoughts and insights from this reflection exercise..."
                 : step.type === "meditation"
                 ? "How did this meditation practice feel? What did you notice?"
-                : "What resonated with you from this exercise? What will you try?"
+                : "What did you do for this exercise? What will you try next?"
             }
             className="min-h-[120px] resize-none"
             rows={5}
@@ -324,7 +324,7 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
         <Alert className="bg-amber-50 border-amber-200">
           <AlertCircle className="h-4 w-4 text-amber-600" />
           <AlertDescription className="text-amber-900">
-            Complete at least 2 requirements above to unlock the "Mark Complete" button.
+            Complete the quick check-in above to unlock the "Mark Complete" button.
           </AlertDescription>
         </Alert>
       )}
@@ -344,7 +344,7 @@ export function StepEngagementGate({ step, onComplete, journeyColor }: StepEngag
         ) : (
           <>
             <Lock className="h-5 w-5 mr-2" />
-            Complete {3 - Object.values(pillarsComplete).filter(Boolean).length} More Requirement{3 - Object.values(pillarsComplete).filter(Boolean).length !== 1 ? 's' : ''}
+            Complete {remainingRequirements} More Requirement{remainingRequirements !== 1 ? 's' : ''}
           </>
         )}
       </Button>

@@ -47,7 +47,7 @@ export function ActiveJourneysWidget({ activeJourneys, darkAccents = false, comp
               {activeJourneys.length}
             </Badge>
           </CardTitle>
-          <Link to="/blog">
+          <Link to="/journeys">
             <Button variant="outline" size="sm">
               View All
             </Button>
@@ -104,7 +104,7 @@ export function ActiveJourneysWidget({ activeJourneys, darkAccents = false, comp
                   </div>
                 )}
 
-                <Link to="/blog">
+                <Link to="/journeys">
                   <Button 
                     className={`w-full ${darkAccents ? 'bg-slate-700 hover:bg-slate-800' : 'bg-teal-600 hover:bg-teal-700'}`}
                     size="sm"
@@ -118,7 +118,7 @@ export function ActiveJourneysWidget({ activeJourneys, darkAccents = false, comp
           })}
           
           {activeJourneys.length > 3 && (
-            <Link to="/blog">
+            <Link to="/journeys">
               <Button variant="outline" className="w-full" size="sm">
                 View {activeJourneys.length - 3} More {activeJourneys.length - 3 === 1 ? 'Journey' : 'Journeys'}
               </Button>

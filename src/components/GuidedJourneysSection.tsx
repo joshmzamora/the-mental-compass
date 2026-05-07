@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Map, 
@@ -26,15 +26,28 @@ import { toast } from "sonner@2.0.3";
 
 export function GuidedJourneysSection() {
   const { user } = useAuth();
-  const { profile, enrollInJourney, completeJourneyStep, unenrollFromJourney } = useUserProfile();
+  const { profile, enrollInJourney, unenrollFromJourney } = useUserProfile();
   const navigate = useNavigate();
   const [selectedJourney, setSelectedJourney] = useState<string | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const activeJourneys = profile?.activeJourneys || [];
-  const recommendedJourneys = profile?.compassBearing 
+  const hasPersonalizedRecommendations = Boolean(user && profile?.compassBearing);
+  const recommendedJourneys = hasPersonalizedRecommendations
     ? getRecommendedJourneys(profile.compassBearing.primaryStruggle)
-    : guidedJourneys.slice(0, 3);
+    : [];
+  const visibleRecommendedJourneys = recommendedJourneys.slice(0, 2);
+  const visibleRecommendedJourneyIds = new Set(visibleRecommendedJourneys.map((journey) => journey.id));
+  const allJourneys = hasPersonalizedRecommendations
+    ? guidedJourneys.filter((journey) => !visibleRecommendedJourneyIds.has(journey.id))
+    : guidedJourneys;
+  const [activeTab, setActiveTab] = useState(activeJourneys.length > 0 ? "active" : "discover");
+
+  useEffect(() => {
+    if (user && activeJourneys.length > 0) {
+      setActiveTab("active");
+    }
+  }, [user, activeJourneys.length]);
 
   const handleEnroll = async (journeyId: string) => {
     if (!user) {
@@ -52,14 +65,13 @@ export function GuidedJourneysSection() {
     toast.success("Journey started! Check your dashboard to continue.");
   };
 
-  const handleStepComplete = async (journeyId: string, stepId: string) => {
-    await completeJourneyStep(journeyId, stepId);
-    toast.success("Step completed! Keep up the great work!");
-  };
-
   const handleUnenroll = async (journeyId: string) => {
     await unenrollFromJourney(journeyId);
     toast.success("Unenrolled from journey.");
+  };
+
+  const handleContinueJourney = (journeyId: string) => {
+    navigate("/journeys");
   };
 
   const journey = selectedJourney ? getJourneyById(selectedJourney) : null;
@@ -112,7 +124,7 @@ export function GuidedJourneysSection() {
             </div>
           </div>
 
-          <Tabs defaultValue="discover" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
               <TabsTrigger value="discover">Discover Journeys</TabsTrigger>
               <TabsTrigger value="active">
@@ -123,7 +135,7 @@ export function GuidedJourneysSection() {
             {/* Discover Tab */}
             <TabsContent value="discover" className="space-y-8">
               {/* Recommended Journeys */}
-              {user && profile?.compassBearing && recommendedJourneys.length > 0 && (
+              {hasPersonalizedRecommendations && visibleRecommendedJourneys.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <Sparkles className="h-5 w-5 text-purple-600" />
@@ -133,7 +145,7 @@ export function GuidedJourneysSection() {
                     </Badge>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {recommendedJourneys.slice(0, 2).map((journey) => {
+                    {visibleRecommendedJourneys.map((journey) => {
                       const isEnrolled = activeJourneys.some(j => j.journeyId === journey.id);
                       return (
                         <Card key={journey.id} className="hover:shadow-lg transition-shadow cursor-pointer border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50">
@@ -178,12 +190,11 @@ export function GuidedJourneysSection() {
                                 </Button>
                               ) : (
                                 <Button
-                                  variant="secondary"
-                                  className="flex-1"
-                                  disabled
+                                  onClick={() => handleContinueJourney(journey.id)}
+                                  className="flex-1 bg-teal-600 hover:bg-teal-700"
                                 >
                                   <Check className="h-4 w-4 mr-2" />
-                                  Enrolled
+                                  Continue
                                 </Button>
                               )}
                             </div>
@@ -199,12 +210,11 @@ export function GuidedJourneysSection() {
               <div>
                 <h3 className="text-xl text-gray-900 mb-4">All Guided Journeys</h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {guidedJourneys.map((journey) => {
+                  {allJourneys.map((journey) => {
                     const isEnrolled = activeJourneys.some(j => j.journeyId === journey.id);
-                    const isRecommended = recommendedJourneys.some(j => j.id === journey.id);
                     
                     return (
-                      <Card key={journey.id} className={`hover:shadow-lg transition-shadow cursor-pointer ${isRecommended && user ? 'opacity-50' : ''}`}>
+                      <Card key={journey.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                         <CardHeader>
                           <div className="flex items-start justify-between mb-2">
                             <Badge className={getDifficultyColor(journey.difficulty)}>
@@ -245,21 +255,22 @@ export function GuidedJourneysSection() {
                               </Button>
                             ) : (
                               <Button
+                                onClick={() => handleContinueJourney(journey.id)}
                                 variant="secondary"
                                 size="sm"
-                                className="flex-1"
-                                disabled
-                              >
-                                Enrolled
-                              </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                                  className="flex-1"
+                                >
+                                  Continue
+                                </Button>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+
             </TabsContent>
 
             {/* Active Journeys Tab */}
@@ -272,10 +283,7 @@ export function GuidedJourneysSection() {
                     Start a guided journey to receive structured support and track your progress.
                   </p>
                   <Button
-                    onClick={() => {
-                      const tabs = document.querySelector('[value="discover"]') as HTMLElement;
-                      tabs?.click();
-                    }}
+                    onClick={() => setActiveTab("discover")}
                     className="bg-teal-600 hover:bg-teal-700"
                   >
                     Browse Journeys
@@ -424,10 +432,10 @@ export function GuidedJourneysSection() {
                           {isCurrent && !isCompleted && journeyProgress && (
                             <Button
                               size="sm"
-                              onClick={() => handleStepComplete(journey.id, step.id)}
+                              onClick={() => handleContinueJourney(journey.id)}
                               className="bg-teal-600 hover:bg-teal-700"
                             >
-                              Complete
+                              Open Step
                             </Button>
                           )}
                         </div>
