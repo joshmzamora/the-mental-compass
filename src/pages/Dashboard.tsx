@@ -329,45 +329,48 @@ export function Dashboard() {
 
   // Compass Calibration - Advanced Wellness Score
   const calculateCompassCalibration = () => {
-    if (!profile) return { north: 0, east: 0, south: 0, west: 0, overall: 0 };
+    if (!profile) return { north: 60, east: 60, south: 60, west: 60, overall: 60 };
+
+    const clampScore = (score: number, minimum = 55) =>
+      Math.max(minimum, Math.min(100, Math.round(score)));
 
     // NORTH - Mental Clarity (Goals, Journeys, Focus)
     const goalsCompleted = profile.goals?.filter(g => g.completed).length || 0;
     const totalGoals = profile.goals?.length || 0;
-    const goalsScore = totalGoals > 0 ? (goalsCompleted / totalGoals) * 100 : 50;
+    const goalsScore = totalGoals > 0 ? 55 + (goalsCompleted / totalGoals) * 40 : 64;
     const journeyProgress = profile.activeJourneys?.length || 0;
-    const journeyScore = Math.min(journeyProgress * 20, 100);
-    const north = Math.round((goalsScore + journeyScore) / 2);
+    const journeyScore = journeyProgress > 0 ? 72 + Math.min(journeyProgress * 8, 20) : 62;
+    const north = clampScore((goalsScore + journeyScore) / 2, 58);
 
     // EAST - Emotional Balance (Mood tracking)
     const recentMoods = getRecentMoodData();
-    let east = 50;
+    let east = 64;
     if (recentMoods.length > 0) {
       const avgMood = recentMoods.reduce((sum, entry) => sum + entry.mood, 0) / recentMoods.length;
-      east = Math.round((avgMood / 5) * 100);
+      east = clampScore(42 + (avgMood / 5) * 50, 48);
     }
 
     // SOUTH - Physical Vitality (Streak, Activity)
-    const streakScore = Math.min((profile.wellnessStreak || 0) * 10, 100);
-    const activityScore = Math.min(((profile.journalEntries?.length || 0) + (profile.appointments?.length || 0)) * 5, 100);
-    const south = Math.round((streakScore + activityScore) / 2);
+    const streakScore = 58 + Math.min((profile.wellnessStreak || 0) * 6, 32);
+    const activityScore = 58 + Math.min(((profile.journalEntries?.length || 0) + (profile.appointments?.length || 0)) * 7, 34);
+    const south = clampScore((streakScore + activityScore) / 2, 58);
 
     // WEST - Social Connection (Community, Appointments)
-    const appointmentScore = Math.min((profile.appointments?.length || 0) * 25, 100);
-    const communityScore = Math.min((profile.forumPosts || 0) * 10, 100);
-    const west = Math.round((appointmentScore + communityScore) / 2);
+    const appointmentScore = 58 + Math.min((profile.appointments?.length || 0) * 12, 34);
+    const communityScore = 58 + Math.min((profile.forumPosts || 0) * 8, 34);
+    const west = clampScore((appointmentScore + communityScore) / 2, 58);
 
     // Overall compass calibration
-    const overall = Math.round((north + east + south + west) / 4);
+    const overall = clampScore((north + east + south + west) / 4, 58);
 
     return { north, east, south, west, overall };
   };
 
   const getCompassDirection = (score: number) => {
-    if (score >= 80) return { label: "True North", color: "text-green-500", trend: "up" };
-    if (score >= 60) return { label: "On Course", color: "text-teal-500", trend: "steady" };
-    if (score >= 40) return { label: "Recalibrating", color: "text-blue-500", trend: "steady" };
-    return { label: "Needs Attention", color: "text-purple-500", trend: "down" };
+    if (score >= 82) return { label: "Strong Course", color: "text-green-500", trend: "up" };
+    if (score >= 70) return { label: "Steady Progress", color: "text-teal-500", trend: "steady" };
+    if (score >= 60) return { label: "Building Momentum", color: "text-blue-500", trend: "steady" };
+    return { label: "Getting Started", color: "text-purple-500", trend: "steady" };
   };
 
   const getPersonalizedInsights = () => {
@@ -626,7 +629,7 @@ export function Dashboard() {
                           <div className="flex items-center justify-between">
                             <Label htmlFor="wellness-score" className="flex items-center gap-2 cursor-pointer">
                               <Compass className="h-4 w-4 text-teal-600" />
-                              Compass Calibration
+                              Wellness Compass
                             </Label>
                             <Switch
                               id="wellness-score"
@@ -801,20 +804,31 @@ export function Dashboard() {
 
           {/* Compass Calibration - Advanced Wellness Score */}
           {preferences.showWellnessScore && (
-            <Card className={`mb-6 ${preferences.darkAccents ? 'bg-gradient-to-br from-slate-700 via-slate-600 to-blue-700' : 'bg-gradient-to-br from-teal-500 via-blue-600 to-purple-600'} text-white border-none shadow-2xl overflow-hidden relative`}>
+            <Card className={`mb-6 ${preferences.darkAccents ? 'bg-gradient-to-br from-slate-700 via-slate-600 to-blue-700' : 'bg-gradient-to-br from-teal-500 via-blue-600 to-purple-600'} text-white border-none shadow-xl overflow-hidden relative`}>
               {/* Compass decoration background */}
               <div className="absolute inset-0 opacity-10">
                 <Compass className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-64 w-64" style={{ transform: `translate(-50%, -50%) rotate(${compassCalibration.overall}deg)` }} />
               </div>
 
               <CardContent className={`${preferences.compactView ? 'p-4' : 'p-6'} relative z-10`}>
-                <div className="flex items-center gap-3 mb-6">
-                  <Navigation className="h-8 w-8" />
-                  <div>
-                    <h3 className="text-2xl">
-                      Compass Calibration
-                    </h3>
-                    <p className="text-sm text-white/80">Your Mental Health Navigation System</p>
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <Navigation className="h-7 w-7" />
+                    <div>
+                      <h3 className="text-2xl">
+                        Wellness Compass
+                      </h3>
+                      <p className="text-sm text-white/80">A gentle snapshot of your support habits</p>
+                    </div>
+                  </div>
+                  <div className="bg-white/15 rounded-lg px-4 py-3 text-left md:text-right">
+                    <p className="text-xs uppercase tracking-wide text-white/70">Overall</p>
+                    <div className="flex items-end gap-2 md:justify-end">
+                      <span className="text-4xl leading-none">{compassCalibration.overall}%</span>
+                      <Badge className="bg-white/20 text-white border-white/30 mb-1">
+                        {compassDirection.label}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
 
@@ -825,10 +839,10 @@ export function Dashboard() {
                     <div className="flex items-center justify-center mb-2">
                       <Brain className="h-6 w-6" />
                     </div>
-                    <p className="text-xs text-white/90 mb-1">NORTH - Mental Clarity</p>
+                    <p className="text-sm text-white mb-1">Clarity</p>
                     <p className="text-2xl text-white mb-2">{compassCalibration.north}%</p>
                     <Progress value={compassCalibration.north} className="h-2 bg-white/20 [&>div]:bg-white" />
-                    <p className="text-xs text-white/80 mt-2">Goals & Focus</p>
+                    <p className="text-xs text-white/80 mt-2">Goals and journeys</p>
                   </div>
 
                   {/* East - Emotional Balance */}
@@ -836,10 +850,10 @@ export function Dashboard() {
                     <div className="flex items-center justify-center mb-2">
                       <Heart className="h-6 w-6" />
                     </div>
-                    <p className="text-xs text-white/90 mb-1">EAST - Emotional Balance</p>
+                    <p className="text-sm text-white mb-1">Emotions</p>
                     <p className="text-2xl text-white mb-2">{compassCalibration.east}%</p>
                     <Progress value={compassCalibration.east} className="h-2 bg-white/20 [&>div]:bg-white" />
-                    <p className="text-xs text-white/80 mt-2">Mood & Feelings</p>
+                    <p className="text-xs text-white/80 mt-2">Mood check-ins</p>
                   </div>
 
                   {/* South - Physical Vitality */}
@@ -847,10 +861,10 @@ export function Dashboard() {
                     <div className="flex items-center justify-center mb-2">
                       <Activity className="h-6 w-6" />
                     </div>
-                    <p className="text-xs text-white/90 mb-1">SOUTH - Physical Vitality</p>
+                    <p className="text-sm text-white mb-1">Rhythm</p>
                     <p className="text-2xl text-white mb-2">{compassCalibration.south}%</p>
                     <Progress value={compassCalibration.south} className="h-2 bg-white/20 [&>div]:bg-white" />
-                    <p className="text-xs text-white/80 mt-2">Activity & Streak</p>
+                    <p className="text-xs text-white/80 mt-2">Streaks and notes</p>
                   </div>
 
                   {/* West - Social Connection */}
@@ -858,37 +872,25 @@ export function Dashboard() {
                     <div className="flex items-center justify-center mb-2">
                       <Users className="h-6 w-6" />
                     </div>
-                    <p className="text-xs text-white/90 mb-1">WEST - Social Connection</p>
+                    <p className="text-sm text-white mb-1">Connection</p>
                     <p className="text-2xl text-white mb-2">{compassCalibration.west}%</p>
                     <Progress value={compassCalibration.west} className="h-2 bg-white/20 [&>div]:bg-white" />
-                    <p className="text-xs text-white/80 mt-2">Support & Community</p>
+                    <p className="text-xs text-white/80 mt-2">Support and care</p>
                   </div>
                 </div>
 
                 {/* Overall Status & Guidance */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-white/10 backdrop-blur rounded-lg p-4 flex flex-col items-center justify-center text-center">
-                    <p className="text-sm text-white/80 mb-2">Overall Calibration</p>
-                    <div className="relative mb-3">
-                      <div className="text-5xl text-white">{compassCalibration.overall}%</div>
-                    </div>
-                    <Badge className={`bg-white/20 text-white border-white/30`}>
-                      {compassDirection.label}
-                    </Badge>
-                  </div>
-
-                  <div className="bg-white/10 backdrop-blur rounded-lg p-4">
-                    <h4 className="flex items-center gap-2 mb-3">
-                      <Lightbulb className="h-5 w-5" />
-                      <span>Navigational Guidance</span>
-                    </h4>
-                    <p className="text-sm text-white/90 leading-relaxed">
-                      {compassCalibration.overall >= 80 && "Excellent navigation! Your compass is well-calibrated. Continue these practices to maintain your course."}
-                      {compassCalibration.overall >= 60 && compassCalibration.overall < 80 && "You're on a good course! Small adjustments in the areas below 60% will improve your overall calibration."}
-                      {compassCalibration.overall >= 40 && compassCalibration.overall < 60 && "Your compass needs recalibration. Focus on the directions showing below 50% for better balance."}
-                      {compassCalibration.overall < 40 && "Your compass needs significant attention. Consider booking an appointment with a Navigator and starting a guided journey."}
-                    </p>
-                  </div>
+                <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+                  <h4 className="flex items-center gap-2 mb-2">
+                    <Lightbulb className="h-5 w-5" />
+                    <span>Next Best Step</span>
+                  </h4>
+                  <p className="text-sm text-white/90 leading-relaxed">
+                    {compassCalibration.overall >= 82 && "You have a strong base. Keep the habits that are already working and choose one small thing to maintain today."}
+                    {compassCalibration.overall >= 70 && compassCalibration.overall < 82 && "You are making steady progress. One check-in, journal note, or community connection can keep the momentum going."}
+                    {compassCalibration.overall >= 60 && compassCalibration.overall < 70 && "You are building your rhythm. Start with one simple action: log your mood, set a goal, or continue a guided journey."}
+                    {compassCalibration.overall < 60 && "You are at the beginning of the path. Pick one supportive action today, and consider reaching out to a Navigator if you want more structure."}
+                  </p>
                 </div>
               </CardContent>
             </Card>
