@@ -4,6 +4,7 @@ import { Footer } from "./components/Footer";
 import { AIChatSection } from "./components/AIChatSection";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { PresentationSync } from "./components/PresentationSync";
+import { SEO } from "./components/SEO";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthContext";
 import { UserProfileProvider } from "./contexts/UserProfileContext";
@@ -40,6 +41,7 @@ function AppContent() {
       <UserProfileProvider>
         <ScrollToTop />
         <PresentationSync />
+        <SEO />
         <div className="min-h-screen bg-white">
           {!isShelllessRoute && <Header />}
           <main>

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+Disallow: /onboarding
+Disallow: /presentation
+Disallow: /user/
+
+Sitemap: https://mentalcompass.org/sitemap.xml
